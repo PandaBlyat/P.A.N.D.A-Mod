@@ -31,7 +31,7 @@ PANDA = PANDA or {}
 local MCM_DEFAULTS = {
     enabled=true, trigger_min=8, trigger_max=15, default_cooldown=60, cooldown_mode=2,
     cooldown_penalty=25, cooldown_hard_min=5, allow_cross_faction=false, require_pda_equipped=true,
-    debug_logging=true, debug_trigger=false, choice_tip_duration=15, pda_retry_delay=2, companion_limit=4,
+    debug_logging=true, debug_trigger=false, choice_tip_duration=10, pda_retry_delay=2, companion_limit=4,
     max_npcs_per_trigger=20, spawn_distance_min=30, spawn_distance_max=60, companion_spawn_min=20,
     companion_spawn_max=50, mutant_spawn_min=40, mutant_spawn_max=100, non_task_chance=50,
     friendly_hostile_ratio=50, min_distance_for_call=30, npc_cooldown=10,
@@ -1185,7 +1185,7 @@ function show_choices_as_tip()
         msg,
         game.translate_string("st_pda_ic_outcome_sender"),
         0,
-        PANDA.get_config("choice_tip_duration") or 12,
+        PANDA.get_config("choice_tip_duration") or 10,
         "stalker",
         "beep_2",
         "gr"

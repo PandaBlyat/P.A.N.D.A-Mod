@@ -255,26 +255,79 @@ local PRESETS = {
     },
 }
 
--- Helper to apply a preset (called from button functor_ui)
+-- Helper to apply a preset
+-- Robust preset applier 
 local function apply_preset(self, preset_data)
     local root_id = "pda_interactive_conv"
-    for partialPath, value in pairs(preset_data) do
-        -- Build the full path including root
-        local full_path = root_id .. "/" .. partialPath
-        -- Split into path (up to last slash) and opt (last segment)
-        local path, opt = full_path:match("^(.*)/([^/]+)$")
-        if path and opt then
-            local v = ui_mcm.get_opt_table(full_path)
-            if v then
-                self:CacheValue(path, opt, value, v)
-            else
-                printf("PANDA MCM Preset: Option not found - %s", full_path)
+
+    -- helper: try to add missing group if user stored key without it
+    local function normalize_partial(p)
+        if p:find("/") then return p end
+        -- mapping: prefix -> group
+        local tbl = {
+            ["dn_"] = "dynamic_news",
+            ["dynamic_news"] = "dynamic_news",
+            ["npc_conv_"] = "background",
+            ["interactive_"] = "interactive",
+            ["interactive"] = "interactive",
+        }
+        for prefix, group in pairs(tbl) do
+            if p:find("^" .. prefix) then
+                return group .. "/" .. p
             end
-        else
+        end
+        -- fallback: try dynamic_news if it looks like a dn_ key
+        if p:find("^dn_") then
+            return "dynamic_news/" .. p
+        end
+        return p
+    end
+
+    for partialPath, value in pairs(preset_data) do
+        local normalized = normalize_partial(partialPath)
+        local full_path = root_id .. "/" .. normalized
+        local path, opt = full_path:match("^(.*)/([^/]+)$")
+        if not (path and opt) then
             printf("PANDA MCM Preset: Invalid path format - %s", full_path)
+        else
+            local v = ui_mcm.get_opt_table(full_path)
+            -- get_opt_table returns {} for not found; check v.type
+            if v and type(v) == "table" and v.type then
+                -- coerce value to the expected type
+                local set_value = value
+                if v.type == "check" then
+                    if type(set_value) == "boolean" then
+                        set_value = set_value and 1 or 0
+                    elseif type(set_value) == "string" then
+                        -- accept "true"/"false" or numeric strings
+                        if set_value == "true" then set_value = 1
+                        elseif set_value == "false" then set_value = 0
+                        else set_value = tonumber(set_value) or 0 end
+                    else
+                        set_value = tonumber(set_value) or (set_value and 1 or 0)
+                    end
+                elseif v.type == "track" or v.type == "slider" or v.type == "radio" or v.type == "radio_h" then
+                    if type(set_value) ~= "number" then
+                        set_value = tonumber(set_value) or 0
+                    end
+                end
+
+                -- Wrap the CacheValue call so any unexpected error won't crash MCM
+                local ok, err = pcall(function()
+                    -- CacheValue expects path (up to last slash), opt (last segment), value, optTable
+                    self:CacheValue(path, opt, set_value, v)
+                end)
+                if not ok then
+                    printf("PANDA MCM Preset: Failed to cache %s -> %s (error: %s)", full_path, tostring(set_value), tostring(err))
+                end
+            else
+                -- Option not found; helpful debug log
+                printf("PANDA MCM Preset: Option not found or invalid - %s", full_path)
+            end
         end
     end
-    -- Refresh the current options page to show pending changes
+
+    -- Refresh page and mark pending updates (keep your original calls)
     if self.last_curr_tree and self.last_path then
         self:Reset_opt(self.last_curr_tree, self.last_path)
     end
