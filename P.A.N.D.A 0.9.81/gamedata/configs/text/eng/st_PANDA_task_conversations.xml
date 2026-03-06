@@ -1,0 +1,1150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<string_table>
+
+<!-- ============================================================ -->
+<!-- P.A.N.D.A. INTERACTIVE PDA CONVERSATIONS -->
+<!-- Procedural Anomaly Narrative Dialogue Architecture -->
+<!-- ============================================================ -->
+<!--
+    EXPANDED TASK CONVERSATIONS – LONER FACTION
+    Each conversation features 4 choices per turn, multiple turns,
+    varied personalities, and integrated non‑task outcomes.
+    All dialogue is generic and placeholder‑driven to accommodate
+    vanilla task randomization.
+-->
+
+<!-- ============================================================ -->
+<!-- SYSTEM STRINGS (Do not modify) -->
+<!-- ============================================================ -->
+
+<string id="st_pda_ic_header_prefix">
+    <text>Incoming Transmission</text>
+</string>
+<string id="st_pda_ic_header_prompt">
+    <text>Select Response</text>
+</string>
+<string id="st_pda_ic_outcome_sender">
+    <text>Communications Centre</text>
+</string>
+<string id="st_pda_ic_outcome_task_given">
+    <text>Task received. Check your PDA for details.</text>
+</string>
+<string id="st_pda_ic_outcome_task_unavailable">
+    <text>Unable to process task request at this time.</text>
+</string>
+<string id="st_pda_ic_outcome_money_gain">
+    <text>Received $amount RU via electronic transfer.</text>
+</string>
+<string id="st_pda_ic_outcome_money_loss">
+    <text>$amount RU deducted from account.</text>
+</string>
+<string id="st_pda_ic_outcome_rep_gain">
+    <text>Your reputation in the Zone has improved.</text>
+</string>
+<string id="st_pda_ic_outcome_rep_loss">
+    <text>Your reputation in the Zone has suffered.</text>
+</string>
+<string id="st_pda_ic_outcome_gw_gain">
+    <text>$faction relations improved by $amount points.</text>
+</string>
+<string id="st_pda_ic_outcome_gw_loss">
+    <text>$faction relations decreased by $amount points.</text>
+</string>
+<string id="st_pda_ic_outcome_item_gain">
+    <text>Received: $what</text>
+</string>
+<string id="st_pda_ic_outcome_stash">
+    <text>Stash coordinates received. Check your map.</text>
+</string>
+<string id="st_pda_ic_outcome_no_money">
+    <text>Insufficient funds for this transaction.</text>
+</string>
+<string id="st_pda_ic_outcome_hostile_warn">
+    <text>WARNING: Hostile contacts detected in your area.</text>
+</string>
+<string id="st_pda_ic_outcome_hostile_arrive">
+    <text>ALERT: Hostile forces approaching your position.</text>
+</string>
+<string id="st_pda_ic_outcome_friendly_warn">
+    <text>Friendly contacts inbound to your area.</text>
+</string>
+<string id="st_pda_ic_outcome_friendly_arrive">
+    <text>Friendly units have arrived in your sector.</text>
+</string>
+<string id="st_pda_ic_outcome_companion_arrive">
+    <text>Reinforcements have linked up with your position.</text>
+</string>
+<string id="st_pda_ic_outcome_mutant_warn">
+    <text>WARNING: Anomalous biological signatures detected.</text>
+</string>
+<string id="st_pda_ic_outcome_mutant_arrive">
+    <text>DANGER: Mutant contact confirmed in your vicinity.</text>
+</string>
+<string id="st_pda_ic_outcome_courier_warn">
+    <text>A courier is en route to your location.</text>
+</string>
+<string id="st_pda_ic_pda_closed_warning">
+    <text>You need to have your PDA open to make a choice.</text>
+</string>
+<string id="st_pda_ic_hunt_timeout">
+    <text>The hunting party seems to have lost interest and moved on.</text>
+</string>
+
+<!-- ============================================================ -->
+<!-- TASK CONVERSATIONS LONER FACTION (EXPANDED) -->
+<!-- ============================================================ -->
+
+<!-- ==================== CONVERSATION 1: FETCH ==================== -->
+<!-- Scenario: Pinned down stalkers need supplies. 2 turns. -->
+<string id="st_pda_ic_loner_1_open">
+    <text>$player_name, thank god you answered. We're pinned down near the old factory, and we're almost out of ammo and meds. We need supplies, fast. I'll pay well , 5000 RU if you get here within the hour.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_1_choice_1">
+    <text>What exactly do you need? I'll check my inventory.</text>
+</string>
+<string id="st_pda_ic_loner_1_choice_2">
+    <text>I'm close by. Send the list , I'm on my way.</text>
+</string>
+<string id="st_pda_ic_loner_1_choice_3">
+    <text>5000? That's too low for a firefight rescue. Make it 8000 upfront, and I'll come.</text>
+</string>
+<string id="st_pda_ic_loner_1_choice_4">
+    <text>Sorry, can't help. I'm in the middle of something.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_1_reply_1">
+    <text>We need ammo (9x19, 5.45), medkits, and maybe some anti-rad. I'm sending the exact manifest now.</text>
+</string>
+<string id="st_pda_ic_loner_1_reply_2">
+    <text>Bless you! I'm uploading the list. Get here quick , we're holding on.</text>
+</string>
+<string id="st_pda_ic_loner_1_reply_3">
+    <text>We don't have that kind of cash pooled, but we could scrape together 6000. Half now, half when you deliver. Deal?</text>
+</string>
+<string id="st_pda_ic_loner_1_reply_4">
+    <text>Damn, good luck out there.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuation -->
+<string id="st_pda_ic_loner_1_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_1_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_1_outcome_2">
+    <text>give_task_cat:fetch</text>
+</string>
+<string id="st_pda_ic_loner_1_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_1_outcome_3">
+    <text>reward_money:3000</text>
+</string>
+<string id="st_pda_ic_loner_1_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_1_outcome_4">
+    <text>punish_gw:10:stalker</text>
+</string>
+<string id="st_pda_ic_loner_1_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 (continuation) -->
+<string id="st_pda_ic_loner_1_t2_choice_1">
+    <text>Alright, send the list. I'm coming.</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_choice_2">
+    <text>I'll need some extra gear , can you spare a weapon?</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_choice_3">
+    <text>On second thought, this is too dangerous. Keep your money.</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_choice_4">
+    <text>I'll do it, but you owe me a favour later.</text>
+</string>
+
+<string id="st_pda_ic_loner_1_t2_reply_1">
+    <text>Manifest uploaded. Hurry!</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_reply_2">
+    <text>I can leave you a pistol at the factory entrance. It's not much, but it's something.</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_reply_3">
+    <text>Fine. We'll find someone else.</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_reply_4">
+    <text>You've got it. Just get here alive.</text>
+</string>
+
+<string id="st_pda_ic_loner_1_t2_outcome_1">
+    <text>give_task_cat:fetch</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_outcome_2">
+    <text>give_task_cat:fetch, courier_item:wpn_beretta</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_outcome_3">
+    <text>punish_money:3000, punish_gw:15:stalker</text>
+</string>
+<string id="st_pda_ic_loner_1_t2_outcome_4">
+    <text>give_task_cat:fetch, reward_gw:10:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 2: ASSAULT ==================== -->
+<!-- Scenario: Clear a hostile camp. 3 turns. -->
+<string id="st_pda_ic_loner_2_open">
+    <text>Attention all loners , a bandit camp has popped up near the railway bridge, harassing our patrols. We need a volunteer to clear them out. Payment: 8000 RU, plus whatever loot you find.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_2_choice_1">
+    <text>How many bandits are we talking?</text>
+</string>
+<string id="st_pda_ic_loner_2_choice_2">
+    <text>I'll do it. Send coordinates.</text>
+</string>
+<string id="st_pda_ic_loner_2_choice_3">
+    <text>8000? I want 10k, or I walk.</text>
+</string>
+<string id="st_pda_ic_loner_2_choice_4">
+    <text>Bandits are my specialty. I'll need a scout report first.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_2_reply_1">
+    <text>At least six, maybe more. They've got a couple of rifles and a shotgun. The camp is fortified with sandbags.</text>
+</string>
+<string id="st_pda_ic_loner_2_reply_2">
+    <text>Coordinates uploaded. Good hunting.</text>
+</string>
+<string id="st_pda_ic_loner_2_reply_3">
+    <text>Alright, 9k final offer. Take it or leave it.</text>
+</string>
+<string id="st_pda_ic_loner_2_reply_4">
+    <text>I'll have our scout upload what he saw. Check your PDA.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_2_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_2_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_2_outcome_2">
+    <text>give_task_cat:assault</text>
+</string>
+<string id="st_pda_ic_loner_2_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_2_cont_3">
+    <text>3</text>
+</string>
+
+<string id="st_pda_ic_loner_2_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_2_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 (info/accept) -->
+<string id="st_pda_ic_loner_2_t2_choice_1">
+    <text>Six bandits? I can handle that. Send the job.</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_choice_2">
+    <text>Too many for one person. I'll need backup , can you send a couple of guys?</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_choice_3">
+    <text>I'll need some explosives to flush them out. Can you supply?</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_choice_4">
+    <text>Actually, I'm not up for it today.</text>
+</string>
+
+<string id="st_pda_ic_loner_2_t2_reply_1">
+    <text>Job posted. Check tasks.</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_reply_2">
+    <text>We're stretched thin, but I can send one volunteer. He'll meet you at the bridge.</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_reply_3">
+    <text>I can leave a couple of grenades at the old tractor near the camp.</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_reply_4">
+    <text>Alright, stay safe.</text>
+</string>
+
+<string id="st_pda_ic_loner_2_t2_outcome_1">
+    <text>give_task_cat:assault</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_outcome_2">
+    <text>give_task_cat:assault, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_outcome_3">
+    <text>give_task_cat:assault, courier_item:ammo_vog-25</text>
+</string>
+<string id="st_pda_ic_loner_2_t2_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+
+<!-- Turn 3 (negotiation success) -->
+<string id="st_pda_ic_loner_2_t3_choice_1">
+    <text>9k is acceptable. I'll take the job.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_choice_2">
+    <text>Make it 9k and a decent rifle, and you have a deal.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_choice_3">
+    <text>You drive a hard bargain. I'm in.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_choice_4">
+    <text>Nah, still not enough. Find someone desperate.</text>
+</string>
+
+<string id="st_pda_ic_loner_2_t3_reply_1">
+    <text>Great. Coordinates uploaded.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_reply_2">
+    <text>I can leave an AK at the stash point. Don't let me down.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_reply_3">
+    <text>Good man. Job's yours.</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_reply_4">
+    <text>Fine. Next time.</text>
+</string>
+
+<string id="st_pda_ic_loner_2_t3_outcome_1">
+    <text>give_task_cat:assault</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_outcome_2">
+    <text>give_task_cat:assault, courier_item:wpn_ak74</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_outcome_3">
+    <text>give_task_cat:assault</text>
+</string>
+<string id="st_pda_ic_loner_2_t3_outcome_4">
+    <text>punish_gw:10:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 3: BOUNTY ==================== -->
+<!-- Scenario: Hit contract on a traitor. 2 turns. -->
+<string id="st_pda_ic_loner_3_open">
+    <text>$player_name, I have a discreet contract. There's a stalker named "Slick" who's been selling our patrol routes to bandits. He needs to disappear. Payment is 12k, no questions asked.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_3_choice_1">
+    <text>How do you know he's the traitor?</text>
+</string>
+<string id="st_pda_ic_loner_3_choice_2">
+    <text>12k is good. Send me his location.</text>
+</string>
+<string id="st_pda_ic_loner_3_choice_3">
+    <text>I don't kill stalkers, even traitors. But I could capture him for you.</text>
+</string>
+<string id="st_pda_ic_loner_3_choice_4">
+    <text>Count me out. I'm not an assassin.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_3_reply_1">
+    <text>We caught him red-handed transmitting coordinates. His PDA logs don't lie. I can share the evidence if you want.</text>
+</string>
+<string id="st_pda_ic_loner_3_reply_2">
+    <text>He's usually at the merc camp near the depot. I'll pin his last known position.</text>
+</string>
+<string id="st_pda_ic_loner_3_reply_3">
+    <text>Capture? That's riskier, but if you can bring him in alive, we'll pay 15k. Deal?</text>
+</string>
+<string id="st_pda_ic_loner_3_reply_4">
+    <text>Understood. I'll find someone with fewer scruples.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_3_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_3_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_3_outcome_2">
+    <text>give_task_cat:bounty</text>
+</string>
+<string id="st_pda_ic_loner_3_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_3_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_3_cont_3">
+    <text>3</text>
+</string>
+
+<string id="st_pda_ic_loner_3_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_3_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 (evidence presented) -->
+<string id="st_pda_ic_loner_3_t2_choice_1">
+    <text>Alright, I'm convinced. Send the job.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_choice_2">
+    <text>Even with proof, I'm not a killer. I'll pass.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_choice_3">
+    <text>Maybe I can talk to him first. Give me his location.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_choice_4">
+    <text>I'll do it, but I want 15k.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t2_reply_1">
+    <text>Job uploaded. Make it clean.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_reply_2">
+    <text>Fair enough. We'll manage.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_reply_3">
+    <text>He's beyond talking, but suit yourself. Coordinates sent.</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_reply_4">
+    <text>We can do 13k, final. Take it or leave it.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t2_outcome_1">
+    <text>give_task_cat:bounty</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_outcome_2">
+    <text>punish_gw:5:stalker</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_cont_3">
+    <text>4</text>   <!-- special talk turn? but we'll keep simple: maybe just give task but with different outcome? For simplicity, we'll make it task. -->
+</string>
+<string id="st_pda_ic_loner_3_t2_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_3_t2_cont_4">
+    <text>4</text>
+</string>
+
+<!-- Turn 3 (capture option) -->
+<string id="st_pda_ic_loner_3_t3_choice_1">
+    <text>Capture it is. Send me his location.</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_choice_2">
+    <text>I'll need help to take him alive. Can you spare a man?</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_choice_3">
+    <text>On second thought, killing is easier. I'll take the 12k.</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_choice_4">
+    <text>Too risky. Find another sucker.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t3_reply_1">
+    <text>Location uploaded. Remember , alive.</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_reply_2">
+    <text>I'll send a guy to back you up. He'll meet you at the depot.</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_reply_3">
+    <text>Alright, 12k it is. Job posted.</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_reply_4">
+    <text>Fine. We'll find someone else.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t3_outcome_1">
+    <text>give_task_cat:bounty, reward_money:3000</text>   <!-- extra for capture -->
+</string>
+<string id="st_pda_ic_loner_3_t3_outcome_2">
+    <text>give_task_cat:bounty, reward_money:3000, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_outcome_3">
+    <text>give_task_cat:bounty</text>
+</string>
+<string id="st_pda_ic_loner_3_t3_outcome_4">
+    <text>punish_gw:10:stalker</text>
+</string>
+
+<!-- Turn 4 (negotiation final) -->
+<string id="st_pda_ic_loner_3_t4_choice_1">
+    <text>13k works. I'm in.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_choice_2">
+    <text>13k and a rifle. Then we talk.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_choice_3">
+    <text>I'll do it for 13k, but you owe me.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_choice_4">
+    <text>No deal.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t4_reply_1">
+    <text>Job's yours. Location uploaded.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_reply_2">
+    <text>We can spare a worn AK. Deal.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_reply_3">
+    <text>We'll remember this. Job posted.</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_reply_4">
+    <text>Your loss.</text>
+</string>
+
+<string id="st_pda_ic_loner_3_t4_outcome_1">
+    <text>give_task_cat:bounty</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_outcome_2">
+    <text>give_task_cat:bounty, courier_item:wpn_ak74</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_outcome_3">
+    <text>give_task_cat:bounty, reward_gw:5:stalker</text>
+</string>
+<string id="st_pda_ic_loner_3_t4_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 4: DELIVERY ==================== -->
+<!-- Scenario: Courier job. 2 turns. -->
+<string id="st_pda_ic_loner_4_open">
+    <text>$player_name, I need a courier job done. I have a package that needs to get to an associate, but I'm tied down here. You up for a quick run? Payment is 4000 RU.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_4_choice_1">
+    <text>What's in the package?</text>
+</string>
+<string id="st_pda_ic_loner_4_choice_2">
+    <text>Sure, I'll do it. Send the drop point.</text>
+</string>
+<string id="st_pda_ic_loner_4_choice_3">
+    <text>4000 is too low for a courier job. Make it 6000.</text>
+</string>
+<string id="st_pda_ic_loner_4_choice_4">
+    <text>I'm not your errand boy. Find someone else.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_4_reply_1">
+    <text>Just some documents and a few artifacts. Nothing dangerous, I promise. The recipient is waiting.</text>
+</string>
+<string id="st_pda_ic_loner_4_reply_2">
+    <text>Great. I'm uploading the waybill and coordinates to your PDA now.</text>
+</string>
+<string id="st_pda_ic_loner_4_reply_3">
+    <text>I can do 5000. That's my final offer.</text>
+</string>
+<string id="st_pda_ic_loner_4_reply_4">
+    <text>Suit yourself. I'll ask around.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_4_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_4_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_4_outcome_2">
+    <text>give_task_cat:delivery</text>
+</string>
+<string id="st_pda_ic_loner_4_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_4_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_4_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_4_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+<string id="st_pda_ic_loner_4_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_4_t2_choice_1">
+    <text>Alright, I'll take it. Send details.</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_choice_2">
+    <text>I'm worried about stalkers along the route. Can you provide an escort?</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_choice_3">
+    <text>I want half upfront.</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_choice_4">
+    <text>Actually, I'm not interested.</text>
+</string>
+
+<string id="st_pda_ic_loner_4_t2_reply_1">
+    <text>Details sent. It's a straight shot , you'll be fine.</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_reply_2">
+    <text>I can have one of our guys meet you halfway. He'll watch your back.</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_reply_3">
+    <text>I can send 2000 now. The rest on delivery.</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_reply_4">
+    <text>Alright, stay safe.</text>
+</string>
+
+<string id="st_pda_ic_loner_4_t2_outcome_1">
+    <text>give_task_cat:delivery</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_outcome_2">
+    <text>give_task_cat:delivery, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_outcome_3">
+    <text>give_task_cat:delivery, reward_money:2000</text>
+</string>
+<string id="st_pda_ic_loner_4_t2_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 9: RESCUE ==================== -->
+<!-- Scenario: Hostage rescue. 2 turns. -->
+<string id="st_pda_ic_loner_9_open">
+    <text>$player_name, emergency. One of our guys got jumped and taken hostage by a hostile squad. They're holding him at a nearby camp. We need someone to breach the camp and get him out alive. Reward: 10,000 RU.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_9_choice_1">
+    <text>How many hostiles are we talking about?</text>
+</string>
+<string id="st_pda_ic_loner_9_choice_2">
+    <text>I'm on it. Send the coordinates.</text>
+</string>
+<string id="st_pda_ic_loner_9_choice_3">
+    <text>10k is too low for a rescue mission. Make it 15k.</text>
+</string>
+<string id="st_pda_ic_loner_9_choice_4">
+    <text>Hostage rescues are suicide. Find someone else.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_9_reply_1">
+    <text>At least five, heavily armed. They're holed up in an old warehouse. We have the layout.</text>
+</string>
+<string id="st_pda_ic_loner_9_reply_2">
+    <text>Thank you. I'm uploading the camp location and the hostage's signal now.</text>
+</string>
+<string id="st_pda_ic_loner_9_reply_3">
+    <text>We can do 12k, but that's stretching us thin. Deal?</text>
+</string>
+<string id="st_pda_ic_loner_9_reply_4">
+    <text>We'll find someone braver, then.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_9_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_9_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_9_outcome_2">
+    <text>give_task_cat:rescue</text>
+</string>
+<string id="st_pda_ic_loner_9_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_9_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_9_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_9_outcome_4">
+    <text>punish_gw:10:stalker</text>
+</string>
+<string id="st_pda_ic_loner_9_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_9_t2_choice_1">
+    <text>I'll do it. Send the details.</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_choice_2">
+    <text>I'll need backup , can you spare a couple of guys?</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_choice_3">
+    <text>I want better weapons. Can you supply?</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_choice_4">
+    <text>On second thought, it's too risky. I'm out.</text>
+</string>
+
+<string id="st_pda_ic_loner_9_t2_reply_1">
+    <text>Details uploaded. Bring him home.</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_reply_2">
+    <text>I can send two volunteers. They'll meet you at the bridge.</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_reply_3">
+    <text>I can leave a shotgun and some meds at the stash point near the camp.</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_reply_4">
+    <text>We'll manage. Good luck.</text>
+</string>
+
+<string id="st_pda_ic_loner_9_t2_outcome_1">
+    <text>give_task_cat:rescue</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_outcome_2">
+    <text>give_task_cat:rescue, spawn_companion:stalker:60, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_outcome_3">
+    <text>give_task_cat:rescue, courier_item:wpn_bm16, courier_item:medkit_army</text>
+</string>
+<string id="st_pda_ic_loner_9_t2_outcome_4">
+    <text>punish_gw:15:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 10: MEASURE ==================== -->
+<!-- Scenario: Anomaly measurement. 2 turns. -->
+<string id="st_pda_ic_loner_10_open">
+    <text>Attention stalkers. The Ecologists are paying top dollar for fresh field measurements from active anomaly fields. You'll need a detector and some nerve. Anyone interested? Payment: 6000 RU.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_10_choice_1">
+    <text>What kind of measurements are we talking about?</text>
+</string>
+<string id="st_pda_ic_loner_10_choice_2">
+    <text>I have my detector ready. Upload the anomaly coordinates.</text>
+</string>
+<string id="st_pda_ic_loner_10_choice_3">
+    <text>6000? I'll do it for 8000.</text>
+</string>
+<string id="st_pda_ic_loner_10_choice_4">
+    <text>I try to stay out of anomalies, not walk into them. Pass.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_10_reply_1">
+    <text>Just get close to the core and hold your position until the scanner finishes. Watch out for mutants, they're drawn to the emissions. Coordinates attached.</text>
+</string>
+<string id="st_pda_ic_loner_10_reply_2">
+    <text>Excellent. Area coordinates are transmitting now. Be careful.</text>
+</string>
+<string id="st_pda_ic_loner_10_reply_3">
+    <text>We can do 7000. That's the max the Ecologists will pay.</text>
+</string>
+<string id="st_pda_ic_loner_10_reply_4">
+    <text>Suit yourself. More money for the rest of us.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_10_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_10_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_10_outcome_2">
+    <text>give_task_cat:measure</text>
+</string>
+<string id="st_pda_ic_loner_10_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_10_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_10_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_10_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_10_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_10_t2_choice_1">
+    <text>Alright, I'll do it. Send the job.</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_choice_2">
+    <text>I'm worried about mutants. Can you send backup?</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_choice_3">
+    <text>I need a better detector. Can you provide one?</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_choice_4">
+    <text>Still not worth it. I'm out.</text>
+</string>
+
+<string id="st_pda_ic_loner_10_t2_reply_1">
+    <text>Job posted. Good luck.</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_reply_2">
+    <text>I can send a guard to watch your back. He'll meet you at the entrance.</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_reply_3">
+    <text>The Ecologists lent us a scientific detector. I can have it delivered to you.</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_reply_4">
+    <text>Alright, stay safe.</text>
+</string>
+
+<string id="st_pda_ic_loner_10_t2_outcome_1">
+    <text>give_task_cat:measure</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_outcome_2">
+    <text>give_task_cat:measure, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_outcome_3">
+    <text>give_task_cat:measure, courier_item:stimpack_scientic</text>
+</string>
+<string id="st_pda_ic_loner_10_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION 11: FATE ==================== -->
+<!-- Scenario: Missing patrol. 2 turns. -->
+<string id="st_pda_ic_loner_11_open">
+    <text>$player_name, we lost contact with a patrol squad a few hours ago. We need someone to track their last known coordinates and find out what happened to them. Recover their PDA if they didn't make it. Reward: 7000 RU.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_11_choice_1">
+    <text>What was their last known location?</text>
+</string>
+<string id="st_pda_ic_loner_11_choice_2">
+    <text>I'll track them down. Send me the sector data.</text>
+</string>
+<string id="st_pda_ic_loner_11_choice_3">
+    <text>7000 is too low for a search and rescue. Make it 9000.</text>
+</string>
+<string id="st_pda_ic_loner_11_choice_4">
+    <text>If they're gone, they're gone. Not risking my neck.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_11_reply_1">
+    <text>I'm uploading the search radius to your PDA. Comb the area. If they're dead, just bring the PDA back to us.</text>
+</string>
+<string id="st_pda_ic_loner_11_reply_2">
+    <text>Thanks. Search area is marked on your PDA. Be careful, whatever got them might still be out there.</text>
+</string>
+<string id="st_pda_ic_loner_11_reply_3">
+    <text>We can do 8000, but that's all we have.</text>
+</string>
+<string id="st_pda_ic_loner_11_reply_4">
+    <text>We leave no one behind. We'll find someone else.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_11_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_11_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_11_outcome_2">
+    <text>give_task_cat:fate</text>
+</string>
+<string id="st_pda_ic_loner_11_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_11_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_11_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_11_outcome_4">
+    <text>punish_gw:10:stalker</text>
+</string>
+<string id="st_pda_ic_loner_11_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_11_t2_choice_1">
+    <text>I'll do it. Send the job.</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_choice_2">
+    <text>This sounds dangerous. Can you send someone with me?</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_choice_3">
+    <text>I want half upfront.</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_choice_4">
+    <text>Actually, I'm not comfortable with this. Find someone else.</text>
+</string>
+
+<string id="st_pda_ic_loner_11_t2_reply_1">
+    <text>Job posted. Bring back answers.</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_reply_2">
+    <text>I can send one volunteer. He'll meet you at the marked zone.</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_reply_3">
+    <text>I'll transfer 4000 now. Rest on completion.</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_reply_4">
+    <text>Alright, stay safe.</text>
+</string>
+
+<string id="st_pda_ic_loner_11_t2_outcome_1">
+    <text>give_task_cat:fate</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_outcome_2">
+    <text>give_task_cat:fate, spawn_companion:stalker:60</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_outcome_3">
+    <text>give_task_cat:fate, reward_money:4000</text>
+</string>
+<string id="st_pda_ic_loner_11_t2_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 12: ELIMINATE ==================== -->
+<!-- Scenario: Mutant hunt. 2 turns. -->
+<string id="st_pda_ic_loner_12_open">
+    <text>We've got a serious mutant problem. A pack has moved into our territory and is making the routes impassable. We need a hunter to go to their lair and wipe them out. Payment: 9000 RU.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_12_choice_1">
+    <text>What kind of mutants are we dealing with?</text>
+</string>
+<string id="st_pda_ic_loner_12_choice_2">
+    <text>I'll clear the lair. Send the coordinates.</text>
+</string>
+<string id="st_pda_ic_loner_12_choice_3">
+    <text>9000 is too low for a mutant hunt. Make it 12k.</text>
+</string>
+<string id="st_pda_ic_loner_12_choice_4">
+    <text>Find a dedicated hunter. I'm busy.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_12_reply_1">
+    <text>I'm attaching the threat profile and location to your PDA now. Looks like a mix of blind dogs and a couple of snorks. Nasty.</text>
+</string>
+<string id="st_pda_ic_loner_12_reply_2">
+    <text>Good hunting. Coordinates uploaded. Watch your back in there.</text>
+</string>
+<string id="st_pda_ic_loner_12_reply_3">
+    <text>We can do 10k, final offer.</text>
+</string>
+<string id="st_pda_ic_loner_12_reply_4">
+    <text>Understood. Stay safe.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_12_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_12_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_12_outcome_2">
+    <text>give_task_cat:eliminate</text>
+</string>
+<string id="st_pda_ic_loner_12_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_12_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_12_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_12_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_12_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_12_t2_choice_1">
+    <text>Alright, I'll take the job. Send details.</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_choice_2">
+    <text>I'll need better weapons for snorks. Can you supply?</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_choice_3">
+    <text>I want half upfront.</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_choice_4">
+    <text>On second thought, not worth it. I'm out.</text>
+</string>
+
+<string id="st_pda_ic_loner_12_t2_reply_1">
+    <text>Details uploaded. Good luck.</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_reply_2">
+    <text>I can leave a shotgun and some buckshot at the entrance to the lair.</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_reply_3">
+    <text>I'll transfer 5000 now. Rest on completion.</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_reply_4">
+    <text>Alright, stay safe.</text>
+</string>
+
+<string id="st_pda_ic_loner_12_t2_outcome_1">
+    <text>give_task_cat:eliminate</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_outcome_2">
+    <text>give_task_cat:eliminate, courier_item:wpn_bm16, courier_item:ammo_12x70_buck</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_outcome_3">
+    <text>give_task_cat:eliminate, reward_money:5000</text>
+</string>
+<string id="st_pda_ic_loner_12_t2_outcome_4">
+    <text>punish_gw:5:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION 13: STASH ==================== -->
+<!-- Scenario: Stash retrieval. 2 turns. -->
+<string id="st_pda_ic_loner_13_open">
+    <text>$player_name, I've got coordinates to a stash that an old contact told me about. I'm too busy to go myself, but if you retrieve whatever's inside, we split the loot. Deal? Your cut: 50%.</text>
+</string>
+
+<!-- Turn 1 choices -->
+<string id="st_pda_ic_loner_13_choice_1">
+    <text>What kind of stash are we talking about?</text>
+</string>
+<string id="st_pda_ic_loner_13_choice_2">
+    <text>I'm always up for a treasure hunt. Send the coordinates.</text>
+</string>
+<string id="st_pda_ic_loner_13_choice_3">
+    <text>50% is too low. I want 70%.</text>
+</string>
+<string id="st_pda_ic_loner_13_choice_4">
+    <text>Not interested. Keep your stash.</text>
+</string>
+
+<!-- Turn 1 replies -->
+<string id="st_pda_ic_loner_13_reply_1">
+    <text>Not sure exactly, but the contact was reliable. Could be artifacts, weapons, or just junk. I'm uploading the marker to your PDA now. Bring back whatever you find and we'll meet up later.</text>
+</string>
+<string id="st_pda_ic_loner_13_reply_2">
+    <text>Great. I've pinned the location on your map. Watch out for any traps or stalkers who might have found it first.</text>
+</string>
+<string id="st_pda_ic_loner_13_reply_3">
+    <text>60%, final offer. Take it or leave it.</text>
+</string>
+<string id="st_pda_ic_loner_13_reply_4">
+    <text>Fine. I'll find someone else who appreciates easy money.</text>
+</string>
+
+<!-- Turn 1 outcomes and continuations -->
+<string id="st_pda_ic_loner_13_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_13_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_13_outcome_2">
+    <text>give_task_cat:stash</text>
+</string>
+<string id="st_pda_ic_loner_13_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_loner_13_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_13_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_loner_13_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_loner_13_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_loner_13_t2_choice_1">
+    <text>Alright, I'll go. Send details.</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_choice_2">
+    <text>I'll need a weapon if there are guards. Can you provide?</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_choice_3">
+    <text>I want a share upfront , pay me 2000 now.</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_choice_4">
+    <text>Actually, I'm not interested.</text>
+</string>
+
+<string id="st_pda_ic_loner_13_t2_reply_1">
+    <text>Details uploaded. Good luck.</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_reply_2">
+    <text>I can leave a pistol at the stash entrance.</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_reply_3">
+    <text>I'll send 2000 now. Fair?</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_reply_4">
+    <text>Alright, maybe next time.</text>
+</string>
+
+<string id="st_pda_ic_loner_13_t2_outcome_1">
+    <text>give_task_cat:stash</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_outcome_2">
+    <text>give_task_cat:stash, courier_item:wpn_beretta</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_outcome_3">
+    <text>give_task_cat:stash, reward_money:2000</text>
+</string>
+<string id="st_pda_ic_loner_13_t2_outcome_4">
+    <text>none</text>
+</string>
+
+</string_table>

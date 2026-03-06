@@ -1,0 +1,1676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<string_table>
+
+<!-- ============================================================ -->
+<!-- P.A.N.D.A. HOSTILE PDA CONVERSATIONS (NON‑TASK) -->
+<!-- Procedural Anomaly Narrative Dialogue Architecture -->
+<!-- ============================================================ -->
+<!--
+    EXPANDED HOSTILE CONVERSATIONS BANDIT FACTION
+    Each conversation features 4 distinct choices per turn,
+    multi‑turn branching, varied personalities, and immersive
+    outcomes (spawns, money, reputation, etc.).
+-->
+
+<!-- ============================================================ -->
+<!-- SYSTEM STRINGS (reused from other files) -->
+<!-- ============================================================ -->
+<string id="st_pda_ic_header_prefix">
+    <text>Incoming Transmission</text>
+</string>
+<string id="st_pda_ic_header_prompt">
+    <text>Select Response</text>
+</string>
+<string id="st_pda_ic_outcome_sender">
+    <text>Communications Centre</text>
+</string>
+<string id="st_pda_ic_outcome_task_given">
+    <text>Task received. Check your PDA for details.</text>
+</string>
+<string id="st_pda_ic_outcome_task_unavailable">
+    <text>Unable to process task request at this time.</text>
+</string>
+<string id="st_pda_ic_outcome_money_gain">
+    <text>Received $amount RU via electronic transfer.</text>
+</string>
+<string id="st_pda_ic_outcome_money_loss">
+    <text>$amount RU deducted from account.</text>
+</string>
+<string id="st_pda_ic_outcome_rep_gain">
+    <text>Your reputation in the Zone has improved.</text>
+</string>
+<string id="st_pda_ic_outcome_rep_loss">
+    <text>Your reputation in the Zone has suffered.</text>
+</string>
+<string id="st_pda_ic_outcome_gw_gain">
+    <text>$faction relations improved by $amount points.</text>
+</string>
+<string id="st_pda_ic_outcome_gw_loss">
+    <text>$faction relations decreased by $amount points.</text>
+</string>
+<string id="st_pda_ic_outcome_item_gain">
+    <text>Received: $what</text>
+</string>
+<string id="st_pda_ic_outcome_stash">
+    <text>Stash coordinates received. Check your map.</text>
+</string>
+<string id="st_pda_ic_outcome_no_money">
+    <text>Insufficient funds for this transaction.</text>
+</string>
+<string id="st_pda_ic_outcome_hostile_warn">
+    <text>WARNING: Hostile contacts detected in your area.</text>
+</string>
+<string id="st_pda_ic_outcome_hostile_arrive">
+    <text>ALERT: Hostile forces approaching your position.</text>
+</string>
+<string id="st_pda_ic_outcome_friendly_warn">
+    <text>Friendly contacts inbound to your area.</text>
+</string>
+<string id="st_pda_ic_outcome_friendly_arrive">
+    <text>Friendly units have arrived in your sector.</text>
+</string>
+<string id="st_pda_ic_outcome_companion_arrive">
+    <text>Reinforcements have linked up with your position.</text>
+</string>
+<string id="st_pda_ic_outcome_mutant_warn">
+    <text>WARNING: Anomalous biological signatures detected.</text>
+</string>
+<string id="st_pda_ic_outcome_mutant_arrive">
+    <text>DANGER: Mutant contact confirmed in your vicinity.</text>
+</string>
+<string id="st_pda_ic_outcome_courier_warn">
+    <text>A courier is en route to your location.</text>
+</string>
+<string id="st_pda_ic_pda_closed_warning">
+    <text>You need to have your PDA open to make a choice.</text>
+</string>
+
+<!-- ============================================================ -->
+<!-- HOSTILE CONVERSATIONS  LONER FACTION (EXPANDED) -->
+<!-- ============================================================ -->
+
+<!-- ==================== CONVERSATION H1: DIRECT THREAT ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_1_open">
+    <text>$player_name, you've been sticking your nose where it don't belong. The boss is tired of it. A few of my boys are heading your way to have a word. Hope you're ready.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_1_choice_1">
+    <text>Bring it on. I'll be waiting.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_choice_2">
+    <text>Wait, maybe we can talk. I don't want trouble.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_choice_3">
+    <text>How many? I need to know what I'm facing.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_choice_4">
+    <text>Tell your boss I'm coming for him first.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_reply_1">
+    <text>Brave words. We'll see how brave you are when they find you.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_reply_2">
+    <text>Too late for talk. You should've thought about that earlier.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_reply_3">
+    <text>Enough to make you regret ever crossing us. Maybe five, maybe six.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_reply_4">
+    <text>Big talk for a dead man. They'll find you first.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_1_t2_choice_1">
+    <text>I'll be ready. Send them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_choice_2">
+    <text>I'll leave the area. Call them off.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_choice_3">
+    <text>I'll set up an ambush. Let them come.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_choice_4">
+    <text>I'm not afraid. I've killed plenty of your kind.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_t2_reply_1">
+    <text>They're already moving. Hope you're ready.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_reply_2">
+    <text>Too late, they've already started. Run if you want.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_reply_3">
+    <text>Ambush? They'll be ready for that. Good luck.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_reply_4">
+    <text>We'll see how many you can take before one gets you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_1_t2_outcome_1">
+    <text>spawn_hostile:bandit:90</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_outcome_2">
+    <text>chance:50:spawn_hostile:bandit:120,punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_outcome_3">
+    <text>spawn_hostile:bandit:60,reward_gw:5:stalker</text>
+</string>
+<string id="st_pda_ic_hostile_loner_1_t2_outcome_4">
+    <text>spawn_hostile:bandit:90,punish_rep:5</text>
+</string>
+
+<!-- ==================== CONVERSATION H2: MOCKING (EXPANDED TO 3 TURNS) ==================== -->
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_2_open">
+    <text>$player_name. Noticed you avoiding us, what are you hiding?.</text>
+</string>
+
+<!-- Turn 1 Choices -->
+<string id="st_pda_ic_hostile_loner_2_choice_1">
+    <text>I didn't see you or you wouldn't be talking right now.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_choice_2">
+    <text>Just checking around for tasks.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_choice_3">
+    <text>Try me.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_choice_4">
+    <text>I'm not looking for trouble, just let me be.</text>
+</string>
+
+<!-- Turn 1 Replies -->
+<string id="st_pda_ic_hostile_loner_2_reply_1">
+    <text>Hah! You'd be dead before you raised your gun.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_reply_2">
+    <text>Tasks? You're just an errand boy? Pathetic.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_reply_3">
+    <text>Try me? I'm right here, come find me.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_reply_4">
+    <text>Too late for that, we're already watching. But maybe if you crawl away, we'll forget.</text>
+</string>
+
+<!-- Turn 1 Outcomes & Continuation -->
+<string id="st_pda_ic_hostile_loner_2_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_outcome_4">
+    <text>punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_cont_4">
+    <text>0</text>
+</string>
+
+<!-- ========== Turn 2 ========== -->
+<string id="st_pda_ic_hostile_loner_2_t2_choice_1">
+    <text>You talk big for someone hiding behind a PDA.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_choice_2">
+    <text>Maybe we can make a deal. I've got money.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_choice_3">
+    <text>I'll find you and make you eat those words.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_choice_4">
+    <text>Fine, I'll leave. This area isn't worth it.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_t2_reply_1">
+    <text>Hiding? I'm right here, waiting. Come find me if you dare.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_reply_2">
+    <text>Money? How much you got? Maybe we can negotiate.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_reply_3">
+    <text>Big talk from a little man. I'll be waiting.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_reply_4">
+    <text>Smart choice. Run while you can.</text>
+</string>
+
+<!-- Turn 2 Outcomes & Continuation -->
+<string id="st_pda_ic_hostile_loner_2_t2_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_cont_1">
+    <text>3</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_cont_2">
+    <text>3</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_t2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_cont_3">
+    <text>3</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_t2_outcome_4">
+    <text>punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t2_cont_4">
+    <text>0</text>
+</string>
+
+<!-- ========== Turn 3 (Final) ========== -->
+<string id="st_pda_ic_hostile_loner_2_t3_choice_1">
+    <text>I'm coming for you. Send your coordinates.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_choice_2">
+    <text>How much to make this go away?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_choice_3">
+    <text>You're not worth my time. Forget it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_choice_4">
+    <text>I'll bring my whole squad. You'll regret this.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_2_t3_reply_1">
+    <text>I'm at the old warehouse. Come alone if you dare.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_reply_2">
+    <text>5000 RU and we forget you exist.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_reply_3">
+    <text>Running already? Pathetic.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_reply_4">
+    <text>Squad? We've got thirty men. Bring them.</text>
+</string>
+
+<!-- Turn 3 Outcomes (final, no continuation) -->
+<string id="st_pda_ic_hostile_loner_2_t3_outcome_1">
+    <text>spawn_hostile:bandit:90</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_outcome_2">
+    <text>chance:50:money:-5000,chance:50:spawn_hostile:bandit:60</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_outcome_3">
+    <text>punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_2_t3_outcome_4">
+    <text>spawn_hostile:bandit:120</text>
+</string>
+
+
+<!-- ==================== CONVERSATION H3: AMBUSH TRAP ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_3_open">
+    <text>$player_name, I know where there's a hidden stash , military gear, medkits, the works. I'd go myself, but I'm pinned down. Coordinates are attached. Consider it a peace offering.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_3_choice_1">
+    <text>Sounds too good to be true, but I'll check it out.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_choice_2">
+    <text>Nice try. I'm not falling for an ambush.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_choice_3">
+    <text>Send me the coordinates. If it's a trap, you're dead.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_choice_4">
+    <text>I'll come, but I'm bringing friends.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_reply_1">
+    <text>It's real, I swear. Just be careful.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_reply_2">
+    <text>Your loss. More for us.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_reply_3">
+    <text>Coordinates sent. Hope you survive.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_reply_4">
+    <text>Bring 'em. More loot for us when you're all dead.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_3_t2_choice_1">
+    <text>I'm at the coordinates. Where's the stash?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_choice_2">
+    <text>I don't see anything. You lied.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_choice_3">
+    <text>I found something , but it's guarded.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_choice_4">
+    <text>I'm leaving. This feels wrong.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_t2_reply_1">
+    <text>It's under the big rock. Just look around.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_reply_2">
+    <text>Maybe someone took it already. Too bad.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_reply_3">
+    <text>Yeah, some of the boys might be there. They were supposed to leave.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_reply_4">
+    <text>Probably wise.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_3_t2_outcome_1">
+    <text>chance:70:spawn_hostile:bandit:30,chance:30:reward_stash</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_outcome_3">
+    <text>spawn_hostile:bandit:30</text>
+</string>
+<string id="st_pda_ic_hostile_loner_3_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION H4: BEGGING ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_4_open">
+    <text>$player_name, please, I'm in deep shit. My squad abandoned me, I'm wounded, and I hear mutants nearby. If you send me 2000 RU, I'll tell you where we hid a big stash. I swear on my mother.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_precond">
+    <text>req_money:2000</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_4_choice_1">
+    <text>Fine. Here's the money. Talk.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_choice_2">
+    <text>You expect me to trust a bandit? No deal.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_choice_3">
+    <text>I'll give you 1000. That's all you're worth.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_choice_4">
+    <text>Tell me where you are. I'll come help you in person.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_reply_1">
+    <text>Got it. The stash is at the old farmhouse, under the floorboards. Please hurry...</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_reply_2">
+    <text>Then I'm dead. Hope you're happy.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_reply_3">
+    <text>1000 helps. I'll still tell you , it's under the floorboards at the farmhouse.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_reply_4">
+    <text>No, stay away! They'll think you're with me. Just send money.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_outcome_1">
+    <text>punish_money:2000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_outcome_3">
+    <text>punish_money:1000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_4_t2_choice_1">
+    <text>I'm at the farmhouse. Nothing here.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_choice_2">
+    <text>Found the stash. It's real. Thanks.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_choice_3">
+    <text>It was a trap! Bandits ambushed me.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_choice_4">
+    <text>I didn't go. Figured you were lying.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_t2_reply_1">
+    <text>Maybe someone beat you to it. Sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_reply_2">
+    <text>Told you. Enjoy the loot.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_reply_3">
+    <text>Heh, they were my backup. Gotcha.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_reply_4">
+    <text>Smart. You live another day.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_4_t2_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_outcome_2">
+    <text>reward_stash</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_outcome_3">
+    <text>spawn_hostile:bandit:30,punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_4_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION H5: MISINFORMATION ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_5_open">
+    <text>$player_name, there's a controller holed up in the old factory basement. The stalkers are too scared to go in. I thought you might be brave enough , or stupid enough. Coordinates attached. Have fun.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_5_choice_1">
+    <text>Thanks for the tip. I'll check it out.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_choice_2">
+    <text>I know that area , there's no controller. You're lying.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_choice_3">
+    <text>A controller? I'd need help. Can you spare any men?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_choice_4">
+    <text>I'll go, but if it's a trap, I'll be back for you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_reply_1">
+    <text>Heh, enjoy.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_reply_2">
+    <text>Worth a shot. Maybe next time.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_reply_3">
+    <text>I'm not wasting my guys on your suicide mission.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_reply_4">
+    <text>You'll be dead, so won't matter.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_5_t2_choice_1">
+    <text>I'm at the basement. It's empty. You lied.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_choice_2">
+    <text>There's no controller, but I found some mutants.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_choice_3">
+    <text>I'm not going. I have better things to do.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_choice_4">
+    <text>If I find you, you're dead.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_t2_reply_1">
+    <text>Maybe it moved. Or maybe I just wanted to waste your time.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_reply_2">
+    <text>Mutants are just as good. Hope you enjoy them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_reply_3">
+    <text>Smart man.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_reply_4">
+    <text>I'll be waiting.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_5_t2_outcome_1">
+    <text>punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_outcome_2">
+    <text>spawn_mutant:random:60</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_5_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION H6: BRIBE ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_6_open">
+    <text>$player_name, you've been a pain in our side, but you're also effective. The boss wants you gone , peacefully. We'll pay you 5000 RU to stay out of our sector for a while. Deal?</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_6_choice_1">
+    <text>I'll take the money. You have a deal.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_choice_2">
+    <text>No deal. I'll run you out myself.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_choice_3">
+    <text>5000 is too low. Make it 8000.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_choice_4">
+    <text>I'll leave, but I want the money and a stash location.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_reply_1">
+    <text>Smart. Money's wired. Stay away.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_reply_2">
+    <text>Your funeral.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_reply_3">
+    <text>6000 final. Take it or leave it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_reply_4">
+    <text>Fine. There's a stash at the water tower. Now go.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_outcome_1">
+    <text>reward_money:5000,punish_gw:10:bandit</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_cont_1">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_outcome_3">
+    <text>reward_money:6000,punish_gw:15:bandit</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_cont_3">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_outcome_4">
+    <text>reward_money:5000,reward_stash,punish_gw:20:bandit</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 (if player refused) -->
+<string id="st_pda_ic_hostile_loner_6_t2_choice_1">
+    <text>I meant it. Come at me.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_choice_2">
+    <text>Wait, maybe I reconsider. Send the money.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_choice_3">
+    <text>I'll fight, but I'll make you regret it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_choice_4">
+    <text>I'm already in your sector. Come find me.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_t2_reply_1">
+    <text>They're on the way. Good luck.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_reply_2">
+    <text>Too late. You had your chance.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_reply_3">
+    <text>We'll see.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_reply_4">
+    <text>They're already looking for you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_6_t2_outcome_1">
+    <text>spawn_hostile:bandit:90</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_outcome_2">
+    <text>punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_outcome_3">
+    <text>spawn_hostile:bandit:60,reward_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_6_t2_outcome_4">
+    <text>spawn_hostile:bandit:120</text>
+</string>
+
+<!-- ==================== CONVERSATION H7: DEFECTOR ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_7_open">
+    <text>$player_name, I'm done with the bandits. They left my brother to die. If you're willing to accept, I'll send a couple of guys who feel the same way , they'll help you out. Just give the word.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_7_choice_1">
+    <text>I'll take any help I can get. Send them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_choice_2">
+    <text>I don't trust you. Could be a trap.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_choice_3">
+    <text>Prove it. Send me some information first.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_choice_4">
+    <text>I'll meet them halfway. Where?</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_reply_1">
+    <text>They're on their way. They're good people, despite everything.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_reply_2">
+    <text>I understand. I'd feel the same.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_reply_3">
+    <text>Alright , there's a stash at the old mill with some decent gear. That's my proof.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_reply_4">
+    <text>They'll meet you at the railway crossing. Two of them, unarmed as a sign of trust.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_outcome_3">
+    <text>reward_stash</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_7_t2_choice_1">
+    <text>I see them , they look friendly.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_choice_2">
+    <text>They never showed. You lied.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_choice_3">
+    <text>One of them pulled a gun! It's a trap.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_choice_4">
+    <text>I changed my mind. Tell them to go back.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_t2_reply_1">
+    <text>Good. They're yours now. Take care of them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_reply_2">
+    <text>Maybe they got cold feet. Sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_reply_3">
+    <text>I knew it. They were never with me. I'm sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_reply_4">
+    <text>Too late, they're already there. Deal with it.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_7_t2_outcome_1">
+    <text>spawn_companion:stalker:30,reward_gw:30:stalker</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_outcome_3">
+    <text>spawn_hostile:bandit:30,punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_7_t2_outcome_4">
+    <text>spawn_companion:stalker:30,punish_gw:10:stalker</text>
+</string>
+
+<!-- ==================== CONVERSATION H8: TRAP COURIER ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_8_open">
+    <text>$player_name, I want to bury the hatchet. I'm sending a guy with a medkit and some ammo to your location , a peace offering. Please accept it.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_8_choice_1">
+    <text>Alright, I'll accept. Send him.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_choice_2">
+    <text>I don't trust you. No deal.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_choice_3">
+    <text>I'll meet him halfway. Where?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_choice_4">
+    <text>Tell him to leave the stuff and go. I'll pick it up.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_reply_1">
+    <text>He's on his way. Be nice.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_reply_2">
+    <text>Suit yourself. The offer was genuine.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_reply_3">
+    <text>He'll wait at the old bus stop. Go alone.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_reply_4">
+    <text>He'll leave it under the rock near your position. Don't follow him.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_8_t2_choice_1">
+    <text>He came, but he pulled a gun!</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_choice_2">
+    <text>He dropped the stuff and left. Thanks.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_choice_3">
+    <text>No one showed up.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_choice_4">
+    <text>I killed him. Shouldn't have trusted you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_t2_reply_1">
+    <text>Heh, gotcha. Hope you survive.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_reply_2">
+    <text>Told you it was genuine. Enjoy.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_reply_3">
+    <text>Maybe he got lost. Sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_reply_4">
+    <text>You'll regret that. We're coming for you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_8_t2_outcome_1">
+    <text>spawn_hostile:bandit:30,punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_outcome_2">
+    <text>courier_item:medkit_army,chance:30:spawn_hostile:bandit:120</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_8_t2_outcome_4">
+    <text>spawn_hostile:bandit:90,punish_rep:20</text>
+</string>
+
+<!-- ==================== CONVERSATION H9: INTIMIDATION ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_9_open">
+    <text>$player_name, we know you've been raiding our stashes. Hand over 3000 RU and we'll call it even. Otherwise, we're coming for you.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_precond">
+    <text>req_money:3000</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_9_choice_1">
+    <text>Fine. Take the money and leave me alone.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_choice_2">
+    <text>You come for me, you die. Try it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_choice_3">
+    <text>I'll give you 2000. That's my final offer.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_choice_4">
+    <text>I don't have that much. Let's negotiate.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_reply_1">
+    <text>Wise choice. We'll be watching.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_reply_2">
+    <text>Big words. We'll see.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_reply_3">
+    <text>2500 and we forget it. Deal?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_reply_4">
+    <text>No negotiation. Pay up or die.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_outcome_1">
+    <text>punish_money:3000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_cont_1">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_outcome_3">
+    <text>punish_money:2500</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_cont_3">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 (if refused) -->
+<string id="st_pda_ic_hostile_loner_9_t2_choice_1">
+    <text>Come then. I'm ready.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_choice_2">
+    <text>Wait, I'll pay. Don't send them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_choice_3">
+    <text>I'll pay half now, half later.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_choice_4">
+    <text>I'll fight, and I'll enjoy it.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_t2_reply_1">
+    <text>They're already on the way.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_reply_2">
+    <text>Too late. They've already left.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_reply_3">
+    <text>3000 now, or they come. Choose.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_reply_4">
+    <text>We'll see who enjoys it more.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_9_t2_outcome_1">
+    <text>spawn_hostile:bandit:90</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_outcome_2">
+    <text>punish_money:3000,punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_outcome_3">
+    <text>punish_money:1500,spawn_hostile:bandit:120</text>
+</string>
+<string id="st_pda_ic_hostile_loner_9_t2_outcome_4">
+    <text>spawn_hostile:bandit:60,reward_rep:5</text>
+</string>
+
+<!-- ==================== CONVERSATION H10: LURING MUTANTS ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_10_open">
+    <text>$player_name, you're a dead man walking. We've been firing shots into the air all night , every mutant in the zone is gonna be drawn to the noise. And guess where the noise is coming from? Your sector. Hope you're ready for company.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_10_choice_1">
+    <text>You idiots , you'll attract them to yourselves too.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_choice_2">
+    <text>I can handle mutants. Bring it on.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_choice_3">
+    <text>How long until they arrive?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_choice_4">
+    <text>I'll leave the area. Good luck with your own mess.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_reply_1">
+    <text>Worth it to see you torn apart.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_reply_2">
+    <text>We'll see.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_reply_3">
+    <text>Any minute now. Hope you're dug in.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_reply_4">
+    <text>Running? Coward. Enjoy the mutants.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_10_t2_choice_1">
+    <text>I hear them coming. Thanks for the warning.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_choice_2">
+    <text>Nothing yet. You were bluffing.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_choice_3">
+    <text>I'm dug in. Let them come.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_choice_4">
+    <text>I'm moving to a safer spot.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_t2_reply_1">
+    <text>Good. Hope they tear you apart.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_reply_2">
+    <text>Maybe they got distracted. Lucky you.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_reply_3">
+    <text>We'll see who's left standing.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_reply_4">
+    <text>Running again? You won't last.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_10_t2_outcome_1">
+    <text>spawn_mutant:random:30</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_outcome_3">
+    <text>spawn_mutant:random:60,reward_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_10_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION H11: RIVAL GANG WARNING ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_11_open">
+    <text>$player_name, I hate you, but I hate the mercs more. They're planning a hit on you tonight. Figured even a dog like you deserves a warning. Don't expect it again.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_11_choice_1">
+    <text>Why would you warn me?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_choice_2">
+    <text>Thanks, I guess. I'll be ready.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_choice_3">
+    <text>How do you know this?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_choice_4">
+    <text>You're lying to set me up.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_reply_1">
+    <text>Because they're worse than you. Consider it a one-time thing.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_reply_2">
+    <text>Don't thank me. Just stay alive , I want to kill you myself someday.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_reply_3">
+    <text>I got contacts in their camp. They're hiring anyone with a gun.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_reply_4">
+    <text>Believe what you want. Your funeral.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_11_t2_choice_1">
+    <text>I believe you. Thanks for the heads-up.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_choice_2">
+    <text>I'll prepare an ambush for them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_choice_3">
+    <text>Maybe I'll hit them first.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_choice_4">
+    <text>I still don't trust you. I'm ignoring this.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_t2_reply_1">
+    <text>Don't mention it. Stay alive.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_reply_2">
+    <text>Good idea. Hope you get them.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_reply_3">
+    <text>You'd be doing us a favour. Go for it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_reply_4">
+    <text>Your choice. I tried.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_11_t2_outcome_1">
+    <text>chance:50:spawn_hostile:killer:120,reward_gw:10:stalker</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_outcome_2">
+    <text>chance:80:spawn_hostile:killer:90,reward_gw:5:stalker</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_outcome_3">
+    <text>chance:100:spawn_hostile:killer:60,reward_rep:15</text>
+</string>
+<string id="st_pda_ic_hostile_loner_11_t2_outcome_4">
+    <text>chance:50:spawn_hostile:killer:120,punish_rep:10</text>
+</string>
+
+<!-- ==================== CONVERSATION H12: CHALLENGE ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_12_open">
+    <text>$player_name, you and me. One on one. No squad, no surprises. Winner takes all , loser's gear and 5000 RU. Meet at the old iron bridge in an hour. You game?</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_12_choice_1">
+    <text>You're on. I'll be there.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_choice_2">
+    <text>I don't fight for your amusement. Forget it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_choice_3">
+    <text>I'll come, but I want the money upfront.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_choice_4">
+    <text>I'll bring a squad. See if you're still brave then.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_reply_1">
+    <text>Good. Come alone, or the deal's off.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_reply_2">
+    <text>Chicken. I knew it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_reply_3">
+    <text>Half now, half after. Deal?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_reply_4">
+    <text>Then it's not one on one. I'm out.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_outcome_2">
+    <text>punish_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_outcome_4">
+    <text>punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_cont_4">
+    <text>0</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_12_t2_choice_1">
+    <text>I'm at the bridge. Where are you?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_choice_2">
+    <text>You're not here. You chickened out.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_choice_3">
+    <text>I see you. Let's do this.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_choice_4">
+    <text>I brought a friend. He'll watch.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_t2_reply_1">
+    <text>I'm here, waiting behind the pillar. Come on.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_reply_2">
+    <text>I'm here. You blind?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_reply_3">
+    <text>Good. First to draw loses.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_reply_4">
+    <text>That's not the deal. I'm leaving.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_12_t2_outcome_1">
+    <text>spawn_hostile:bandit:30,chance:50:reward_money:5000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_outcome_3">
+    <text>spawn_hostile:bandit:30,chance:70:reward_money:5000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_12_t2_outcome_4">
+    <text>spawn_hostile:bandit:60,punish_rep:10</text>
+</string>
+
+<!-- ==================== CONVERSATION H13: SURRENDER ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_13_open">
+    <text>$player_name, wait! I know you're after our stash. Don't kill me , I'll tell you where it is. It's at the water tower, buried under the rocks. Just let me go.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_13_choice_1">
+    <text>Fine. I'll check it out. If you're lying, I'll find you.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_choice_2">
+    <text>I don't believe you. Face me.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_choice_3">
+    <text>Tell me more. What's in it?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_choice_4">
+    <text>I'll let you go, but you owe me.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_reply_1">
+    <text>Thank you! It's real, I swear.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_reply_2">
+    <text>Please, I'm begging you...</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_reply_3">
+    <text>Guns, meds, maybe an artifact. I didn't dig deep.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_reply_4">
+    <text>I owe you. I'll remember this.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_cont_2">
+    <text>0</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_13_t2_choice_1">
+    <text>I found the stash. It's real. You're lucky.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_choice_2">
+    <text>Nothing there. You lied.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_choice_3">
+    <text>It was booby-trapped! I almost died.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_choice_4">
+    <text>I didn't go. I don't trust you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_t2_reply_1">
+    <text>I told you. Enjoy the loot.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_reply_2">
+    <text>Maybe someone took it. Sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_reply_3">
+    <text>I didn't know about traps. Sorry.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_reply_4">
+    <text>Your loss.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_13_t2_outcome_1">
+    <text>reward_stash,reward_gw:10:bandit</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_outcome_3">
+    <text>spawn_hostile:bandit:60,punish_rep:5</text>
+</string>
+<string id="st_pda_ic_hostile_loner_13_t2_outcome_4">
+    <text>none</text>
+</string>
+
+<!-- ==================== CONVERSATION H14: RANSOM ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_14_open">
+    <text>$player_name, we've got one of your buddies , a loner named $npc_name. If you want him back, wire 10,000 RU to this account. You have one hour, or he's dead.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_precond">
+    <text>req_money:10000</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_14_choice_1">
+    <text>I'll pay. Don't hurt him.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_choice_2">
+    <text>I don't have that kind of money. Let him go or else.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_choice_3">
+    <text>I'll pay 5000 now, 5000 later.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_choice_4">
+    <text>Let me talk to him first.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_reply_1">
+    <text>Money received. He'll be released at the depot. Don't follow or we'll kill him.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_reply_2">
+    <text>Too bad. You'll find his body at the depot.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_reply_3">
+    <text>7500 now, 2500 later. Final offer.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_reply_4">
+    <text>He's alive. Says "help". That's all.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_outcome_1">
+    <text>punish_money:10000</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_outcome_3">
+    <text>punish_money:7500</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_14_t2_choice_1">
+    <text>I'm at the depot. Where is he?</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_choice_2">
+    <text>He's not here. You lied.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_choice_3">
+    <text>I found him , he's alive, thanks.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_choice_4">
+    <text>I didn't pay. He's dead, and I'm coming for you.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_t2_reply_1">
+    <text>He should be there. Check behind the shed.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_reply_2">
+    <text>Maybe he ran. Not our problem.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_reply_3">
+    <text>Told you. Now stay away.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_reply_4">
+    <text>We'll be waiting.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_14_t2_outcome_1">
+    <text>reward_rep:30</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_outcome_2">
+    <text>punish_rep:20,chance:50:spawn_hostile:bandit:90</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_outcome_3">
+    <text>reward_rep:50,reward_gw:20:stalker</text>
+</string>
+<string id="st_pda_ic_hostile_loner_14_t2_outcome_4">
+    <text>spawn_hostile:bandit:60,punish_rep:30</text>
+</string>
+
+<!-- ==================== CONVERSATION H15: FINAL LAUGH ==================== -->
+<!-- 2 turns -->
+<string id="st_pda_ic_hostile_loner_15_open">
+    <text>$player_name, you think you've won, but I've been firing my rifle toward your position for the last ten minutes. Every bloodsucker in the area is gonna be on your trail. Good luck, stalker.</text>
+</string>
+
+<!-- Turn 1 -->
+<string id="st_pda_ic_hostile_loner_15_choice_1">
+    <text>You're bluffing.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_choice_2">
+    <text>I'm ready for anything.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_choice_3">
+    <text>I'm moving to a new position.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_choice_4">
+    <text>I'll hunt you down after.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_reply_1">
+    <text>Am I? Listen...</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_reply_2">
+    <text>We'll see.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_reply_3">
+    <text>They'll follow the sound. You can't escape.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_reply_4">
+    <text>If you survive the mutants, maybe.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_outcome_1">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_cont_1">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_cont_2">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_outcome_3">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_cont_3">
+    <text>2</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_outcome_4">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_cont_4">
+    <text>2</text>
+</string>
+
+<!-- Turn 2 -->
+<string id="st_pda_ic_hostile_loner_15_t2_choice_1">
+    <text>I hear something. Maybe you were right.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_choice_2">
+    <text>Nothing yet. You're full of it.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_choice_3">
+    <text>I'm dug in. Let them come.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_choice_4">
+    <text>I'm leaving the area. Good luck with your own bloodsuckers.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_t2_reply_1">
+    <text>Told you. Hope they get you.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_reply_2">
+    <text>Maybe they got lost. Lucky.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_reply_3">
+    <text>We'll see who wins.</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_reply_4">
+    <text>Running again? You're a coward.</text>
+</string>
+
+<string id="st_pda_ic_hostile_loner_15_t2_outcome_1">
+    <text>spawn_mutant:bloodsucker:30</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_outcome_2">
+    <text>none</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_outcome_3">
+    <text>spawn_mutant:bloodsucker:60,reward_rep:10</text>
+</string>
+<string id="st_pda_ic_hostile_loner_15_t2_outcome_4">
+    <text>none</text>
+</string>
+
+</string_table>

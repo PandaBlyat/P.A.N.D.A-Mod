@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+
+<!-- ================================================================
+     PLAYER REP GOSSIP
+     Used by DynamicNewsManager:GossipAboutPlayer()
+     %player_name% is substituted at runtime with the actor's name.
+
+     Tiers:
+       rep_1  = hostile reputation (bad/very_bad/terrible)
+       rep_2  = neutral reputation
+       rep_3  = good reputation (very_good/excellent)
+       rank_1 = novice / trainee
+       rank_2 = experienced / professional
+       rank_3 = veteran / expert
+       rank_4 = master / legend
+================================================================ -->
+
+	<!-- ============================================================ -->
+	<!-- PLAYER REPUTATION GOSSIP                                      -->
+	<!-- REP TIER 1: hostile / feared                                  -->
+	<!-- ============================================================ -->
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_1_1"><text>Heads up: %player_name% is operating in the Zone. Known for leaving bodies behind. Eyes open.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_1_2"><text>%player_name% has a reputation for violence even by Zone standards. Don't mistake them for a neutral.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_1_3"><text>Heard they nearly wiped a whole squad last month over a disagreement about loot. Nobody walked away clean.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_1_4"><text>Point is — don't give %player_name% a reason. They don't need much of one.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_2_1"><text>Word out of Rostok: %player_name% is someone you don't want to be in debt to.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_2_2"><text>The name %player_name% keeps coming up in connection with things I'd rather not repeat on an open channel.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_2_3"><text>You know Yevgeny? Tall guy, scar on his chin? He owed %player_name% something. Nobody's seen him in weeks.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_2_4"><text>I'm not saying anything. I'm just saying keep your debts paid and your mouth shut.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_3_1"><text>%player_name%'s been burning bridges across the Zone. Whatever their plan is, it's not gentle.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_3_2"><text>Just stay out of their way. No loot is worth a firefight with that one.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_3_3"><text>Heard they walked out of Limansk without a scratch while everyone they came in with didn't make it. Convenient.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_3_4"><text>Could've been circumstance. Could've been intention. Either way, not someone I'm turning my back on.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_4_1"><text>%player_name% rolled through the Garbage checkpoint yesterday. The guards let them pass without a word. Didn't even ask for ID.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_4_2"><text>Smart guards. The ones who pushed back on %player_name% before aren't posting duty anymore.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_4_3"><text>There's fear and then there's whatever %player_name% has built out here. It's different.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_4_4"><text>Yeah. Fear makes people careful. That kind of reputation makes people disappear before there's ever a confrontation.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_5_1"><text>You hear about the mercs who tried to squeeze %player_name% for a cut near the Warehouses?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_5_2"><text>I heard some version of it. Didn't end well for the mercs, I assume.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_5_3"><text>Three of them walked up. One walked away. He wouldn't say what happened to the other two.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_5_4"><text>And %player_name%?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_5_5"><text>Kept walking. Didn't even break stride, from what he said.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_1_conv_6_1"><text>I've been in the Zone long enough to know trouble by how people walk. %player_name% walks like trouble.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_6_2"><text>What do you mean?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_6_3"><text>Head always moving. Never stops at a bottleneck. Never has their back to a door. Everything's been practiced a hundred times.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_6_4"><text>That's not paranoia, that's someone who's already been in more bad situations than they care to count.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_1_conv_6_5"><text>Exactly. And survived every single one.</text></string>
+
+
+	<!-- REP TIER 2: neutral / unknown quantity -->
+
+	<string id="st_dyn_news_player_gossip_rep_2_conv_1_1"><text>%player_name% has been making the rounds. Hard to read, but consistent. Seems to get the job done.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_1_2"><text>Anyone dealt with %player_name%? Name keeps coming up on the contracts board.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_1_3"><text>I worked adjacent to them once. Didn't talk much, but they pulled their weight. No complaints from me.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_1_4"><text>That's more than I can say for half the people coming through here. I'll keep an eye on them.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_2_conv_2_1"><text>%player_name% passed through our checkpoint yesterday. Clean. Professional. Didn't make trouble.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_2_2"><text>Can't get a read on %player_name%. Some say one thing, some say another. Watch, don't judge yet.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_2_3"><text>Neutral's fine by me. A stalker who doesn't make enemies also doesn't create problems. I'll take it.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_2_4"><text>Sure. Or they're waiting to show their hand. Either way, eyes open.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_2_conv_3_1"><text>Heard %player_name% turned down a hit contract on a Loner camp. Said it wasn't their kind of work.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_3_2"><text>Interesting. Either they've got principles or they calculated the risk wasn't worth the payout.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_3_3"><text>Could be both. I've seen plenty of people in this Zone who are principled and still very dangerous.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_3_4"><text>Fair. Worth noting either way. Someone who picks their fights is harder to predict than someone who takes everything.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_2_conv_4_1"><text>%player_name% bought a round at the bar last night. Didn't say much. Just sat and listened.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_4_2"><text>People who buy drinks and say nothing are either very relaxed or very focused. Hard to tell which with that one.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_4_3"><text>Barkeep said they left a decent tip and asked about patrol timing near the Swamp. So, probably focused.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_4_4"><text>Gathering intel over vodka. Could be worse methods. At least they're paying for it.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_2_conv_5_1"><text>%player_name%'s been taking small jobs. Nothing flashy. Courier runs, zone mapping, basic escort.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_5_2"><text>Building a record or staying under the radar?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_5_3"><text>Could be either. Could be building trust with people before they need something bigger. Smart long game if so.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_5_4"><text>Or they're just cautious. Some stalkers take time before they commit to anything. Nothing wrong with that.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_2_conv_5_5"><text>True. Patience is underrated out here. Zone doesn't reward the reckless.</text></string>
+
+
+	<!-- REP TIER 3: respected / legendary -->
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_1_1"><text>%player_name%'s name carries real weight now. Heard veterans go quiet when it came up at the bar.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_1_2"><text>If %player_name% offers you backup, take it. I've seen what they can do and we're lucky they're on our side.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_1_3"><text>Side's a strong word. %player_name% helps who they want to help. But when they're helping you, there's no one better to have.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_1_4"><text>Fair enough. I'll take that over nothing.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_2_1"><text>%player_name% pulled a squad out of a controller nest near Yantar. No casualties. Just walked out.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_2_2"><text>The Zone's been trying to kill %player_name% since they got here. It keeps failing. That means something.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_2_3"><text>I talked to one of the guys they pulled out. Said %player_name% didn't seem afraid. Just... methodical. Like it was a problem to solve.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_2_4"><text>That's what separates good stalkers from great ones. The panic gets quiet and the mind stays clear.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_2_5"><text>Hope I get there someday. Right now the panic is very loud.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_3_1"><text>Show %player_name% respect if you see them. That stalker has earned it a hundred times over.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_3_2"><text>%player_name% cracked a contract last week that three other groups walked away from. Alive and intact.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_3_3"><text>I heard the payout was enough to fund a full outpost for a season. Not that %player_name% spent it on that.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_3_4"><text>What did they spend it on?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_3_5"><text>Better gear. Better mods. Right back into the Zone within a week. Doesn't stop, that one.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_4_1"><text>Ask me who I'd want beside me in a bad situation and the answer is %player_name%. No hesitation.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_4_2"><text>You've worked with them?</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_4_3"><text>Once. Short job near the Cordon. Quick and clean. They communicated well, covered their angles, and didn't do anything stupid. Rare combination.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_4_4"><text>That's high praise from you. You're usually complaining about everybody.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_4_5"><text>Because most people deserve it. %player_name% is the exception.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_5_1"><text>People around the campfire go quiet when %player_name%'s name comes up. Not scared quiet. Respectful quiet. There's a difference.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_5_2"><text>I know the one. Like when someone brings up an old war and the veterans stop talking.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_5_3"><text>Exactly. The stories are out there, but the people who were actually there don't tend to tell them lightly.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_5_4"><text>Because the real ones never sound as good as they should. Too much got lost along the way.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rep_3_conv_6_1"><text>Ran into %player_name% at Skadovsk. They bought a round, didn't make a scene. Just another stalker at the bar.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_6_2"><text>That's how the real ones carry it. No posturing. No speeches. Just show up, do the work, drink, sleep, repeat.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_6_3"><text>Somebody at the table started asking about the Yantar job. %player_name% deflected every question. Said it was nothing special.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_6_4"><text>Nothing special. They walked six stalkers out of a controller nest. Nothing special.</text></string>
+	<string id="st_dyn_news_player_gossip_rep_3_conv_6_5"><text>That's what I'm saying. That's the whole thing right there.</text></string>
+
+
+	<!-- ============================================================ -->
+	<!-- PLAYER RANK GOSSIP                                            -->
+	<!-- RANK TIER 1: novice / trainee                                 -->
+	<!-- ============================================================ -->
+
+	<string id="st_dyn_news_player_gossip_rank_1_conv_1_1"><text>%player_name% is still finding their footing out here. Rookies who listen tend to survive longer. Hope they're listening.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_1_2"><text>New face, %player_name%. Hasn't done anything stupid yet. Out here, that's already an achievement.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_1_3"><text>I told them to keep their detector on and their mouth shut around the veterans. Good advice for anyone starting out.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_1_4"><text>Did they take it?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_1_5"><text>Seemed to. Time will tell. The Zone has a way of sorting out who was actually listening.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_1_conv_2_1"><text>%player_name% is green but they've got the right instincts. Zone will sort the rest out.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_2_2"><text>Give them time. Everyone starts as a rookie.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_2_3"><text>True. The ones who don't make it usually think they know more than they do in the first week.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_2_4"><text>%player_name% asked good questions when I met them. The kind of questions a person asks when they know they don't know enough. That's promising.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_1_conv_3_1"><text>Saw %player_name% near the Cordon this morning. Still has that look — eyes too wide, checking everything twice.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_3_2"><text>Better too wide than half-closed. Some rookies walk around like they're on a stroll and end up in an anomaly.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_3_3"><text>Fair. I'll admit the alertness is reassuring. Shows they take it seriously.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_3_4"><text>Just needs to learn when to relax a little. Staying tense burns you out fast. Precision over constant dread.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_3_5"><text>That'll come with time. Or it won't, and they'll be gone before it matters.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_1_conv_4_1"><text>%player_name% nearly stumbled into a Whirligig near the old factory. Stopped just in time.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_4_2"><text>Instinct or luck?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_4_3"><text>Detector beeped. They listened. So a bit of both, honestly.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_4_4"><text>The ones who listen to their detectors tend to stick around. Good sign.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_1_conv_5_1"><text>%player_name%'s still figuring out what to carry and what to leave behind. Saw them loaded down like a pack mule near the Bar.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_5_2"><text>Every new stalker does that. Pack everything, regret it on the first long run.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_5_3"><text>They'll learn. Usually takes one bad situation where you need to move fast and can't.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_1_conv_5_4"><text>Yeah. The Zone teaches light and fast better than any veteran could.</text></string>
+
+
+	<!-- RANK TIER 2: experienced / professional -->
+
+	<string id="st_dyn_news_player_gossip_rank_2_conv_1_1"><text>%player_name% knows how to move in the Zone now. You can tell — no wasted steps, no panic.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_1_2"><text>Spent time at a camp with %player_name%. Solid. Respects the Zone, respects the people in it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_1_3"><text>That respect thing is what separates the competent from the dead. You can be skilled and still get killed by arrogance.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_1_4"><text>%player_name% doesn't seem the arrogant type. Quiet confidence. Knows what they know, doesn't pretend beyond it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_1_5"><text>That's a good place to be at this stage. Lots of room left to grow without the ego getting in the way.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_2_conv_2_1"><text>%player_name% has been running good work. Reliable. That's rarer than it sounds out here.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_2_2"><text>Agreed. Good to have dependable stalkers around.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_2_3"><text>They finished that escort job last week after two other groups pulled out. Didn't make a big deal of it, just did it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_2_4"><text>That's the thing. The reliable ones never make noise about being reliable. It's just how they operate.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_2_conv_3_1"><text>%player_name% came through an anomaly cluster near Yantar that I wouldn't attempt on a bet. Clean exit, no fuss.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_3_2"><text>Yantar anomaly fields are brutal. Either you know what you're doing or you don't come back.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_3_3"><text>They mapped a route on the way through, apparently. Posted it for anyone who needs it. Didn't charge for it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_3_4"><text>That's the kind of thing that builds real goodwill. People remember that.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_2_conv_4_1"><text>Saw %player_name% patch up a wounded stalker near the Swamp. Knew what they were doing — proper field dressing, checked for infection.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_4_2"><text>Field medicine is one of those skills that gets you taken seriously fast. Anyone can shoot straight. Not everyone can keep someone alive afterward.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_4_3"><text>The stalker made it, from what I heard. Walked out with %player_name% a few hours later.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_4_4"><text>Solid. %player_name%'s building the right kind of reputation — the kind that means people want to work alongside you.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_2_conv_5_1"><text>%player_name% spotted a bandit ambush near the Garbage before it triggered. Warned the group and they skirted around it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_5_2"><text>Good situational awareness. That's experience paying off.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_5_3"><text>The green ones just walk into it. The experienced ones notice something's off before they can even say what.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_5_4"><text>%player_name%'s reached that point. Their gut catches things before their brain processes them.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_2_conv_5_5"><text>That's when the Zone starts feeling less like an enemy and more like... something you can read.</text></string>
+
+
+	<!-- RANK TIER 3: veteran / expert -->
+
+	<string id="st_dyn_news_player_gossip_rank_3_conv_1_1"><text>%player_name% has been out here long enough to know what the Zone can do. And survived it anyway.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_1_2"><text>When %player_name% gives advice about the Zone, I listen. That's years of hard experience talking.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_1_3"><text>They told me once — every mistake the Zone lets you survive is a lesson. The ones it doesn't let you survive, someone else has to learn from your body.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_1_4"><text>Grim way to put it. But accurate.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_1_5"><text>That's how they think. Unsentimental. Useful.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_3_conv_2_1"><text>%player_name% doesn't get rattled anymore. Seen things that would break others and just kept going.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_2_2"><text>True. I'd trust them at my back any day.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_2_3"><text>There's a certain kind of stillness in the good veterans. They've processed enough that nothing surprises them the wrong way anymore.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_2_4"><text>%player_name% has that. Quiet under fire. Makes decisions when others freeze.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_2_5"><text>The Zone breaks most people or makes them. Not many come out the other side like that.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_3_conv_3_1"><text>New stalkers at the camp were asking about %player_name%. Wanted to know who taught them.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_3_2"><text>What did you tell them?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_3_3"><text>The truth. The Zone taught them. Same as everyone who lasts long enough. There's no shortcut and no school for it.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_3_4"><text>Bet that wasn't the answer they were hoping for.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_3_5"><text>It never is. But it's the only honest one.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_3_conv_4_1"><text>%player_name% helped coordinate the defense at Yanov last month when things got chaotic. Kept people from running into each other's crossfire.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_4_2"><text>That kind of situational command is hard to teach. You either see the whole picture or you don't.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_4_3"><text>%player_name% sees it. I watched them redirect three different groups in the space of two minutes without raising their voice.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_4_4"><text>Calm commands in a firefight. That's what veterans look like from the outside. Inside, I'm told, it's still terrifying. They just don't show it.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_3_conv_5_1"><text>I asked %player_name% how many times they'd been close to dying in the Zone. They laughed.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_5_2"><text>What's funny about that?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_5_3"><text>They said they stopped counting around the fortieth time. Said after a while you stop thinking of it as close calls and start thinking of it as Tuesday.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_5_4"><text>That's either the healthiest or the most concerning thing I've ever heard from a stalker.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_3_conv_5_5"><text>Both, probably. They're still here, so I'll take it.</text></string>
+
+
+	<!-- RANK TIER 4: master / legend -->
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_1_1"><text>%player_name% is what the Zone makes of people who refuse to die. A legend, whether they want to be or not.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_1_2"><text>I heard the name %player_name% before I ever set foot in the Zone. Now I understand why.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_1_3"><text>What was your impression when you finally met them?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_1_4"><text>Quiet. Ordinary looking. Which made the whole thing more unsettling, not less.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_1_5"><text>Legends never look like the stories. That's how they become legends. The ones who look dangerous tend to get killed faster.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_2_1"><text>Not many reach %player_name%'s level. The ones who do don't talk about how they did it. Neither do they.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_2_2"><text>Let their actions speak. They always do.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_2_3"><text>I tried to get the story out of someone who rode with them early on. They just shook their head and said some things don't translate.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_2_4"><text>That's fair. The Zone at that depth isn't something you can explain to someone who hasn't been there.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_2_5"><text>And %player_name% has been there. Deeper and more often than almost anyone still breathing.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_3_1"><text>Younger stalkers look at %player_name% like they're looking at a ghost story that turned out to be true.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_3_2"><text>Because that's basically what they are. Stories first, person second.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_3_3"><text>The gap between reputation and reality must be strange to live with.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_3_4"><text>Maybe that's why they keep moving. Hard to be a myth when you're still making runs and sleeping in a camp like everyone else.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_3_5"><text>Or maybe they just don't think about it. People at that level usually don't have the luxury of philosophy.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_1"><text>They said %player_name% once navigated the Red Forest blind — detector damaged, in fog, after a blowout. Made it out without a scratch.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_2"><text>I don't believe that.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_3"><text>Neither did I. Then I talked to the person who found them on the other side. They weren't joking.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_4"><text>How do you navigate the Red Forest without sensors?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_5"><text>I asked the same thing. Apparently %player_name% said the Zone has patterns, once you've been through enough times you feel the wrong spots before you see them.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_4_6"><text>That's either wisdom or something the Zone did to them. Hard to tell the difference at that level.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_5_1"><text>The thing about %player_name% is they still take the small jobs. Nobody at their level has to, but they do.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_5_2"><text>Why would they?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_5_3"><text>I think they remember what it was like to need someone who didn't have to help, and helping anyway.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_5_4"><text>Or they just like being in the Zone. Some people are done the minute they get enough to leave. Others never really want to leave.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_5_5"><text>%player_name%'s been here long enough to have left a dozen times over. I think you might be right about that second part.</text></string>
+
+	<string id="st_dyn_news_player_gossip_rank_4_conv_6_1"><text>I've met three people in the Zone I would genuinely call irreplaceable. %player_name% is one of them.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_6_2"><text>Who are the other two?</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_6_3"><text>Dead. Both of them. Which is why I'm careful about that word.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_6_4"><text>And %player_name% keeps not being dead.</text></string>
+	<string id="st_dyn_news_player_gossip_rank_4_conv_6_5"><text>So far. The Zone hasn't stopped trying. But so far.</text></string>
+
+
+<!-- ================================================================
+     FACTION JOIN REACTIONS
+     Used by DynamicNewsManager:GossipPlayerJoinedFaction()
+     %player_name% is substituted at runtime.
+     Each faction has 3-4 lines fired in random order.
+================================================================ -->
+
+	<!-- LONER / FREE STALKER -->
+	<string id="st_dyn_news_faction_join_loner_conv_1_1"><text>%player_name% just registered on the general Free Stalker network. Welcome to the brotherhood, such as it is.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_1_2"><text>Good to see another stalker who thinks for themselves. No commanders, no politics.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_1_3"><text>Just don't expect a rescue squad if you wander into a bloodsucker nest. Watch your own back out there.</text></string>
+
+	<string id="st_dyn_news_faction_join_loner_conv_2_1"><text>Looks like %player_name% decided to walk the Zone as a Free Stalker. Good choice.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_2_2"><text>No orders to follow, but no safety net either. The true stalker way.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_2_3"><text>Amen. Keep your PDA on, %player_name%. We look out for our own when we can.</text></string>
+
+	<string id="st_dyn_news_faction_join_loner_conv_3_1"><text>Word from the Rookie Village: %player_name% is officially flying the Free Stalker colors.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_3_2"><text>Another soul looking to make their fortune in the Zone without kissing a general's boots.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_3_3"><text>The Zone provides, but it takes its toll. Trade fair, shoot straight, and don't steal from stashes.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_3_4"><text>I'll drink to that. There's always room at the campfire, %player_name%.</text></string>
+	
+	<string id="st_dyn_news_faction_join_loner_conv_4_1"><text>PDA net just pinged. %player_name% is officially registered as a Free Stalker. Welcome to the grind.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_4_2"><text>Hope your anomaly detector has fresh batteries. The good artifacts don't find themselves.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_4_3"><text>And don't let Sidorovich or Barkeep fleece you on your first haul. Know the market prices.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_4_4"><text>Good luck out there, %player_name%. May the Zone be kind to you.</text></string>
+
+	<string id="st_dyn_news_faction_join_loner_conv_5_1"><text>Looks like %player_name% decided not to play soldier for Duty or get brainwashed by a faction. Welcome to the independent network.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_5_2"><text>Being a Free Stalker means you answer to nobody but the Zone itself. It's the only real way to live out here.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_5_3"><text>Damn straight. Just remember: if you hear an SOS on this channel and you're nearby, you'd better answer it.</text></string>
+	<string id="st_dyn_news_faction_join_loner_conv_5_4"><text>We might walk our own paths, but we survive together. See you on the trail, %player_name%.</text></string>
+
+
+	<!-- FREEDOM -->
+	<string id="st_dyn_news_faction_join_freedom_conv_1_1"><text>%player_name% is one of us now. Welcome to the free side of the Zone, brother.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_1_2"><text>We don't do initiation ceremonies. Someone pour %player_name% a drink and call it done.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_1_3"><text>I've got a fresh bottle of Cossacks waiting. First round is on the rookie!</text></string>
+
+	<string id="st_dyn_news_faction_join_freedom_conv_2_1"><text>Fresh blood in Freedom. %player_name% — heard the name before. Good to have them.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_2_2"><text>One more against the fascists. The Zone's a little freer tonight with %player_name% on the channel.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_2_3"><text>Hell yeah! Let's show those Duty stiffs how to actually live out here.</text></string>
+
+	<string id="st_dyn_news_faction_join_freedom_conv_3_1"><text>Hey everyone, %player_name% just got their Freedom patch!</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_3_2"><text>Awesome. Hope you like good weed and bad jokes, man.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_3_3"><text>Don't let the relaxed vibe fool you though. When the bullets fly, we hold our own.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_3_4"><text>Damn right we do. Welcome to the family.</text></string>
+	
+	<string id="st_dyn_news_faction_join_freedom_conv_4_1"><text>Another free soul has joined the ranks! Welcome to Freedom, %player_name%.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_4_2"><text>The Zone is a miracle, not a cage. Glad you see things our way, man.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_4_3"><text>Just remember that miracle has teeth. Keep your rifle clean for when those brainwashed Monolith fanatics try to push the Barrier.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_4_4"><text>Exactly. We hold the line so everyone else can breathe. Happy to have you on the wall, brother.</text></string>
+
+	<string id="st_dyn_news_faction_join_freedom_conv_5_1"><text>Good news, boys. %player_name% just officially told the military and Duty to shove it.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_5_2"><text>Haha! Man, I love watching our numbers go up while those stiffs march around in the mud.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_5_3"><text>No 6 AM reveille, no pointless saluting here. Just good company, great artifacts, and keeping the Zone free.</text></string>
+	<string id="st_dyn_news_faction_join_freedom_conv_5_4"><text>Just make sure you pull your weight in a firefight. Drop by the base, %player_name%, we'll light something up to celebrate.</text></string>
+
+
+<!-- DUTY (DOLG) -->
+	<string id="st_dyn_news_faction_join_dolg_conv_1_1"><text>%player_name% has taken the oath. Welcome to the line that holds.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_1_2"><text>Every soldier strengthens the line. %player_name% made the right call.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_1_3"><text>Deadly anomalies, dangerous mutants, anarchists and bandits... we stop them all.</text></string>
+
+	<string id="st_dyn_news_faction_join_dolg_conv_2_1"><text>New recruit: %player_name%. Background checks out. Report for orientation at 0800.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_2_2"><text>Duty doesn't accept everyone. %player_name% passed screening. That means something.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_2_3"><text>Keep your weapon maintained and obey orders. You'll do fine.</text></string>
+
+	<string id="st_dyn_news_faction_join_dolg_conv_3_1"><text>HQ just confirmed %player_name% is officially Duty personnel.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_3_2"><text>Good. The Zone is a spreading infection. We need every capable fighter to push it back.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_3_3"><text>Make sure they memorize the engagement protocols before sending them on patrol.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_3_4"><text>Already done. For the glorious Duty!</text></string>
+
+	<string id="st_dyn_news_faction_join_dolg_conv_4_1"><text>Attention personnel. %player_name% has enlisted in the ranks of Duty.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_4_2"><text>Good timing. We have a pseudodog pack moving near the Bar. We need guns on the line.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_4_3"><text>Make sure they know how to handle a rifle first. We don't need liabilities.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_4_4"><text>If they survive the week, they'll be a proper soldier. Protect the innocent, %player_name%.</text></string>
+
+	<string id="st_dyn_news_faction_join_dolg_conv_5_1"><text>I see %player_name% finally realized the Zone isn't a playground.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_5_2"><text>Exactly. Leave the weed and the campfire songs to those anarchists in Freedom.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_5_3"><text>Our mission is to protect the outside world. I hope the rookie is ready to bleed for it.</text></string>
+	<string id="st_dyn_news_faction_join_dolg_conv_5_4"><text>We all bleed. Just make sure you take a dozen mutants down with you. Welcome aboard.</text></string>
+
+
+	<!-- BANDIT -->
+	<string id="st_dyn_news_faction_join_bandit_conv_1_1"><text>%player_name% threw their lot in with us. Brave, stupid, or both — either works here.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_1_2"><text>Welcome to the family, %player_name%. Don't touch the stash. Trust takes time.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_1_3"><text>Or just don't get caught. Hehe.</text></string>
+
+	<string id="st_dyn_news_faction_join_bandit_conv_2_1"><text>New blood. %player_name%. Keep them useful and they'll last. Start counting fingers if they don't.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_2_2"><text>Every new gun is a good gun out here. %player_name% — you're in. Don't make us regret it.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_2_3"><text>I call dibs on their boots if they step into a burner anomaly.</text></string>
+
+	<string id="st_dyn_news_faction_join_bandit_conv_3_1"><text>Word is %player_name% is running with the boys now.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_3_2"><text>'Bout time. Too much easy money out here to play by the rules.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_3_3"><text>Stick with us, %player_name%, and you'll be swimming in rubles.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_3_4"><text>Just remember who gets the boss's cut first. Welcome to the true Zone.</text></string>
+
+	<string id="st_dyn_news_faction_join_bandit_conv_4_1"><text>Yo, %player_name% just got patched in. Another brother for the hustle.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_4_2"><text>Heard they got a quick trigger finger. Perfect for the Garbage checkpoints.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_4_3"><text>Just tell 'em not to shoot the loners before they hand over the artifacts.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_4_4"><text>Right on. Dead men don't pay tolls. Welcome to the gang, %player_name%.</text></string>
+
+	<string id="st_dyn_news_faction_join_bandit_conv_5_1"><text>Boss says %player_name% is riding with us now. Give 'em some space.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_5_2"><text>Space? I'll give 'em space when they prove they won't fold under fire.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_5_3"><text>Don't push it. Let's see how they handle a raid on the stalker camp first.</text></string>
+	<string id="st_dyn_news_faction_join_bandit_conv_5_4"><text>Fine. Just keep your hands off my cut, %player_name%, and we'll get along fine.</text></string>
+
+
+	<!-- RENEGADE / MERCENARY (KILLER) -->
+	<string id="st_dyn_news_faction_join_killer_conv_1_1"><text>%player_name% is running with us now. Don't get comfortable. Prove yourself first.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_1_2"><text>New face: %player_name%. I'll believe they're solid when I see it. Out here, talk is cheap.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_1_3"><text>Just make sure your safety is off when the client says 'go'.</text></string>
+
+	<string id="st_dyn_news_faction_join_killer_conv_2_1"><text>Loyalty out here is earned with blood. Clock starts now, %player_name%.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_2_2"><text>Keep your weapon clean and follow the contract. That's all that matters.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_2_3"><text>And never ask what's in the package. Good luck.</text></string>
+
+	<string id="st_dyn_news_faction_join_killer_conv_3_1"><text>Syndicate command updated the roster. %player_name% is officially on the payroll.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_3_2"><text>Hope they read the fine print. We don't do sick leave.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_3_3"><text>As long as they hit their targets, I don't care.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_3_4"><text>Welcome to the private sector, %player_name%. Time is money.</text></string>
+
+	<string id="st_dyn_news_faction_join_killer_conv_4_1"><text>Command confirms %player_name% has signed the syndicate contract. Access codes granted.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_4_2"><text>Check their loadout. I'm not covering someone using surplus junk.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_4_3"><text>They meet the minimum gear requirements. Barely.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_4_4"><text>Then they take point on the next sweep. Let's see what %player_name% is made of.</text></string>
+
+	<string id="st_dyn_news_faction_join_killer_conv_5_1"><text>New contractor on the network. Goes by %player_name%.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_5_2"><text>Don't care about the name. Do they know the rules of engagement?</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_5_3"><text>No witnesses, no loose ends. Same as always.</text></string>
+	<string id="st_dyn_news_faction_join_killer_conv_5_4"><text>Good. Welcome to the real money, %player_name%.</text></string>
+
+
+	<!-- CLEAR SKY (CSKY) -->
+	<string id="st_dyn_news_faction_join_csky_conv_1_1"><text>%player_name% has joined Clear Sky's cause. The Zone's patterns will teach them what no textbook can.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_1_2"><text>%player_name%, welcome. The Zone rewards patience and observation. Impulse gets people killed here.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_1_3"><text>We observe, we survive, we understand.</text></string>
+
+	<string id="st_dyn_news_faction_join_csky_conv_2_1"><text>New operative: %player_name%. Assign to anomaly mapping — everyone starts there.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_2_2"><text>Glad to have them. We need every disciplined mind working on understanding what this place is doing.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_2_3"><text>Grab your Veles detector, %player_name%. There's work to do in the Swamps.</text></string>
+
+	<string id="st_dyn_news_faction_join_csky_conv_3_1"><text>Good to see the roster expanding. %player_name% is with us now.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_3_2"><text>Let's hope they understand the gravity of our mission. We aren't just here to loot.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_3_3"><text>If they made it this far into the Swamps, they've got the resolve.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_3_4"><text>Welcome to Clear Sky, %player_name%. Keep your feet dry.</text></string>
+
+	<string id="st_dyn_news_faction_join_csky_conv_4_1"><text>The Base welcomes %player_name% to our ranks. The Swamps are safer with you.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_4_2"><text>Don't sugarcoat it. The Swamps are never safe. Watch out for the tall reeds.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_4_3"><text>True. And keep your eyes peeled for Renegades. They've been pushing our perimeters again.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_4_4"><text>We study the Zone, but we fight to survive. Welcome to Clear Sky.</text></string>
+
+	<string id="st_dyn_news_faction_join_csky_conv_5_1"><text>I see %player_name% is authorized for field operations. Excellent.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_5_2"><text>Have they reviewed the latest emission data? We need precise measurements out there.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_5_3"><text>I'm sending the coordinates now. Just make sure they don't wander into a spatial bubble.</text></string>
+	<string id="st_dyn_news_faction_join_csky_conv_5_4"><text>Knowledge is our weapon, %player_name%. Use it well.</text></string>
+
+
+	<!-- MILITARY (ARMY) -->
+	<string id="st_dyn_news_faction_join_army_conv_1_1"><text>Soldier %player_name% has been assigned to Zone containment operations. Report to sector command.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_1_2"><text>You're military now, %player_name%. That means discipline before everything else. Understood?</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_1_3"><text>Understood. I will send them to the quartermaster for standard issue gear.</text></string>
+
+	<string id="st_dyn_news_faction_join_army_conv_2_1"><text>New deployment: %player_name%. Follow protocol, keep your head down, do your job.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_2_2"><text>Copy that. Adding them to the duty roster for perimeter guard.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_2_3"><text>Keep your eyes open for stalker incursions. Shoot on sight.</text></string>
+
+	<string id="st_dyn_news_faction_join_army_conv_3_1"><text>Command finally sent us reinforcements. %player_name% just got patched in.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_3_2"><text>Better late than never. Did they bring extra ammo? We're running dry at the southern checkpoint.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_3_3"><text>I don't know, ask the quartermaster. Just be glad we have another rifle on the line.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_3_4"><text>Welcome to the meat grinder, %player_name%. Follow orders and you might go home.</text></string>
+
+	<string id="st_dyn_news_faction_join_army_conv_4_1"><text>Command post to all units. Private %player_name% is assigned to the southern cordon.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_4_2"><text>Great, another greenhorn. Tell them to keep their flashlight off at night, or a sniper will do it for them.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_4_3"><text>And tell them the canned meat is expired. Eat it anyway.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_4_4"><text>Welcome to the Zone, soldier. Embrace the misery.</text></string>
+
+	<string id="st_dyn_news_faction_join_army_conv_5_1"><text>Sir, %player_name% has arrived at the checkpoint. Awaiting orders.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_5_2"><text>Put them on contraband inspection. If stalkers try to cross, confiscate everything.</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_5_3"><text>Does 'confiscate' mean log it in the armory or...?</text></string>
+	<string id="st_dyn_news_faction_join_army_conv_5_4"><text>It means what I said it means, Corporal. Don't ask stupid questions.</text></string>
+
+
+	<!-- ECOLOGIST (ECOLOG) -->
+	<string id="st_dyn_news_faction_join_ecolog_conv_1_1"><text>Researcher %player_name% has joined the field team. We're glad to have another set of eyes in the Zone.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_1_2"><text>%player_name%, you've joined the most dangerous laboratory on earth. Try not to become a data point.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_1_3"><text>Make sure to double-check your SSP-99 seals before leaving the bunker.</text></string>
+
+	<string id="st_dyn_news_faction_join_ecolog_conv_2_1"><text>Welcome, %player_name%. Brief them on radiation protocols and artifact handling before they go anywhere unsupervised.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_2_2"><text>Acknowledged. Their field scanner has been synced to our mainframe.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_2_3"><text>Excellent. Science demands risk, but let's minimize the casualties.</text></string>
+
+	<string id="st_dyn_news_faction_join_ecolog_conv_3_1"><text>I see %player_name% has signed the expedition contract. Splendid!</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_3_2"><text>Yes, we finally have enough personnel for the Yantar anomaly measurements.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_3_3"><text>Please inform %player_name% that the emission forecast is stable for the next 48 hours.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_3_4"><text>Welcome to the pursuit of knowledge, %player_name%. The Zone's secrets await us!</text></string>
+
+	<string id="st_dyn_news_faction_join_ecolog_conv_4_1"><text>Attention. %player_name% has been granted Level 2 laboratory clearance.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_4_2"><text>Oh, wonderful! Could they assist with the gravitational anomaly readings in Sector 4?</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_4_3"><text>Only if they've been calibrated for psi-field exposure. We can't afford another... incident.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_4_4"><text>Safety first, %player_name%. Welcome to the team.</text></string>
+
+	<string id="st_dyn_news_faction_join_ecolog_conv_5_1"><text>Professor, %player_name% has officially joined the research division.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_5_2"><text>Excellent timing. We need someone to recover the thermal samples the mercs dropped yesterday.</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_5_3"><text>Are you sure sending a new recruit into a burner field is wise?</text></string>
+	<string id="st_dyn_news_faction_join_ecolog_conv_5_4"><text>Science requires sacrifice, colleague! Just give them plenty of antirad.</text></string>
+
+
+</string_table>

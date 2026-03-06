@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+
+
+<string_table>
+
+	<!-- ============================================ -->
+	<!-- ROOT MENU TITLE (not used directly, but kept) -->
+	<!-- ============================================ -->
+	<string id="ui_mcm_menu_pda_interactive_conv">
+		<text>P.A.N.D.A</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- SUB-MENU TITLES (displayed in left tree)     -->
+	<!-- ============================================ -->
+	<string id="pda_interactive_conv_menu_interactive">
+		<text>Interactive Conversations</text>
+	</string>
+	<string id="pda_interactive_conv_menu_background">
+		<text>Background NPC Chatter</text>
+	</string>
+	<string id="pda_interactive_conv_menu_dynamic_news">
+		<text>Dynamic News</text>
+	</string>
+	
+	
+		<!-- Preset button captions -->
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_balanced">
+		<text>Balanced</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_immersive">
+		<text>Immersive</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_minimalist">
+		<text>Minimalist</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_hardcore">
+		<text>Hardcore</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_relaxed">
+		<text>Relaxed</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_conversation_focused">
+		<text>Conversation Focused</text>
+	</string>
+	
+	<!-- Preset Descriptions (Tooltips) - Shortened -->
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_balanced_desc">
+		<text>The standard experience. Balanced mix of conversations and news at a moderate, well-tuned pace.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_immersive_desc">
+		<text>More frequent conversations and news. Makes the Zone feel more alive, social, and reactive. For a living, breathing world.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_minimalist_desc">
+		<text>Fewer interactions and news reports. Reduces HUD clutter for players who prefer to focus on core gameplay without distractions.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_hardcore_desc">
+		<text>Rare, punishing interactions. Strict companion limits, hostile encounters likely, news only for critical events (emissions, major deaths).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_relaxed_desc">
+		<text>Low-stress, high-frequency mode. Constant chatter, high companion limits, fewer hostiles. The Zone feels busy and forgiving.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_presets_preset_conversation_focused_desc">
+		<text>Prioritizes NPC interaction over world news. Frequent conversations, but news limited to major events (emissions, bounties). Chatty without clutter.</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- INTERACTIVE CONVERSATIONS (sub-menu)         -->
+	<!-- ============================================ -->
+
+	<!-- Title slide (shown at top of the page) -->
+	<string id="pda_interactive_conv_title_interactive">
+		<text>Interactive Conversations</text>
+	</string>
+
+	<!-- Master toggle -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_enabled">
+		<text>Enable PDA Conversations</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_enabled_desc">
+		<text>Master toggle. When disabled, no PDA conversations will trigger.</text>
+	</string>
+
+	<!-- Timing -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_min">
+		<text>Minimum Trigger Interval (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_min_desc">
+		<text>Minimum in-game minutes between conversation triggers. Lower values mean more frequent conversations.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_max">
+		<text>Maximum Trigger Interval (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_max_desc">
+		<text>Maximum in-game minutes between conversation triggers.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_default_cooldown">
+		<text>Default Cooldown (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_default_cooldown_desc">
+		<text>Default in-game minutes before a conversation can repeat. Individual conversations can override this in XML.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_choice_tip_duration">
+		<text>Choice tip duration (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_choice_tip_duration_desc">
+		<text>How long the numbered choice prompt stays on screen before disappearing.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_pda_retry_delay">
+		<text>PDA retry delay (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_pda_retry_delay_desc">
+		<text>If PDA is required but not equipped, the game will retry showing the choices after this many seconds.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_reply_delay_min">
+		<text>NPC reply delay (minimum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_reply_delay_min_desc">
+		<text>Minimum time before the NPC's reply message appears after the player chooses.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_reply_delay_max">
+		<text>NPC reply delay (maximum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_reply_delay_max_desc">
+		<text>Maximum time before the NPC's reply message appears after the player chooses.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_outcome_delay_min">
+		<text>Outcome delay (minimum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_outcome_delay_min_desc">
+		<text>Minimum delay before applying outcome effects (money, items, spawns, etc.).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_outcome_delay_max">
+		<text>Outcome delay (maximum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_outcome_delay_max_desc">
+		<text>Maximum delay before applying outcome effects.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_branch_delay_min">
+		<text>Branching delay (minimum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_branch_delay_min_desc">
+		<text>Minimum time before the conversation advances to the next turn after a branching choice.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_branch_delay_max">
+		<text>Branching delay (maximum, seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_branch_delay_max_desc">
+		<text>Maximum time before the conversation advances to the next turn.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_intro_delay">
+		<text>Intro delay (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_intro_delay_desc">
+		<text>When a turn has an intro line, wait this many seconds before showing the choices.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_no_intro_delay">
+		<text>No-intro delay (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_no_intro_delay_desc">
+		<text>When a turn has no intro line, wait this many seconds before showing the choices.</text>
+	</string>
+
+	<!-- Cooldown Behaviour -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_mode">
+		<text>Cooldown Mode</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_mode_desc">
+		<text>Strict: Conversations on cooldown are completely blocked (original behavior). Flexible: Conversations on cooldown can still be picked, but at reduced probability. Prevents conversations from stopping entirely when the pool is small.</text>
+	</string>
+	<string id="pda_interactive_conv_cooldown_mode_lst_strict">
+		<text>Strict (hard block)</text>
+	</string>
+	<string id="pda_interactive_conv_cooldown_mode_lst_flexible">
+		<text>Flexible (reduced chance)</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_penalty">
+		<text>Cooldown Weight Penalty (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_penalty_desc">
+		<text>In Flexible mode, conversations on cooldown keep this percentage of their normal selection weight. 25% means a cooldown conversation is 4x less likely to be picked than a fresh one. Only applies in Flexible cooldown mode.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_hard_min">
+		<text>Hard Minimum Cooldown (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_hard_min_desc">
+		<text>In Flexible mode, conversations within this many minutes of being played are still completely blocked. Prevents the same conversation from repeating back-to-back. Set to 0 to allow any repeat. Only applies in Flexible cooldown mode.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_allow_cross_faction">
+		<text>Allow Cross-Faction Fallback</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_allow_cross_faction_desc">
+		<text>When enabled, if no conversations are available for your faction, the system will try the Loner (general) conversation pool as a fallback. Useful for factions with few or no dedicated conversations.</text>
+	</string>
+	
+	<string id="pda_interactive_conv_interactive_cooldown_mode_lst_strict">
+    <text>Strict (hard block)</text>
+	</string>
+	<string id="pda_interactive_conv_interactive_cooldown_mode_lst_flexible">
+		<text>Flexible (reduced chance)</text>
+	</string>
+	
+
+
+	<string id="pda_interactive_conv_menu_presets">
+    <text>Playstyle Presets</text>
+	</string>
+	<string id="pda_interactive_conv_title_presets">
+		<text>Global Playstyle Presets</text>
+	</string>
+	<string id="pda_interactive_conv_desc_presets">
+		<text>Choose a preset that adjusts the entire dynamic news/conversation's settings intensity. Feel free to tweak them further.</text>
+	</string>
+
+	<string id="pda_interactive_conv_preset_balanced">
+		<text>Balanced</text>
+	</string>
+	<string id="pda_interactive_conv_preset_immersive">
+		<text>Immersive</text>
+	</string>
+	<string id="pda_interactive_conv_preset_minimalist">
+		<text>Minimalist</text>
+	</string>
+	<string id="pda_interactive_conv_preset_hardcore">
+		<text>Hardcore</text>
+	</string>
+	<string id="pda_interactive_conv_preset_relaxed">
+		<text>Relaxed</text>
+	</string>
+	<string id="pda_interactive_conv_preset_conversation_focused">
+		<text>Conversation Focused, Less vanilla messages.</text>
+	</string>
+
+	<!-- Gameplay -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_chance_mult">
+		<text>Spawn Chance Multiplier (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_chance_mult_desc">
+		<text>Scales all spawn probability outcomes. 100 = normal, 200 = double chance, 0 = no spawns from conversations.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_require_pda_equipped">
+		<text>Require PDA Equipped</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_require_pda_equipped_desc">
+		<text>When enabled, you must have a PDA equipped (slot 8) to respond to conversation choices.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_limit">
+		<text>PDA Companion Limit</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_limit_desc">
+		<text>Maximum companion squad size allowed when spawning companions from PDA conversations. Overrides the base game limit if higher.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_max_npcs_per_trigger">
+		<text>Max NPCs per trigger</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_max_npcs_per_trigger_desc">
+		<text>Maximum number of eligible NPCs to check each time a conversation trigger occurs. Higher values increase chance but may impact performance.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_cooldown">
+		<text>NPC Cooldown (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_npc_cooldown_desc">
+		<text>Minimum in-game minutes before the same NPC can be used again for a PDA conversation. Helps avoid repetition.</text>
+	</string>
+
+	<!-- Notifications -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_hunt_notifications">
+		<text>Show Hunting Squad Notifications</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_hunt_notifications_desc">
+		<text>Enable or disable warning and arrival messages for hostile/mutant hunting squads spawned via PDA conversations.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_companion_notifications">
+		<text>Show Companion Notifications</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_companion_notifications_desc">
+		<text>Enable or disable messages about companions arriving via PDA calls.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_courier_notifications">
+		<text>Show Courier Notifications</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_show_courier_notifications_desc">
+		<text>Enable or disable all courier-related messages (warning, arrival, delivery, timeout).</text>
+	</string>
+
+	<!-- Conversation Types -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_non_task_chance">
+		<text>Non-Task Chance (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_non_task_chance_desc">
+		<text>Percentage chance that a conversation will be non-task (friendly or hostile) instead of task-based. 0 = only task conversations, 100 = never task conversations.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_friendly_hostile_ratio">
+		<text>Friendly / Hostile Ratio (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_friendly_hostile_ratio_desc">
+		<text>When a non-task conversation occurs, this is the chance it will be friendly (vs hostile). 0 = all non-task are hostile, 100 = all non-task are friendly.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_min_distance_for_call">
+		<text>Min Distance for Non-Task Calls (m)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_min_distance_for_call_desc">
+		<text>Minimum distance an NPC must be from the player to initiate a non-task call. Simulates long-range PDA communication.</text>
+	</string>
+
+	<!-- Spawn Distances -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_distance_min">
+		<text>Hostile/Friendly spawn (min distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_distance_min_desc">
+		<text>Minimum distance from the player where hostile or friendly squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_distance_max">
+		<text>Hostile/Friendly spawn (max distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_distance_max_desc">
+		<text>Maximum distance from the player where hostile or friendly squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_spawn_min">
+		<text>Companion spawn (min distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_spawn_min_desc">
+		<text>Minimum distance from the player where companion squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_spawn_max">
+		<text>Companion spawn (max distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_companion_spawn_max_desc">
+		<text>Maximum distance from the player where companion squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_mutant_spawn_min">
+		<text>Mutant spawn (min distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_mutant_spawn_min_desc">
+		<text>Minimum distance from the player where mutant squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_mutant_spawn_max">
+		<text>Mutant spawn (max distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_mutant_spawn_max_desc">
+		<text>Maximum distance from the player where mutant squads will be spawned.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_smart_spawn_min">
+		<text>Smart terrain search (min distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_smart_spawn_min_desc">
+		<text>When spawning mutants via smart terrain, only consider smarts at least this far from the player.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_smart_spawn_max">
+		<text>Smart terrain search (max distance, meters)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_smart_spawn_max_desc">
+		<text>When spawning mutants via smart terrain, only consider smarts at most this far from the player.</text>
+	</string>
+
+	<!-- Technical -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_poll_retries">
+		<text>Poll retries (max)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_poll_retries_desc">
+		<text>Maximum number of attempts to wait for squad members to become online before giving up.</text>
+	</string>
+
+	<!-- Debug -->
+	<string id="ui_mcm_pda_interactive_conv_interactive_debug_logging">
+		<text>Debug Logging</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_debug_logging_desc">
+		<text>Enable verbose debug logging to the game console. Useful for troubleshooting conversations.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_interactive_debug_trigger">
+		<text>Debug Trigger (SPACE key)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_interactive_debug_trigger_desc">
+		<text>Allow pressing SPACE to force-trigger a conversation. For development and testing only.</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- BACKGROUND NPC CONVERSATIONS (sub-menu)      -->
+	<!-- ============================================ -->
+
+	<string id="pda_interactive_conv_title_background">
+		<text>Background NPC Conversations</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_enabled">
+		<text>Enable NPC Conversations</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_enabled_desc">
+		<text>Master toggle for background radio chatter between NPCs.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_interval">
+		<text>Conversation Interval (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_interval_desc">
+		<text>Time between attempts to start a conversation. Lower = more frequent.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_chance">
+		<text>Conversation Chance (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_chance_desc">
+		<text>Percentage chance that a conversation will actually start when the timer fires.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_topic_cooldown">
+		<text>Topic Cooldown (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_topic_cooldown_desc">
+		<text>How long before the same conversation topic (tag) can repeat.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_rep_gossip_chance">
+		<text>Player Gossip Chance (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_rep_gossip_chance_desc">
+		<text>Chance that a conversation tick will be replaced by a player reputation gossip burst.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_rep_gossip_interval">
+		<text>Player Gossip Interval (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_rep_gossip_interval_desc">
+		<text>Minimum time between player gossip bursts.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_group_chance">
+		<text>Group Conversation Chance (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_group_chance_desc">
+		<text>When a conversation is triggered, chance it will be a group chat (if enough NPCs).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_strict_cooldown">
+		<text>Strict Topic Cooldown</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_strict_cooldown_desc">
+		<text>If enabled, topics on cooldown are completely blocked. If disabled, they have reduced weight.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_flex_penalty">
+		<text>Flexible Cooldown Penalty (%)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_flex_penalty_desc">
+		<text>In flexible mode, topics on cooldown keep this percentage of their normal weight.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_hard_min">
+		<text>Hard Minimum Cooldown (minutes)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_hard_min_desc">
+		<text>Even in flexible mode, topics within this many minutes are still completely blocked.</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- DYNAMIC NEWS (sub-menu)                      -->
+	<!-- ============================================ -->
+
+	<string id="pda_interactive_conv_title_dynamic_news">
+		<text>Dynamic News Settings</text>
+	</string>
+
+	<!-- Death news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_stalker">
+		<text>Death by Stalker</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_stalker_desc">
+		<text>Enable news reports when a stalker is killed by another stalker.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_mutant">
+		<text>Death by Mutant</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_mutant_desc">
+		<text>Enable news reports when a stalker is killed by a mutant.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_generic_death">
+		<text>Generic Death Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_generic_death_desc">
+		<text>Enable generic death announcements (e.g., “Found dead…”).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_report">
+		<text>Formal Death Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_death_report_desc">
+		<text>Enable the “obituary-style” death summaries.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_kill_wounded">
+		<text>Kill Wounded / Hostage</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_kill_wounded_desc">
+		<text>Enable gossip about executing wounded stalkers or hostages.</text>
+	</string>
+
+	<!-- Discovery news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_found_artifact">
+		<text>Found Artifact</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_found_artifact_desc">
+		<text>Enable news when someone finds an artifact.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_heli_call">
+		<text>Helicopter Call</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_heli_call_desc">
+		<text>Enable news about NPCs requesting helicopter support.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_loot">
+		<text>Looting Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_loot_desc">
+		<text>Enable news about NPCs looting corpses.</text>
+	</string>
+
+	<!-- Reaction news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_reaction">
+		<text>Reaction Messages</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_reaction_desc">
+		<text>Enable follow-up reactions (e.g., comments on artifacts, deaths).</text>
+	</string>
+
+	<!-- Special news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_weather">
+		<text>Weather Talk</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_weather_desc">
+		<text>Enable NPC comments about the current weather.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_time">
+		<text>Time of Day Talk</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_time_desc">
+		<text>Enable NPC comments about the time of day.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_nearby_activity">
+		<text>Nearby Activity Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_nearby_activity_desc">
+		<text>Enable NPC warnings about nearby enemies (stalkers or mutants).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_zombie">
+		<text>Zombie Radio Chatter</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_zombie_desc">
+		<text>Enable creepy, nonsensical transmissions from zombies.</text>
+	</string>
+
+	<!-- Task news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_bounty">
+		<text>Bounty Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_bounty_desc">
+		<text>Enable news about active bounties on NPCs or the player.</text>
+	</string>
+
+	<!-- Random news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_random_msg">
+		<text>Random Messages</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_random_msg_desc">
+		<text>Enable completely random, flavour messages from the Centre.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_factions_report">
+		<text>Faction Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_factions_report_desc">
+		<text>Enable faction-specific news broadcasts.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_zone_activity">
+		<text>Zone Activity Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_zone_activity_desc">
+		<text>Enable reports about squads and activity on other levels.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_found_dead">
+		<text>Found Dead Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_found_dead_desc">
+		<text>Enable formal “dead body found” announcements.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_surge">
+		<text>Emission / Psi-Storm Reports</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_surge_desc">
+		<text>Enable news about upcoming or past emissions/psi-storms.</text>
+	</string>
+
+	<!-- Companion news -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_companions">
+		<text>Companion Chatter</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_companions_desc">
+		<text>Enable your companions to occasionally say something over the PDA.</text>
+	</string>
+
+	<!-- Timing -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_special">
+		<text>Special News Cycle (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_special_desc">
+		<text>Base time between special news (weather, time, activity). Actual interval varies randomly.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_task">
+		<text>Task News Cycle (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_task_desc">
+		<text>Base time between task-related news (bounties, story hints).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_random">
+		<text>Random News Cycle (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_random_desc">
+		<text>Base time between random news (faction reports, zone activity).</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_companion">
+		<text>Companion News Cycle (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_cycle_companion_desc">
+		<text>Base time between companion chatter messages.</text>
+	</string>
+
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_msg_duration">
+		<text>Message Duration (seconds)</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_msg_duration_desc">
+		<text>How long each news message stays on screen.</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- OUTCOME STRINGS (used in game)               -->
+	<!-- ============================================ -->
+
+	<string id="st_pda_ic_outcome_companion_arrive">
+		<text>A stalker has joined your squad via PDA contact.</text>
+	</string>
+
+	<string id="st_pda_ic_outcome_task_given">
+		<text>New task received.</text>
+	</string>
+
+	<string id="st_pda_ic_outcome_task_unavailable">
+		<text>No suitable tasks available right now.</text>
+	</string>
+
+	<string id="st_pda_ic_outcome_courier_warn">
+		<text>A courier is en route with your supplies. Stay alert.</text>
+	</string>
+	<string id="st_pda_ic_courier_arrived">
+		<text>Courier has arrived. Please come closer to receive your package.</text>
+	</string>
+	<string id="st_pda_ic_courier_left">
+		<text>Courier could not locate you and has departed.</text>
+	</string>
+	<string id="st_pda_ic_courier_timeout">
+		<text>Courier gave up waiting and left.</text>
+	</string>
+	<string id="st_pda_ic_courier_title">
+		<text>Courier</text>
+	</string>
+
+	<string id="st_pda_ic_hunt_timeout">
+		<text>The hunting party seems to have lost interest and moved on.</text>
+	</string>
+
+	<string id="st_pda_ic_companion_default">
+		<text>Unknown Stalker</text>
+	</string>
+
+	<string id="st_pda_ic_outcome_companion_arrive_named">
+		<text>$name has arrived and is ready to follow you.</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- TASK TITLES AND DESCRIPTIONS                  -->
+	<!-- (unchanged, still referenced by tm_pda_interactive.ltx) -->
+	<!-- ============================================ -->
+
+	<!-- Fetch Tasks -->
+	<string id="st_pda_ic_fetch_1_title">
+		<text>PDA Request: Supply Run</text>
+	</string>
+	<string id="st_pda_ic_fetch_1_descr">
+		<text>A stalker reached out via PDA requesting supplies. Gather the items and deliver them to earn a reward.</text>
+	</string>
+
+	<string id="st_pda_ic_fetch_2_title">
+		<text>PDA Request: Essential Goods</text>
+	</string>
+	<string id="st_pda_ic_fetch_2_descr">
+		<text>An urgent supply request came in over PDA. The sender needs specific items delivered as soon as possible.</text>
+	</string>
+
+	<string id="st_pda_ic_fetch_3_title">
+		<text>PDA Request: Critical Supplies</text>
+	</string>
+	<string id="st_pda_ic_fetch_3_descr">
+		<text>A distress call on the PDA network. Someone is in desperate need of supplies. Find and deliver the requested items.</text>
+	</string>
+
+	<!-- Assault Tasks -->
+	<string id="st_pda_ic_assault_1_title">
+		<text>PDA Contract: Clear Hostile Camp</text>
+	</string>
+	<string id="st_pda_ic_assault_1_descr">
+		<text>A hostile squad has established a position threatening local stalkers. Eliminate them.</text>
+	</string>
+
+	<string id="st_pda_ic_assault_2_title">
+		<text>PDA Contract: Push Back Monolith</text>
+	</string>
+	<string id="st_pda_ic_assault_2_descr">
+		<text>Monolith forces have advanced into contested territory. Clear their position to secure the area.</text>
+	</string>
+
+	<string id="st_pda_ic_assault_3_title">
+		<text>PDA Contract: Bandit Suppression</text>
+	</string>
+	<string id="st_pda_ic_assault_3_descr">
+		<text>Bandits are disrupting operations in the area. Eliminate their squad to restore safe passage.</text>
+	</string>
+
+	<!-- Bounty Tasks -->
+	<string id="st_pda_ic_bounty_1_title">
+		<text>PDA Bounty: Mercenary Elimination</text>
+	</string>
+	<string id="st_pda_ic_bounty_1_descr">
+		<text>A bounty has been posted against a mercenary squad terrorizing local stalkers. Track them down and collect.</text>
+	</string>
+
+	<string id="st_pda_ic_bounty_2_title">
+		<text>PDA Bounty: Wanted Squad</text>
+	</string>
+	<string id="st_pda_ic_bounty_2_descr">
+		<text>The stalker community has pooled a bounty against a hostile squad. Find them and deal with them permanently.</text>
+	</string>
+
+	<!-- Scout Tasks -->
+	<string id="st_pda_ic_scout_1_title">
+		<text>PDA Recon: Investigate Location</text>
+	</string>
+	<string id="st_pda_ic_scout_1_descr">
+		<text>Reports of unusual activity at a nearby position. Head to the marked location and investigate.</text>
+	</string>
+
+	<string id="st_pda_ic_scout_2_title">
+		<text>PDA Recon: Anomaly Survey</text>
+	</string>
+	<string id="st_pda_ic_scout_2_descr">
+		<text>Scientists are requesting field data from a location with anomalous readings. Get close enough to gather data and report back.</text>
+	</string>
+
+	<!-- Eliminate Tasks -->
+	<string id="st_pda_ic_eliminate_1_title">
+		<text>PDA Contract: Mutant Extermination</text>
+	</string>
+	<string id="st_pda_ic_eliminate_1_descr">
+		<text>Dangerous mutants have been spotted in the area. Eliminate the pack to secure safe passage.</text>
+	</string>
+	
+		<!-- ============================================ -->
+	<!-- Section titles (within each sub-menu)        -->
+	<!-- ============================================ -->
+
+	<!-- Interactive Conversations section titles -->
+	<string id="pda_interactive_conv_title_timing">
+		<text>Timing</text>
+	</string>
+	<string id="pda_interactive_conv_title_cooldown">
+		<text>Cooldown Behaviour</text>
+	</string>
+	<string id="pda_interactive_conv_title_gameplay">
+		<text>Gameplay</text>
+	</string>
+	<string id="pda_interactive_conv_title_notifications">
+		<text>Notifications</text>
+	</string>
+	<string id="pda_interactive_conv_title_conv_types">
+		<text>Conversation Types</text>
+	</string>
+	<string id="pda_interactive_conv_title_spawn_dist">
+		<text>Spawn Distances</text>
+	</string>
+	<string id="pda_interactive_conv_title_technical">
+		<text>Technical</text>
+	</string>
+	<string id="pda_interactive_conv_title_debug">
+		<text>Debug</text>
+	</string>
+
+	<!-- Dynamic News section titles -->
+	<string id="pda_interactive_conv_title_dn_death">
+		<text>Death News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_discovery">
+		<text>Discovery News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_reaction">
+		<text>Reaction News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_special">
+		<text>Special News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_task">
+		<text>Task News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_random">
+		<text>Random News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_companion">
+		<text>Companion News</text>
+	</string>
+	<string id="pda_interactive_conv_title_dn_timing">
+		<text>Timing</text>
+	</string>
+
+</string_table>

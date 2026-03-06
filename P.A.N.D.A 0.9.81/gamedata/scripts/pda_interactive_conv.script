@@ -1,0 +1,1505 @@
+--[[
+================================================================================
+    P.A.N.D.A by Panda 
+    pda_interactive_conv.script
+    
+    REFACTORED (V7) with fixes:
+    - Fixed non‑task conversations falling back to task dialogue due to missing prefixes.
+    - Fixed chance modifier string parsing error.
+    - Fixed reward_stash outcome to correctly use treasure_manager.
+    - Fixed faction goodwill changing function.
+    - Added NPC cooldown to avoid repetition.
+    - Added fallback to non‑task when task conversation not found.
+================================================================================
+--]]
+
+-- ============================================================
+-- CONSTANTS & KEY MAPPINGS
+-- ============================================================
+local DIK_SPACE, DIK_0, DIK_1, DIK_2, DIK_3, DIK_4 = 57, 11, 2, 3, 4, 5
+local CHOICE_KEYS = { [DIK_1]=1, [DIK_2]=2, [DIK_3]=3, [DIK_4]=4 }
+local FALLBACK_NPC_ICON = "ui_inGame2_Neutral_1"
+
+-- Global used by engine overrides to simulate talking state
+fake_talking_npc_id = nil
+
+-- ============================================================
+-- PANDA GLOBAL API TABLE & CONFIGURATION
+-- ============================================================
+PANDA = PANDA or {}
+
+local MCM_DEFAULTS = {
+    enabled=true, trigger_min=8, trigger_max=15, default_cooldown=60, cooldown_mode=2,
+    cooldown_penalty=25, cooldown_hard_min=5, allow_cross_faction=false, require_pda_equipped=true,
+    debug_logging=true, debug_trigger=false, choice_tip_duration=15, pda_retry_delay=2, companion_limit=4,
+    max_npcs_per_trigger=20, spawn_distance_min=30, spawn_distance_max=60, companion_spawn_min=20,
+    companion_spawn_max=50, mutant_spawn_min=40, mutant_spawn_max=100, non_task_chance=50,
+    friendly_hostile_ratio=50, min_distance_for_call=30, npc_cooldown=10,
+    -- New timing configs
+    npc_reply_delay_min=2, npc_reply_delay_max=4,
+    outcome_delay_min=1, outcome_delay_max=2,
+    branch_delay_min=2, branch_delay_max=4,
+    intro_delay=2, no_intro_delay=1,
+    spawn_chance_mult=100,
+    poll_retries=20,
+    smart_spawn_min=40, smart_spawn_max=150,
+    -- Notification toggles (default true)
+    show_hunt_notifications=true,
+    show_companion_notifications=true,
+    show_courier_notifications=true
+}
+
+function PANDA.get_config(key)
+    if ui_mcm then
+        -- Keys are stored under the "interactive" group inside the MCM tree
+        local val = ui_mcm.get("pda_interactive_conv/interactive/" .. key)
+        if val ~= nil then return val end
+    end
+    return MCM_DEFAULTS[key]
+end
+
+-- ============================================================
+-- CATEGORY ALIASES & TASK ID → CATEGORY LOOKUP
+-- ============================================================
+local CATEGORY_ALIAS = {
+    eliminate="eliminate", hunt="eliminate", mutant="eliminate", bounty="bounty", kill="bounty", headhunt="bounty",
+    assault="assault", clear="assault", fetch="fetch", bring="fetch", collect="fetch", retrieve="fetch", find="fetch", supplies="fetch",
+    delivery="delivery", package="delivery", rescue="rescue", hostage="rescue", measure="measure", science="measure", scan="measure",
+    fate="fate", missing="fate", investigate="fate", stash="stash", search="stash"
+}
+
+local TASK_ID_TO_CAT = {
+    ["simulation_task_1"]="fetch",["simulation_task_2"]="fetch",["simulation_task_3"]="fetch",["simulation_task_4"]="fetch",["simulation_task_5"]="fetch",["simulation_task_6"]="fetch",["simulation_task_7"]="fetch",["simulation_task_8"]="fetch",["simulation_task_9"]="fetch",["simulation_task_10"]="fetch",["simulation_task_11"]="fetch",["simulation_task_12"]="fetch",["simulation_task_13"]="fetch",["simulation_task_14"]="fetch",["simulation_task_15"]="fetch",["simulation_task_16"]="fetch",["simulation_task_17"]="fetch",["simulation_task_18"]="fetch",["simulation_task_19"]="fetch",["simulation_task_20"]="fetch",["simulation_task_21"]="fetch",["simulation_task_22"]="fetch",["simulation_task_23"]="fetch",["simulation_task_24"]="fetch",["simulation_task_25"]="fetch",["simulation_task_53"]="fetch",["simulation_task_54"]="fetch",["simulation_task_55"]="fetch",["simulation_task_57"]="fetch",["simulation_task_58"]="fetch",["simulation_task_60"]="fetch",["simulation_task_62"]="fetch",
+    ["simulation_task_26"]="rescue",["simulation_task_27"]="rescue",["simulation_task_28"]="rescue",["simulation_task_29"]="rescue",
+    ["simulation_task_30"]="bounty",["simulation_task_31"]="bounty",["simulation_task_32"]="bounty",["simulation_task_33"]="bounty",["simulation_task_34"]="bounty",["simulation_task_35"]="bounty",["simulation_task_56"]="bounty",["simulation_task_63"]="bounty",
+    ["simulation_task_36"]="assault",["simulation_task_37"]="assault",["simulation_task_38"]="assault",["simulation_task_39"]="assault",["simulation_task_40"]="assault",["simulation_task_59"]="assault",["simulation_task_64"]="assault",
+    ["simulation_task_41"]="eliminate",["simulation_task_42"]="eliminate",["simulation_task_43"]="eliminate",["simulation_task_65"]="eliminate",["simulation_task_66"]="eliminate",["simulation_task_67"]="eliminate",
+    ["simulation_task_44"]="stash",["simulation_task_45"]="stash",["simulation_task_46"]="stash",
+    ["simulation_task_47"]="delivery",["simulation_task_48"]="delivery",["simulation_task_49"]="delivery",
+    ["simulation_task_50"]="measure",["simulation_task_51"]="measure",["simulation_task_61"]="measure",
+    ["simulation_task_52"]="fate",
+}
+
+-- ============================================================
+-- UTILITY FUNCTIONS
+-- ============================================================
+local CONV, conv_last_played, last_conv_npc_id, _callbacks_registered = nil, {}, nil, false
+local npc_last_used = {}   -- new: store last used time per NPC
+local last_pda_warning_time = 0 
+
+
+local function printf(fmt, ...)
+    if PANDA.get_config("debug_logging") then
+        _G.printf("PANDA_IC: "..fmt, ...)
+    end
+end
+
+local function str_explode(str, sep)
+    if sep=="" or not sep then return {} end
+    local t = {}
+    for s in string.gmatch(str, "([^"..sep.."]+)") do
+        table.insert(t, s)
+    end
+    return t
+end
+
+local function shuffle_table(t)
+    for i = #t, 2, -1 do
+        local j = math.random(i)
+        t[i], t[j] = t[j], t[i]
+    end
+end
+
+local function limit_random_list(list, max)
+    if #list <= max then return list end
+    shuffle_table(list)
+    local limited = {}
+    for i = 1, max do
+        table.insert(limited, list[i])
+    end
+    return limited
+end
+
+
+local function normalize_faction(fac)
+    if not fac then return nil end
+    local FACTION_MAP = {
+        loner = "stalker", stalker = "stalker", duty = "dolg", dolg = "dolg",
+        freedom = "freedom", csky = "csky", clear_sky = "csky", ecolog = "ecolog",
+        scientist = "ecolog", mercenary = "killer", killer = "killer",
+        military = "army", army = "army", bandit = "bandit", monolith = "monolith",
+        zombie = "zombied", zombied = "zombied", isg = "isg", renegade = "renegade",
+        greh = "greh"
+    }
+    fac = fac:match("^%s*(.-)%s*$"):gsub("^%-", "")
+    return FACTION_MAP[fac] or fac
+end
+
+function change_faction_goodwill(faction, delta)
+    local comm = normalize_faction(faction)
+    if not comm then
+        printf("Invalid faction for goodwill change: %s", faction)
+        return
+    end
+    if relation_registry and relation_registry.change_community_goodwill then
+        relation_registry.change_community_goodwill(comm, 0, delta)
+    else
+        printf("WARNING: relation_registry not available")
+    end
+end
+
+function reveal_random_stash()
+    if treasure_manager and treasure_manager.create_random_stash then
+        treasure_manager.create_random_stash(nil, nil, nil, true)
+        dynamic_news_helper.send_tip(
+            game.translate_string("st_pda_ic_outcome_stash"),
+            "System", 0, 10, "stalker", "info", "npc"
+        )
+    else
+        printf("WARNING: treasure_manager not found!")
+    end
+end
+
+-- ============================================================
+-- ENGINE OVERRIDES
+-- ============================================================
+local _overrides_done = false
+function setup_engine_overrides()
+    if _overrides_done then return end
+    if not db.actor then return end
+
+    local o_get_npc = mob_trade.GetTalkingNpc
+    mob_trade.GetTalkingNpc = function()
+        if fake_talking_npc_id then
+            return level.object_by_id(fake_talking_npc_id)
+        end
+        return o_get_npc()
+    end
+
+    local o_is_talk = db.actor.is_talking
+    db.actor.is_talking = function(...)
+        if fake_talking_npc_id then return true end
+        return o_is_talk(...)
+    end
+
+    local o_get_spk = _G.get_speaker
+    _G.get_speaker = function(...)
+        if fake_talking_npc_id then
+            return level.object_by_id(fake_talking_npc_id)
+        end
+        return o_get_spk(...)
+    end
+
+    local o_give_msg = db.actor.give_talk_message2
+    db.actor.give_talk_message2 = function(...)
+        if fake_talking_npc_id then
+            return
+        else
+            return o_give_msg(...)
+        end
+    end
+
+    _overrides_done = true
+end
+
+-- ============================================================
+-- TASK DISCOVERY 
+-- ============================================================
+function discover_all_available_tasks()
+    local player_comm = get_actor_true_community() or "stalker"
+    local eligible_npcs = get_eligible_npcs_for_community(player_comm)
+    if #eligible_npcs == 0 then return {} end
+
+    for _, npc_se in ipairs(eligible_npcs) do
+        local npc_obj = level.object_by_id(npc_se.id)
+        if npc_obj then
+            fake_talking_npc_id = npc_se.id
+            local is_sim = string.find(npc_obj:section(), "sim_") ~= nil
+            axr_task_manager.generate_available_tasks(npc_obj, is_sim)
+            fake_talking_npc_id = nil
+        end
+    end
+
+    local master_job_list = {}
+    for _, npc_se in ipairs(eligible_npcs) do
+        local task_list = axr_task_manager.available_tasks[npc_se.id]
+        if task_list and #task_list > 0 then
+            for _, task_id in ipairs(task_list) do
+                local category = TASK_ID_TO_CAT[task_id]
+                if category then
+                    table.insert(master_job_list, {
+                        npc_se = npc_se,
+                        task_id = task_id,
+                        category = category
+                    })
+                end
+            end
+        end
+    end
+
+    printf("Discovered %d total available jobs from %d NPCs.", #master_job_list, #eligible_npcs)
+    return master_job_list
+end
+
+-- ============================================================
+-- NPC COOLDOWN HELPERS (new)
+-- ============================================================
+local function is_npc_on_cooldown(npc_id)
+    local last = npc_last_used[npc_id]
+    if not last then return false end
+    local cd_min = PANDA.get_config("npc_cooldown") or 10
+    return (game.get_game_time():diffSec(last) / 60) < cd_min
+end
+
+local function record_npc_use(npc_id)
+    npc_last_used[npc_id] = game.get_game_time()
+end
+
+-- ============================================================
+-- NPC FILTERING (with cooldown check added)
+-- ============================================================
+function get_friendly_npcs()
+    local friendly = {}
+    local online = db.OnlineStalkers or {}
+    local min_dist = PANDA.get_config("min_distance_for_call") or 30
+    local player_pos = db.actor:position()
+    local player_comm = get_actor_true_community() or "stalker"
+
+    for i = 1, #online do
+        local id = online[i]
+        local obj = level.object_by_id(id)
+        if obj and IsStalker(obj) and obj:alive() and not obj:is_talking() 
+           and not obj:best_enemy() and id ~= last_conv_npc_id and not is_npc_on_cooldown(id) then
+            local comm = obj:character_community()
+            if comm and comm ~= "trader" and comm ~= "actor" and comm ~= "zombied" and comm ~= "monolith" then
+                if obj:relation(db.actor) ~= game_object.enemy or comm == player_comm then
+                    local dist = player_pos:distance_to(obj:position())
+                    if dist >= min_dist then
+                        local se = alife_object(id)
+                        if se and (not se.squad_id or se.squad_id ~= db.actor:squad_id()) then
+                            table.insert(friendly, se)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    local max = PANDA.get_config("max_npcs_per_trigger") or 20
+    return limit_random_list(friendly, max)
+end
+
+function get_hostile_npcs()
+    local hostile = {}
+    local online = db.OnlineStalkers or {}
+    local min_dist = PANDA.get_config("min_distance_for_call") or 30
+    local player_pos = db.actor:position()
+    local player_comm = get_actor_true_community() or "stalker"
+
+    for i = 1, #online do
+        local id = online[i]
+        local obj = level.object_by_id(id)
+        if obj and IsStalker(obj) and obj:alive() and not obj:is_talking()
+           and not obj:best_enemy() and id ~= last_conv_npc_id and not is_npc_on_cooldown(id) then
+            local comm = obj:character_community()
+            if comm and comm ~= "trader" and comm ~= "actor" and comm ~= "zombied" and comm ~= "monolith" then
+                if obj:relation(db.actor) == game_object.enemy and comm ~= player_comm then
+                    local dist = player_pos:distance_to(obj:position())
+                    if dist >= min_dist then
+                        local se = alife_object(id)
+                        if se and (not se.squad_id or se.squad_id ~= db.actor:squad_id()) then
+                            table.insert(hostile, se)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    local max = PANDA.get_config("max_npcs_per_trigger") or 20
+    return limit_random_list(hostile, max)
+end
+
+function get_eligible_npcs_for_community(player_comm)
+    local eligible = {}
+    local online = db.OnlineStalkers or {}
+    for i = 1, #online do
+        local id = online[i]
+        local obj = level.object_by_id(id)
+        if obj and IsStalker(obj) and obj:alive() and not obj:is_talking()
+           and not obj:best_enemy() and id ~= last_conv_npc_id and not is_npc_on_cooldown(id) then
+            local comm = obj:character_community()
+            if comm and comm ~= "trader" and comm ~= "actor" and comm ~= "zombied" and comm ~= "monolith" then
+                if comm == player_comm or PANDA.get_config("allow_cross_faction") then
+                    local se = alife_object(id)
+                    if se and (not se.squad_id or se.squad_id ~= db.actor:squad_id()) then
+                        table.insert(eligible, se)
+                    end
+                end
+            end
+        end
+    end
+
+    local max = PANDA.get_config("max_npcs_per_trigger") or 20
+    return limit_random_list(eligible, max)
+end
+
+function pick_random_npc_from_list(list)
+    if #list == 0 then return nil end
+    return list[math.random(#list)]
+end
+
+function find_npc_with_task()
+    local jobs = discover_all_available_tasks()
+    if #jobs == 0 then
+        printf("No available tasks found.")
+        return nil
+    end
+
+    local valid_jobs = {}
+    for _, job in ipairs(jobs) do
+        local npc_obj = level.object_by_id(job.npc_se.id)
+        if npc_obj and npc_obj:alive() and not npc_obj:is_talking() and not is_npc_on_cooldown(job.npc_se.id) then   -- cooldown check
+            table.insert(valid_jobs, job)
+        end
+    end
+
+    if #valid_jobs == 0 then
+        printf("All task‑givers became invalid or on cooldown.")
+        return nil
+    end
+
+    local chosen = valid_jobs[math.random(#valid_jobs)]
+    return chosen.npc_se, chosen.task_id, chosen.category
+end
+
+function panda_give_task(task_id, npc_id)
+    if not task_id or not npc_id then return false end
+    local npc_obj = level.object_by_id(npc_id)
+    if not npc_obj then return false end
+
+    -- FIX: Prevent giving a task that is already active (avoids resetting/looping delivery tasks)
+    if db.actor:get_task(task_id, true) then
+        printf("Task %s is already active!", task_id)
+        return false
+    end
+
+    local prev_fake_id = fake_talking_npc_id
+    fake_talking_npc_id = npc_id
+
+    local original_dist_le = xr_conditions.dist_to_actor_le
+    xr_conditions.dist_to_actor_le = function() return true end
+
+    local old_abort = _G.abort
+    _G.abort = function(msg, ...)
+        if PANDA.get_config("debug_logging") then
+            _G.printf("PANDA_IC: Suppressed abort (non-critical): %s", msg or "unknown error")
+        end
+    end
+
+    local ok, err = pcall(function()
+        local on_job_descr = task_manager.task_ini:r_string_ex(task_id, "on_job_descr")
+        if on_job_descr then
+            local cond_ok, cond = pcall(xr_logic.parse_condlist, db.actor, "task_manager", "condlist", on_job_descr)
+            if cond_ok and cond then
+                -- FIX: Pass 'npc_obj' instead of 'db.actor' as the second argument. 
+                -- Many engine tasks (especially delivery) use the npc argument to generate the target correctly!
+                pcall(xr_logic.pick_section_from_condlist, db.actor, npc_obj, cond)
+            else
+                printf("Warning: Failed to parse on_job_descr for task %s: %s", task_id, tostring(cond))
+            end
+        end
+
+        local fetch = task_manager.task_ini:r_string_ex(task_id, "fetch_descr")
+        if fetch then
+            pcall(axr_task_manager.trigger_fetch_func, task_id)
+        end
+
+        task_manager.get_task_manager():give_task(task_id, npc_id)
+    end)
+
+    _G.abort = old_abort
+    xr_conditions.dist_to_actor_le = original_dist_le
+    fake_talking_npc_id = prev_fake_id
+
+    if not ok then
+        printf("Error giving task: %s", tostring(err))
+        return false
+    end
+
+    if not db.actor:get_task(task_id, true) then
+        printf("PANDA: Task [%s] failed to assign post-pcall (Precondition failure?)", task_id)
+        return false
+    end
+    return true
+end
+
+-- ============================================================
+-- PRECONDITIONS & CONVERSATION SELECTION
+-- ============================================================
+local RANK_ORDER = {
+    novice=1, trainee=2, experienced=3, professional=4,
+    veteran=5, expert=6, master=7, legend=8
+}
+
+local function build_substitution_table(npc_name, npc_faction)
+    local act = db.actor
+    local player_name = act and act:character_name() or "Stalker"
+    local player_comm = get_actor_true_community() or "stalker"
+    if player_comm == "actor" then player_comm = "stalker" end
+
+    local display_npc_fac = (npc_faction == "loner") and "stalker" or (npc_faction or "stalker")
+    local cur_level = level and level.name and level.name() or "unknown"
+
+    return {
+        ["player_name"] = player_name,
+        ["npc_name"] = npc_name or "Stalker",
+        ["player_faction"] = game.translate_string("st_faction_"..player_comm),
+        ["npc_faction"] = game.translate_string("st_faction_"..display_npc_fac),
+        ["current_level"] = game.translate_string(cur_level),
+    }
+end
+
+local function sub_placeholders(str, npc_name, npc_faction)
+    if not str or str == "" then return str end
+    local subs = build_substitution_table(npc_name, npc_faction)
+    return utils_data.parse_string_keys(str, subs)
+end
+
+function check_preconditions_generic(precond_key)
+    local val = game.translate_string(precond_key)
+    if val == precond_key then return true end
+    local act = db.actor
+    if not act then return false end
+    for entry in string.gmatch(val, "([^,]+)") do
+        entry = entry:match("^%s*(.-)%s*$")
+        local parts = str_explode(entry, ":")
+        local cmd = parts[1]
+        if cmd == "req_money" then
+            if act:money() < (tonumber(parts[2]) or 0) then return false end
+        elseif cmd == "req_rank" then
+            local p_rank = ranks.get_obj_rank_name(act) or "novice"
+            if (RANK_ORDER[p_rank] or 1) < (RANK_ORDER[parts[2]] or 1) then return false end
+        elseif cmd == "req_rep" then
+            if act:character_reputation() < (tonumber(parts[2]) or 0) then return false end
+        end
+    end
+    return true
+end
+
+function is_conv_on_cooldown_generic(key)
+    local last = conv_last_played[key]
+    if not last then return false end
+    local cd_min = PANDA.get_config("default_cooldown")
+    return (game.get_game_time():diffSec(last) / 60) < cd_min
+end
+
+function pick_random_conv_id_generic(prefix, xml_fac, category)
+    local base
+    if prefix == "task" or not prefix then
+        base = "st_pda_ic_"
+    else
+        base = "st_pda_ic_" .. prefix .. "_"
+    end
+
+    local max_id = 0
+    while true do
+        local p = base .. xml_fac .. "_" .. tostring(max_id+1) .. "_open"
+        if game.translate_string(p) == p then break end
+        max_id = max_id + 1
+    end
+    if max_id == 0 then return nil end
+
+    local candidates = {}  -- { id = cid, weight = number }
+    local mode = PANDA.get_config("cooldown_mode")
+    local penalty = PANDA.get_config("cooldown_penalty") / 100  -- as multiplier
+    local hard_min = PANDA.get_config("cooldown_hard_min") * 60  -- convert to seconds
+
+    for i = 1, max_id do
+        local cid = i
+        local skip = false
+
+        -- Preconditions
+        local precond_key = base .. xml_fac .. "_" .. tostring(cid) .. "_precond"
+        if not check_preconditions_generic(precond_key) then skip = true end
+
+        -- Category filtering for task conversations
+        if not skip and prefix == "task" then
+            local has_cat = false
+            local target_cat = CATEGORY_ALIAS[category] or category
+            for oi = 1, 4 do
+                local outcome_key = base .. xml_fac .. "_" .. cid .. "_outcome_" .. oi
+                local os = game.translate_string(outcome_key)
+                if os and os ~= outcome_key then
+                    local cat = string.match(os, "give_task_cat:([^,]+)")
+                    if cat and (CATEGORY_ALIAS[cat] or cat) == target_cat then
+                        has_cat = true
+                        break
+                    end
+                    if not cat and (target_cat == "random" or target_cat == "any") then
+                        has_cat = true
+                        break
+                    end
+                end
+            end
+            if not has_cat then skip = true end
+        end
+
+        if skip then goto continue end
+
+        -- Cooldown handling
+        local cooldown_key = (prefix or "task") .. "_" .. xml_fac .. "_" .. cid
+        local last = conv_last_played[cooldown_key]
+        local on_cooldown = false
+        local seconds_since = 0
+        if last then
+            seconds_since = game.get_game_time():diffSec(last)
+            on_cooldown = seconds_since < (PANDA.get_config("default_cooldown") * 60)
+        end
+
+        if mode == 1 then  -- strict: block if on cooldown
+            if on_cooldown then skip = true end
+        else  -- flexible
+            if on_cooldown then
+                -- If within hard minimum, still block
+                if seconds_since < hard_min then
+                    skip = true
+                else
+                    -- Apply weight penalty
+                    local weight = penalty * 100  -- base weight 100
+                    table.insert(candidates, {id = cid, weight = weight})
+                end
+            else
+                -- Not on cooldown, full weight
+                table.insert(candidates, {id = cid, weight = 100})
+            end
+        end
+
+        if not skip and mode == 1 then
+            table.insert(candidates, {id = cid, weight = 100})
+        end
+
+        ::continue::
+    end
+
+    if #candidates == 0 then return nil end
+
+    -- Weighted random selection
+    local total_weight = 0
+    for _, cand in ipairs(candidates) do
+        total_weight = total_weight + cand.weight
+    end
+    local r = math.random(total_weight)
+    local accum = 0
+    for _, cand in ipairs(candidates) do
+        accum = accum + cand.weight
+        if r <= accum then
+            return cand.id
+        end
+    end
+    return candidates[1].id  -- fallback
+end
+
+
+-- ============================================================
+-- OUTCOME HANDLERS
+-- ============================================================
+
+function apply_outcome(outcome_str, sender_npc_name, sender_faction, sender_npc_id, pre_found_task_id)
+    if not outcome_str or outcome_str == "" or outcome_str == "none" then return false end
+
+    local task_given = false
+    local spawn_mult = (PANDA.get_config("spawn_chance_mult") or 100) / 100
+
+    local function process_command(cmd_str)
+        local chance_val, rest = string.match(cmd_str, "^chance:(%d+):(.+)$")
+        if chance_val and rest then
+            local adjusted = math.floor(tonumber(chance_val) * spawn_mult)
+            adjusted = math.max(0, math.min(100, adjusted))
+            if math.random(100) <= adjusted then
+                process_command(rest)
+            end
+            return
+        end
+
+        local parts = str_explode(cmd_str, ":")
+        local cmd = parts[1]
+
+        if cmd == "give_task_cat" then
+            if panda_give_task(pre_found_task_id, sender_npc_id) then
+                task_given = true
+                dynamic_news_helper.send_tip(
+                    game.translate_string("st_pda_ic_outcome_task_given"),
+                    sender_npc_name, 0, 10,
+                    level.object_by_id(sender_npc_id):character_icon(),
+                    "beep_2", "npc"
+                )
+            else
+                dynamic_news_helper.send_tip(
+                    "Error assigning task protocol.",
+                    sender_npc_name, 0, 5,
+                    level.object_by_id(sender_npc_id):character_icon(),
+                    "beep_1", "npc"
+                )
+            end
+
+        elseif cmd == "reward_money" then
+            db.actor:give_money(tonumber(parts[2]) or 0)
+
+        elseif cmd == "punish_money" then
+            local amt = tonumber(parts[2]) or 0
+            if db.actor:money() >= amt then
+                db.actor:give_money(-amt)
+            else
+                db.actor:give_money(-db.actor:money())
+            end
+
+        elseif cmd == "spawn_hostile" then
+            spawn_hunting_squad(parts[2] or "bandit", tonumber(parts[3]) or 90, false)
+
+        elseif cmd == "spawn_mutant" then
+            spawn_hunting_squad(parts[2] or "random", tonumber(parts[3]) or 90, true)
+
+        elseif cmd == "spawn_companion" then
+            spawn_native_companion(parts[2] or "stalker", tonumber(parts[3]) or 30)
+
+        elseif cmd == "reward_rep" then
+            db.actor:change_character_reputation(tonumber(parts[2]) or 0)
+
+        elseif cmd == "punish_rep" then
+            db.actor:change_character_reputation(-(tonumber(parts[2]) or 0))
+
+        elseif cmd == "reward_gw" then
+            local amount = tonumber(parts[2]) or 0
+            local faction = parts[3] or "stalker"
+            change_faction_goodwill(faction, amount)
+
+        elseif cmd == "punish_gw" then
+            local amount = tonumber(parts[2]) or 0
+            local faction = parts[3] or "stalker"
+            change_faction_goodwill(faction, -amount)
+
+        elseif cmd == "give_item" then
+            local item_sec = parts[2]
+            if item_sec and ini_sys:section_exist(item_sec) then
+                alife_create_item(item_sec, db.actor)
+                local msg = utils_data.parse_string_keys(
+                    game.translate_string("st_pda_ic_outcome_item_gain"),
+                    {["what"] = ui_item.get_sec_name(item_sec)}
+                )
+                dynamic_news_helper.send_tip(msg, "System", 0, 10, "stalker", "beep_1", "npc")
+            end
+
+        elseif cmd == "courier_item" then
+            spawn_native_courier(parts[2] or "medkit_army")
+
+        elseif cmd == "reward_stash" then
+            reveal_random_stash()
+
+        else
+            printf("Unknown outcome command: %s", cmd_str)
+        end
+    end
+
+    for entry in string.gmatch(outcome_str, "([^,]+)") do
+        entry = entry:match("^%s*(.-)%s*$")
+        if entry ~= "" then
+            process_command(entry)
+        end
+    end
+
+    return task_given
+end
+
+function find_squad_section(faction)
+    local tiers = { "_advanced", "_novice", "_veteran", "_alpha" }
+    for _, t in ipairs(tiers) do
+        local s = faction .. "_sim_squad" .. t
+        if ini_sys:section_exist(s) then return s end
+    end
+    return "merc_sim_squad_advanced" 
+end
+
+local MUTANT_SQUADS = {
+    "simulation_lurker", "simulation_bloodsucker_1_2", "simulation_psysucker",
+    "simulation_snork_2_3", "simulation_fracture", "simulation_mix_dogs",
+    "simulation_pseudodog", "simulation_cat", "simulation_chimera",
+    "simulation_controller", "simulation_burer", "simulation_boar"
+}
+
+function resolve_mutant_section(mutant_type)
+    if mutant_type == "random" then
+        return MUTANT_SQUADS[math.random(#MUTANT_SQUADS)]
+    end
+    for _, s in ipairs(MUTANT_SQUADS) do
+        if string.find(s, mutant_type, 1, true) then return s end
+    end
+    return "simulation_bloodsucker_1_2" 
+end
+
+function find_spawn_point_near_player(min, max)
+    local a = db.actor
+    local p, l, g = a:position(), a:level_vertex_id(), a:game_vertex_id()
+    for _ = 1, 20 do
+        local d = math.random(min, max)
+        local dir = vector():set(math.random(-100,100), 0, math.random(-100,100)):normalize()
+        local n = level.vertex_in_direction(l, dir, d)
+        if n and n < 4294967295 then
+            return level.vertex_position(n), n, g
+        end
+    end
+    return p, l, g 
+end
+
+function create_squad_safely(sec, pos, lvid, gvid)
+    local obj = alife():create(sec, pos, lvid, gvid)
+    if obj and obj:clsid() == clsid.online_offline_group_s then
+        if obj.create_npc then
+            obj:create_npc(nil, pos, lvid, gvid)
+        end
+        for k in obj:squad_members() do
+            local se = k.object or (k.id and alife():object(k.id))
+            if se then
+                SIMBOARD:setup_squad_and_group(se)
+            end
+        end
+    end
+    return obj
+end
+
+function spawn_hunting_squad(fac, delay, is_mutant)
+    fac = normalize_faction(fac)
+    local sec = is_mutant and resolve_mutant_section(fac) or find_squad_section(fac)
+    if not sec then
+        printf("No squad section found for %s", is_mutant and "mutant" or "hostile")
+        return
+    end
+
+    local key = "spawn_hunt_" .. tostring(math.random(100000))
+    local sender = game.translate_string("st_pda_ic_outcome_sender")
+
+    -- Stage 1: Initial warning
+    if PANDA.get_config("show_hunt_notifications") then
+        local warn_msg = is_mutant and "st_pda_ic_outcome_mutant_warn" or "st_pda_ic_outcome_hostile_warn"
+        dynamic_news_helper.send_tip(
+            game.translate_string(warn_msg),
+            sender, 2, 10, "stalker", "danger", "gr"
+        )
+    end
+
+    CreateTimeEvent("pda_ic_spawn", key, delay, function()
+        if not db.actor then return true end
+
+        local min, max
+        if is_mutant then
+            min = PANDA.get_config("mutant_spawn_min") or 40
+            max = PANDA.get_config("mutant_spawn_max") or 100
+        else
+            min = PANDA.get_config("spawn_distance_min") or 30
+            max = PANDA.get_config("spawn_distance_max") or 60
+        end
+
+        local pos, l, g = find_spawn_point_near_player(min, max)
+        local obj = create_squad_safely(sec, pos, l, g)
+
+        if obj and obj:clsid() == clsid.online_offline_group_s then
+            local squad_id = obj.id
+            obj.scripted_target = "actor"
+            obj.rush_to_target = true
+
+            if not is_mutant then
+                obj:set_squad_relation("enemy")
+                for k in obj:squad_members() do
+                    local o = level.object_by_id(k.id)
+                    if o then
+                        o:set_relation(game_object.enemy, db.actor)
+                        o:force_set_goodwill(-5000, db.actor)
+                    end
+                end
+            else
+                for k in obj:squad_members() do
+                    local o = level.object_by_id(k.id)
+                    if o then
+                        o:set_relation(game_object.enemy, db.actor)
+                    end
+                end
+            end
+
+            -- Stage 2: Notify arrival
+            CreateTimeEvent("pda_ic_spawn", "arrival_"..squad_id, math.random(5, 10), function()
+                if not db.actor then return true end
+                local s = alife_object(squad_id)
+                if not s then return true end
+                local commander = level.object_by_id(s:commander_id())
+                if commander and commander:alive() then
+                    local dist = commander:position():distance_to(db.actor:position())
+                    if dist < 150 then
+                        if PANDA.get_config("show_hunt_notifications") then
+                            dynamic_news_helper.send_tip(
+                                game.translate_string(is_mutant and "st_pda_ic_outcome_mutant_arrive" or "st_pda_ic_outcome_hostile_arrive"),
+                                sender, 0, 10, "stalker", "danger", "gr"
+                            )
+                        end
+                    end
+                end
+                return true
+            end)
+
+            -- Stage 3: Monitor and timeout
+            local start_time = game.get_game_time()
+            CreateTimeEvent("pda_ic_spawn", "monitor_"..squad_id, 30, function()
+                if not db.actor then return true end
+                local s = alife_object(squad_id)
+                if not s then return true end
+
+                local any_alive = false
+                for k in s:squad_members() do
+                    local o = level.object_by_id(k.id)
+                    if o and o:alive() then
+                        any_alive = true
+                        break
+                    end
+                end
+
+                if not any_alive then
+                    return true
+                end
+
+                local elapsed_min = game.get_game_time():diffSec(start_time) / 60
+                if elapsed_min > 10 then
+                    if PANDA.get_config("show_hunt_notifications") then
+                        dynamic_news_helper.send_tip(
+                            game.translate_string("st_pda_ic_hunt_timeout"),
+                            sender, 0, 10, "stalker", "attention", "gr"
+                        )
+                    end
+                    if alife() and alife().release then
+                        alife():release(s, true)
+                    end
+                    return true
+                end
+                return false
+            end)
+
+        else
+            printf("Failed to create hunting squad (squad creation returned nil or wrong class).")
+        end
+        return true
+    end)
+end
+
+function spawn_native_companion(fac, delay)
+    -- Check companion limit
+    local comps = 0
+    if axr_companions and axr_companions.companion_squads then
+        for _ in pairs(axr_companions.companion_squads) do
+            comps = comps + 1
+        end
+    end
+    local max_comps = PANDA.get_config("companion_limit") or 4
+    if comps >= max_comps then
+        printf("Companion limit reached (%d/%d), cannot spawn more.", comps, max_comps)
+        return
+    end
+
+    fac = normalize_faction(fac)
+    local sec = find_squad_section(fac)
+    if not sec then
+        printf("No squad section found for faction %s", fac)
+        return
+    end
+
+    local sender = game.translate_string("st_pda_ic_outcome_sender")
+    if PANDA.get_config("show_companion_notifications") then
+        dynamic_news_helper.send_tip(
+            game.translate_string("st_pda_ic_outcome_friendly_warn"),
+            sender, 2, 10, "stalker", "beep_1", "gr"
+        )
+    end
+
+    CreateTimeEvent("pda_ic_spawn", "spawn_comp_"..math.random(100000), delay, function()
+        if not db.actor then return true end
+
+        local min_dist = PANDA.get_config("companion_spawn_min") or 20
+        local max_dist = PANDA.get_config("companion_spawn_max") or 50
+        local pos, l, g = find_spawn_point_near_player(min_dist, max_dist)
+
+        local sq = create_squad_safely(sec, pos, l, g)
+        if not sq or sq:clsid() ~= clsid.online_offline_group_s then
+            printf("Failed to create companion squad.")
+            return true
+        end
+
+        axr_companions.companion_squads[sq.id] = sq
+
+        local companion_name = nil
+        for m in sq:squad_members() do
+            local se = alife_object(m.id)
+            if se then
+                se_save_var(se.id, se:name(), "companion", true)
+                se_save_var(se.id, se:name(), "companion_cannot_dismiss", true)
+                if not companion_name then
+                    companion_name = se:character_name() or game.translate_string("st_pda_ic_companion_default")
+                end
+            end
+        end
+
+        sq.scripted_target = "actor"
+        sq.rush_to_target = false
+        if sq.set_follow_distance then
+            sq:set_follow_distance(10)
+        end
+
+        local squad_id = sq.id
+        local arrival_checked = false
+        local function check_arrival()
+            if not db.actor then return true end
+            local s = alife_object(squad_id)
+            if not s then return true end
+
+            local commander = level.object_by_id(s:commander_id())
+            if not commander or not commander:alive() then
+                axr_companions.companion_squads[squad_id] = nil
+                return true
+            end
+
+            local dist = commander:position():distance_to(db.actor:position())
+            if dist < 30 and not arrival_checked then
+                arrival_checked = true
+                local name = companion_name or commander:character_name() or game.translate_string("st_pda_ic_companion_default")
+                if PANDA.get_config("show_companion_notifications") then
+                    dynamic_news_helper.send_tip(
+                        game.translate_string("st_pda_ic_outcome_companion_arrive_named"):gsub("%$name", name),
+                        sender, 0, 10,
+                        commander:character_icon() or fac,
+                        "beep_1", "gr"
+                    )
+                end
+                return true
+            elseif dist >= 30 then
+                return false
+            else
+                return true
+            end
+        end
+
+        CreateTimeEvent("pda_ic_companion", "arrival_"..squad_id, 2, check_arrival)
+
+        local function cleanup_companion()
+            axr_companions.companion_squads[squad_id] = nil
+            printf("Companion squad %d removed.", squad_id)
+        end
+
+        CreateTimeEvent("pda_ic_companion", "monitor_"..squad_id, 10, function()
+            if not db.actor then return true end
+            local s = alife_object(squad_id)
+            if not s then
+                cleanup_companion()
+                return true
+            end
+            return false
+        end)
+
+        return true
+    end)
+end
+
+function spawn_native_courier(item_sec)
+    local fac = normalize_faction(get_actor_true_community() or "stalker")
+    local sec = find_squad_section(fac)
+    local sender = game.translate_string("st_pda_ic_outcome_sender")
+    local courier_title = game.translate_string("st_pda_ic_courier_title")
+
+    if PANDA.get_config("show_courier_notifications") then
+        dynamic_news_helper.send_tip(
+            game.translate_string("st_pda_ic_outcome_courier_warn"),
+            sender, 2, 10, "stalker", "beep_1", "gr"
+        )
+    end
+
+    local min = PANDA.get_config("companion_spawn_min") or 20
+    local max = PANDA.get_config("companion_spawn_max") or 50
+    local pos, l, g = find_spawn_point_near_player(min, max)
+
+    local sq = create_squad_safely(sec, pos, l, g)
+    if not sq or sq:clsid() ~= clsid.online_offline_group_s then return end
+
+    sq.scripted_target = "actor"
+    -- IMPROVEMENT 1: Make them actually jog/sprint to the player instead of casually walking
+    sq.rush_to_target = true 
+    
+    local squad_id = sq.id
+    local check_interval = 2
+    -- IMPROVEMENT 2: Give them 2 full minutes (60 checks) to navigate anomalies/mutants
+    local max_checks = 60 
+    local check_count = 0
+
+    -- Helper function to make the courier become a normal stalker instead of deleting them
+    local function release_to_alife(squad)
+        squad.scripted_target = nil
+        squad.rush_to_target = false
+        -- Give them back to the Zone's simulation board so they wander off to a camp
+        if SIMBOARD then
+            SIMBOARD:assign_squad_to_smart(squad, nil)
+        end
+    end
+
+    local function monitor_courier()
+        if not db.actor then return true end
+        local s = alife_object(squad_id)
+        
+        -- Squad was wiped out or deleted by engine
+        if not s then return true end
+
+        local commander = level.object_by_id(s:commander_id())
+        
+        -- IMPROVEMENT 3: Handle Courier Death! Adds immersion.
+        if not commander or not commander:alive() then
+            if PANDA.get_config("show_courier_notifications") then
+                dynamic_news_helper.send_tip(
+                    game.translate_string("st_pda_ic_courier_died") or "PDA signal lost... the courier didn't make it.", 
+                    "System", 0, 10, "stalker", "danger", "gr"
+                )
+            end
+            return true 
+        end
+
+        local dist = commander:position():distance_to(db.actor:position())
+
+        if dist < 15 then -- Closer threshold for better interaction feel
+            local name = commander:character_name() or courier_title
+            
+            if PANDA.get_config("show_courier_notifications") then
+                dynamic_news_helper.send_tip(
+                    game.translate_string("st_pda_ic_courier_arrived"),
+                    name, 0, 10,
+                    commander:character_icon() or FALLBACK_NPC_ICON,
+                    "news", "npc"
+                )
+            end
+
+            -- IMPROVEMENT 4: Guaranteed delivery once they arrive. No failing because the player stepped backward.
+            CreateTimeEvent("pda_ic_courier", "deliver_"..squad_id, 2, function()
+                if not db.actor then return true end
+                
+                if ini_sys:section_exist(item_sec) then
+                    alife_create_item(item_sec, db.actor)
+                end
+                
+                local msg = utils_data.parse_string_keys(
+                    game.translate_string("st_pda_ic_outcome_item_gain"),
+                    {["what"] = ui_item.get_sec_name(item_sec)}
+                )
+                
+                if PANDA.get_config("show_courier_notifications") then
+                    dynamic_news_helper.send_tip(
+                        msg,
+                        name, 0, 12,
+                        commander:character_icon() or FALLBACK_NPC_ICON,
+                        "beep_1", "npc"
+                    )
+                end
+                
+                -- IMPROVEMENT 5: Release to A-Life instead of deleting them in front of the player
+                local final_sq = alife_object(squad_id)
+                if final_sq then release_to_alife(final_sq) end
+                
+                return true
+            end)
+            
+            return true -- End monitoring
+        else
+            -- Still approaching, handle timeout
+            check_count = check_count + 1
+            if check_count > max_checks then
+                if PANDA.get_config("show_courier_notifications") then
+                    dynamic_news_helper.send_tip(
+                        game.translate_string("st_pda_ic_courier_timeout"),
+                        courier_title, 0, 10, "stalker", "attention", "gr"
+                    )
+                end
+                -- Player ran too far away / ignored them. Release them to A-Life.
+                release_to_alife(s)
+                return true
+            end
+            return false
+        end
+    end
+
+    CreateTimeEvent("pda_ic_courier", "check_"..squad_id, check_interval, monitor_courier)
+end
+
+-- ============================================================
+-- CONVERSATION FLOW (State Machine)
+-- ============================================================
+
+function load_choices_for_turn(prefix, faction, conv_id, turn, npc_name)
+    local p
+    if prefix == "task" or not prefix then
+        p = "st_pda_ic_"..faction.."_"..tostring(conv_id)
+    else
+        p = "st_pda_ic_"..prefix.."_"..faction.."_"..tostring(conv_id)
+    end
+
+    if turn > 1 then
+        p = p.."_t"..tostring(turn)
+    end
+    local choices, count = {}, 0
+
+    for i = 1, 4 do
+        local key = p.."_choice_"..i
+        local text = game.translate_string(key)
+        if text == key then break end 
+
+        choices[i] = {
+            text = sub_placeholders(text, npc_name, faction),
+            reply = sub_placeholders(game.translate_string(p.."_reply_"..i), npc_name, faction),
+            outcome = game.translate_string(p.."_outcome_"..i),
+            next_turn = tonumber(game.translate_string(p.."_cont_"..i)) or nil
+        }
+        if choices[i].reply == p.."_reply_"..i then choices[i].reply = "" end
+        if choices[i].outcome == p.."_outcome_"..i then choices[i].outcome = "none" end
+        count = i
+    end
+    return choices, count
+end
+
+function show_choices_as_tip()
+    if not CONV then return end
+
+    if PANDA.get_config("require_pda_equipped") and not (db.actor and db.actor:item_in_slot(8)) then
+        CreateTimeEvent("pda_ic", "pda_wait", PANDA.get_config("pda_retry_delay") or 2, show_choices_as_tip)
+        return
+    end
+
+    local y, w, e = "%c[255,255,210,60]", "%c[255,220,220,220]", "%c[255,130,130,130]"
+    local msg = y .. game.translate_string("st_pda_ic_header_prefix") ..
+                w .. " | " .. game.translate_string("st_pda_ic_header_prompt") .. "\\n"
+
+    for i = 1, CONV.num_choices do
+        msg = msg .. "\\n" .. y .. "[" .. i .. "] " .. w .. CONV.choices[i].text
+    end
+    msg = msg .. "\\n" .. e .. "[0] Ignore"
+
+    dynamic_news_helper.send_tip(
+        msg,
+        game.translate_string("st_pda_ic_outcome_sender"),
+        0,
+        PANDA.get_config("choice_tip_duration") or 12,
+        "stalker",
+        "beep_2",
+        "gr"
+    )
+end
+
+function on_player_choice(idx)
+    -- 1. Fail early if CONV is already missing (Safety catch)
+    if not CONV or not CONV.choices[idx] then return end
+
+    local pda_active = false
+    local pda_menu = ActorMenu.get_pda_menu()
+    
+    if db.actor:active_slot() == 8 then
+        pda_active = true                 
+    elseif pda_menu and pda_menu:IsShown() then
+        pda_active = true                 
+    end
+
+    if not pda_active then
+        -- Anti-spam for the warning notification (2000 ms / 2 seconds)
+        local tg = time_global()
+        if tg > last_pda_warning_time + 2000 then
+            dynamic_news_helper.send_tip(
+                game.translate_string("st_pda_ic_pda_closed_warning"),
+                nil, 0, 5, "stalker", "attention", "npc"
+            )
+            last_pda_warning_time = tg
+        end
+        return
+    end
+
+    local ch = CONV.choices[idx]
+
+    dynamic_news_helper.send_tip(
+        ch.text,
+        db.actor:character_name(),
+        0, 10,
+        db.actor:character_icon(),
+        "click",
+        "npc"
+    )
+
+    -- This right here is what protects you from button-mashing abuse!
+    local c = CONV
+    CONV = nil 
+
+    -- Check if outcome has already been triggered in this conversation
+    local outcome_key = tostring(c.turn) .. "_" .. tostring(idx)
+    local has_outcome = ch.outcome and ch.outcome ~= "none"
+    local should_apply_outcome = false
+    
+    if has_outcome then
+        c.applied_outcomes = c.applied_outcomes or {}
+        if not c.applied_outcomes[outcome_key] then
+            should_apply_outcome = true
+            c.applied_outcomes[outcome_key] = true
+        else
+            printf("Outcome already applied for choice %s, skipping to prevent farming.", outcome_key)
+        end
+    end
+
+    local reply_delay_min = PANDA.get_config("npc_reply_delay_min") or 2
+    local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
+    local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
+    local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
+    local branch_delay_min = PANDA.get_config("branch_delay_min") or 2
+    local branch_delay_max = PANDA.get_config("branch_delay_max") or 4
+
+    CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
+        if ch.reply and ch.reply ~= "" then
+            dynamic_news_helper.send_tip(
+                ch.reply,
+                c.npc_name,
+                0, 15,
+                c.npc_icon,
+                "news",
+                "npc"
+            )
+        end
+
+        if should_apply_outcome then
+            CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
+                local given = apply_outcome(ch.outcome, c.npc_name, c.faction, c.npc_id, c.task_id)
+                local composite_key = (c.prefix or "task") .. "_" .. c.faction .. "_" .. c.conv_id
+                
+                conv_last_played[composite_key] = game.get_game_time()
+                
+                return true
+            end)
+        end
+
+        if ch.next_turn then
+            local next_choices, num = load_choices_for_turn(c.prefix, c.faction, c.conv_id, ch.next_turn, c.npc_name)
+            if num > 0 then
+                CONV = c
+                CONV.turn = ch.next_turn
+                CONV.choices = next_choices
+                CONV.num_choices = num
+                CreateTimeEvent("pda_ic", "open_ui", math.random(branch_delay_min, branch_delay_max), function()
+                    show_choices_as_tip()
+                    return true
+                end)
+            end
+        end
+        return true
+    end)
+end
+
+function start_interactive_conv(npc_se, conv_id, prefix, faction, task_id, category)
+    if CONV then return false end
+
+    local key
+    if prefix == "task" or not prefix then
+        key = "st_pda_ic_"..faction.."_"..tostring(conv_id).."_open"
+    else
+        key = "st_pda_ic_"..prefix.."_"..faction.."_"..tostring(conv_id).."_open"
+    end
+
+    local msg = game.translate_string(key)
+    if msg == key then return false end 
+
+    local name = npc_se:character_name()
+    local choices, num = load_choices_for_turn(prefix, faction, conv_id, 1, name)
+    if num == 0 then return false end
+
+    CONV = {
+        npc_id = npc_se.id,
+        npc_name = name,
+        npc_icon = npc_se:character_icon() or FALLBACK_NPC_ICON,
+        faction = faction,
+        prefix = prefix,                     
+        conv_id = conv_id,
+        turn = 1,
+        choices = choices,
+        num_choices = num,
+        task_id = task_id,
+        category = category,
+        applied_outcomes = {} -- FIX: Track applied outcomes to prevent farming during UI loops
+    }
+
+    last_conv_npc_id = npc_se.id
+    record_npc_use(npc_se.id)
+
+    dynamic_news_helper.send_tip(
+        sub_placeholders(msg, name, faction),
+        name,
+        0, 15,
+        CONV.npc_icon,
+        "news",
+        "npc"
+    )
+
+    local intro_delay = PANDA.get_config("intro_delay") or 2
+    CreateTimeEvent("pda_ic", "open_ui", intro_delay, function()
+        show_choices_as_tip()
+        return true
+    end)
+
+    return true
+end
+
+-- ============================================================
+-- NON‑TASK CONVERSATION ATTEMPT (extracted for fallback)
+-- ============================================================
+local function attempt_non_task_conversation()
+    printf("Attempting non‑task conversation")
+    local friendly_ratio = PANDA.get_config("friendly_hostile_ratio") or 50
+    local is_friendly = math.random(100) <= friendly_ratio
+    printf("friendly_ratio = %d, is_friendly = %s", friendly_ratio, tostring(is_friendly))
+
+    local npc_list
+    if is_friendly then
+        npc_list = get_friendly_npcs()
+    else
+        npc_list = get_hostile_npcs()
+    end
+    printf("Found %d %s NPCs", #npc_list, is_friendly and "friendly" or "hostile")
+
+    local npc_se = pick_random_npc_from_list(npc_list)
+    if not npc_se then
+        printf("No %s NPCs available for non‑task call.", is_friendly and "friendly" or "hostile")
+        return false
+    end
+    printf("Picked NPC: %s (ID %d)", npc_se:character_name(), npc_se.id)
+
+    local player_comm = get_actor_true_community() or "stalker"
+    local xml_fac = (player_comm == "stalker") and "loner" or player_comm
+    local prefix = is_friendly and "friendly" or "hostile"
+
+    local conv_id = pick_random_conv_id_generic(prefix, xml_fac, nil)
+    if not conv_id then
+        printf("No %s conversation found for faction %s.", prefix, xml_fac)
+        return false
+    end
+    printf("Selected conv_id = %d", conv_id)
+
+    return start_interactive_conv(npc_se, conv_id, prefix, xml_fac, nil, nil)
+end
+
+-- ============================================================
+-- MAIN TRIGGER & SCHEDULING
+-- ============================================================
+
+function try_trigger_interactive_conv()
+    if not PANDA.get_config("enabled") or CONV then 
+        printf("Trigger skipped: enabled=%s, CONV active=%s", tostring(PANDA.get_config("enabled")), tostring(CONV ~= nil))
+        return false 
+    end
+    if not db.actor then 
+        printf("Trigger skipped: no actor")
+        return false 
+    end
+    if PANDA.get_config("require_pda_equipped") and not db.actor:item_in_slot(8) then
+        printf("Trigger skipped: PDA not equipped")
+        return false
+    end
+
+    local non_task_chance = PANDA.get_config("non_task_chance") or 50
+    local rand = math.random(100)
+    local is_non_task = rand <= non_task_chance
+    printf("non_task_chance = %d, rand = %d, is_non_task = %s", non_task_chance, rand, tostring(is_non_task))
+
+    if not is_non_task then
+        -- ---- TASK CONVERSATION ----
+        printf("Attempting task conversation")
+        local npc_se, task_id, task_category = find_npc_with_task()
+        if npc_se and task_id and task_category then
+            local player_comm = get_actor_true_community() or "stalker"
+            local xml_fac = (player_comm == "stalker") and "loner" or player_comm
+
+            local conv_id = pick_random_conv_id_generic("task", xml_fac, task_category)
+
+            if conv_id then
+                printf("Found matching task conversation! NPC: %s, Category: %s, Conv ID: %s",
+                       npc_se:character_name(), task_category, conv_id)
+                return start_interactive_conv(npc_se, conv_id, "task", xml_fac, task_id, task_category)
+            else
+                printf("Found NPC with task, but no matching conversation for category %s. Falling back to non‑task.", task_category)
+                -- Fallback to non‑task
+                return attempt_non_task_conversation()
+            end
+        else
+            printf("No task NPC found. Falling back to non‑task.")
+            -- Fallback to non‑task
+            return attempt_non_task_conversation()
+        end
+    else
+        -- ---- NON‑TASK CONVERSATION ----
+        return attempt_non_task_conversation()
+    end
+
+    return false
+end
+
+local function schedule_next_trigger(interval_min)
+    local tf = level.get_time_factor() or 10
+    -- Convert in-game minutes to real seconds
+    local delay = (interval_min * 60) / tf
+    CreateTimeEvent("pda_ic_trigger", "tick", delay, function()
+        try_trigger_interactive_conv()
+        schedule_next_trigger(math.random(PANDA.get_config("trigger_min"), PANDA.get_config("trigger_max")))
+        return true
+    end)
+end
+
+
+-- ============================================================
+-- KEYBOARD CALLBACKS
+-- ============================================================
+function on_key_press_cb(key)
+    if key == DIK_0 and CONV then
+        CONV = nil
+        return
+    end
+
+    if CONV and CHOICE_KEYS[key] and CHOICE_KEYS[key] <= CONV.num_choices then
+        on_player_choice(CHOICE_KEYS[key])
+    end
+
+    if key == DIK_SPACE and not CONV and PANDA.get_config("debug_trigger") then
+        try_trigger_interactive_conv()
+    end
+end
+
+-- ============================================================
+-- SAVE / LOAD (cooldowns)
+-- ============================================================
+function save_state(m)
+    m.pda_ic_cooldowns = conv_last_played
+    m.pda_ic_npc_cooldowns = npc_last_used   -- new: save NPC cooldowns
+end
+
+function load_state(m)
+    if m.pda_ic_cooldowns then
+        conv_last_played = m.pda_ic_cooldowns
+    end
+    if m.pda_ic_npc_cooldowns then
+        npc_last_used = m.pda_ic_npc_cooldowns   -- new: load NPC cooldowns
+    end
+end
+
+-- ============================================================
+-- INITIALIZATION
+-- ============================================================
+function on_game_start()
+    if _callbacks_registered then return end
+
+    RegisterScriptCallback("actor_on_first_update", setup_engine_overrides)
+    RegisterScriptCallback("on_key_press", on_key_press_cb)
+    RegisterScriptCallback("save_state", save_state)
+    RegisterScriptCallback("load_state", load_state)
+
+    schedule_next_trigger(1)
+
+    _callbacks_registered = true
+end

@@ -1,0 +1,2541 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+
+
+
+
+<!-------------------------------- Loner Conversations ---------------------------------->
+
+
+<string id="st_dyn_news_loner_conversation_msg_1">
+    <text>Sidorovich is ripping us off again. His prices are getting ridiculous!</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_1_1">
+    <text>What else is new? That fat fucker’s been fleecing stalkers since day one.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_1_2">
+    <text>Try the black market runners. They move quiet, and sometimes cheap.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_1_3">
+    <text>Supply and demand, mate. Few brave souls bring goods here.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_1_4">
+    <text>At least he’s alive and selling. Beats getting shot for scrap.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_2">
+    <text>Got a fat stack of ammo but need medkits, anybody keen to swap?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_2_1">
+    <text>Ammo for medkits? Hell yes, but don’t short me or I’ll unload on you.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_2_2">
+    <text>I’m low on bandages, but I got morphine shots. Fair trade?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_2_3">
+    <text>Supplies are tight throw in some 5.45s to sweeten the pot.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_2_4">
+    <text>Interesting proposal. I’ll accept, on one condition, return the favor when I need eyes on patrols.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_3">
+    <text>Heard there’s a buyer for intel on patrol routes, any maps to sell?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_3_1">
+    <text>Maps? I might have one. Trade me a scoped rifle and extra mags.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_3_2">
+    <text>Chat with Sidorovich’s rat by the bar. He deals in whispers, not trinkets.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_3_3">
+    <text>Maps go stale after emissions. Better scout yourself.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_3_4">
+    <text>Not a cartographer, but medkit for a sketch of the eastern flank? Done.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_4">
+    <text>Saw a fence peddling electric grenades. Worth the gamble?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_4_1">
+    <text>Electric grenades? Suicide by shock. Stick to frags.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_4_2">
+    <text>Used them once, they stun bio-creatures dead cold. Temperamental though.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_4_3">
+    <text>They short-circuit in damp. Best leave them be.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_4_4">
+    <text>Fuck yeah, grab some. Nothing says surprise like lightning in a dark burrow.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_5">
+    <text>Need .45 ACP ammo. Will trade two fresh antirads.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_5_1">
+    <text>Deal. Meet at the dead truck north of Rostok, come alone.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_5_2">
+    <text>Antirads for bullets? You’ll regret that when your skin peels.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_6">
+    <text>Who buys mutant trophies? Got fresh chimera claws.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_6_1">
+    <text>Sakharov’s been paying for samples. Try him.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_6_2">
+    <text>Duty’s building a 'wall of horrors' at the Barrier.</text>
+</string>
+
+<!-- Humor Conversations Adapted for Loners -->
+<string id="st_dyn_news_loner_conversation_msg_7">
+    <text>My detector’s non-stop beeping, either I hit the jackpot or I’m about to fry.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_7_1">
+    <text>Both. In this dump you either die rich or broke.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_7_2">
+    <text>Give it a kick, sometimes fixes more than just detectors.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_7_3">
+    <text>Could be craving attention, like the rest of us.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_7_4">
+    <text>Silence means shit’s incoming, enjoy the racket.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_8">
+    <text>Robbed a bandit earlier, made him walk shoeless. Zone’s best entertainment.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_8_1">
+    <text>Should’ve shot off a toe, teach him begging’s pointless.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_8_2">
+    <text>Nice. Maybe next time he won’t point a rusty Makarov.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_8_3">
+    <text>Hope he lands on glass. Barefoot justice.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_8_4">
+    <text>That’s mercy here. Better to leave him breathing than soil him.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_9">
+    <text>Spilled my vodka in the mud, great start to any day.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_9_1">
+    <text>Congrats, you just watered the Zone’s only crop.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_9_2">
+    <text>Drink muddy vodka, it builds character.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_9_3">
+    <text>Well, at least the mud’s sterile.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_9_4">
+    <text>Better than losing bullets, I guess.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_10">
+    <text>My boots just fell apart mid-loot run, this fuckin’ Zone.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_10_1">
+    <text>Get duct tape, or you’ll slip on your own blood.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_10_2">
+    <text>Boots last longer if you don’t stomp corpses in them.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_10_3">
+    <text>Pro tip: wear dead stalker’s boots, never your own stash.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_10_4">
+    <text>Congrats, shoeless and clueless. Welcome to the Zone.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_11">
+    <text>Ate mystery meat, now my guts feel like they’re doing backflips.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_11_1">
+    <text>Mystery meat’s secret poison, enjoy the trip.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_11_2">
+    <text>Next time cook it twice or make mutant stew.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_11_3">
+    <text>Vodka cures all, unless it kills you first.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_11_4">
+    <text>At least you’re not starving now.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_12">
+    <text>Anyone know how to fix a busted gas mask filter? Duct tape ain’t cutting it.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_12_1">
+    <text>If duct tape fails, you aren’t using enough tape.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_12_2">
+    <text>Hit the mechanics, junk parts become miracles in their hands.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_12_3">
+    <text>Just scavenge a new one. Your lungs will thank you.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_12_4">
+    <text>Coffee filters work in a pinch, just don’t breathe deep.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_13">
+    <text>Battery on my NVG died, any hacks to juice it up?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_13_1">
+    <text>Swap fresh AAs or rip cells from dead geiger counters.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_13_2">
+    <text>Charge it on a generator, if you can find one without frying.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_13_3">
+    <text>Rig solar charging with scrap, worth a shot.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_13_4">
+    <text>Or ditch NVGs and learn to see in the dark.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_14">
+    <text>My AK’s barrel is clogged, any quick clean tricks?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_14_1">
+    <text>Use your shirt and petrol, better than nothing.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_14_2">
+    <text>Wire brush and bore solvent from the chem dealer work wonders.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_14_3">
+    <text>Barrel’s shot, steel wool and elbow grease, no shortcuts.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_14_4">
+    <text>Screw cleaning, swap barrels and pray.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_15">
+    <text>Scope’s loose, how do I torque the mount?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_15_1">
+    <text>Grab a wrench, tighten until the rattling stops.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_15_2">
+    <text>Stuck? Tap gently with a rubber mallet, mind the lens.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_15_3">
+    <text>Thread locker on screws keeps them in place.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_15_4">
+    <text>Or duct tape it, fixes everything.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_16">
+    <text>PDA’s PSU fried, maps are useless. Any repair hacks?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_16_1">
+    <text>Swap a fuse if you can scrounge one.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_16_2">
+    <text>Bridge burnt traces with wire, requires steady hands.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_16_3">
+    <text>Trade it for a working unit or go blind.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_16_4">
+    <text>Follow landmarks and sun, PDA’s luxury.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_17">
+    <text>You guys hear what happened to Yuri's squad in the Red Forest?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_17_1">
+    <text>They were found standing in a perfect circle, like statues. Zone’s mercy doesn’t exist.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_17_2">
+    <text>Controller’s handiwork. Poor bastards probably turned on themselves.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_17_3">
+    <text>Red Forest spares no one. Should’ve stayed away.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_18">
+    <text>Whatever happened to that rookie who swore he’d hit the Wish Granter in a week?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_18_1">
+    <text>Found his PDA at the first checkpoint. Guess he ran out of luck.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_18_2">
+    <text>Zone humbles the arrogant real quick.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_18_3">
+    <text>Another dreamer turned mutant food. Story as old as time.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_19">
+    <text>Anyone notice the birds acting weird? All flying south.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_19_1">
+    <text>Animals sense the shifts. Best pack up and move.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_19_2">
+    <text>Last time this happened, emissions lasted days.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_19_3">
+    <text>Birds warn more than any detector.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_20">
+    <text>Detector’s gone nuts near the old factory. Anyone brave enough to check?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_20_1">
+    <text>Probably scrap metal. Not worth the radiation.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_20_2">
+    <text>Could be an artifact. I’ll split it 60-40 if you guide me.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_20_3">
+    <text>Last guy came back speaking in curses. Hard pass.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_21">
+    <text>Fleshes raided our stash last night. Took half our gear before we drove them off.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_21_1">
+    <text>They’re getting bold. Watch your back.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_21_2">
+    <text>At least you got a stew out of them.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_21_3">
+    <text>I lost friends to those things. Stay sharp.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_22">
+    <text>Found premium vodka in a bunker. Tastes like salvation after weeks of brake fluid.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_22_1">
+    <text>Lucky bastard. All I got was moldy MREs.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_22_2">
+    <text>Share a sip for ammo? I’m running dry.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_22_3">
+    <text>Zone poisons the good stuff too. Take a whiff first.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_23">
+    <text>Think I’m being followed. Same shadow for three days.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_23_1">
+    <text>Trust your gut. Better safe than dead.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_23_2">
+    <text>Could be a phantom. They love lone stalkers.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_23_3">
+    <text>Zone plays tricks on the mind. Keep moving.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_24">
+    <text>Remember that old timer Vasily? Found him dead today.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_24_1">
+    <text>Vasily was untouchable. Guess not.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_24_2">
+    <text>Zone claims everyone eventually. Even legends.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_24_3">
+    <text>He knew this place best. Shame.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_25">
+    <text>Suit’s spitting radiation warnings but detector’s calm. Gear glitch?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_25_1">
+    <text>Electronics fry near psi fields. Look for Controllers.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_25_2">
+    <text>Prob fried circuits. Zone eats tech for breakfast.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_25_3">
+    <text>Trust Geiger over suit. Suits lie.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_26">
+    <text>Emission’s starting and I’m in the open. Any shelters near Cement Factory?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_26_1">
+    <text>Underground tunnels east side. Watch for snorks.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_26_2">
+    <text>Too late now. If you see this later, you made it.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_26_3">
+    <text>Concrete pipe 200m north. Cramped but breathable.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_27">
+    <text>Tracked an artifact for days, turned out to be a broken headlamp. FML.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_27_1">
+    <text>Zone loves jokes on us. Happens.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_27_2">
+    <text>At least you didn’t die chasing it like Dmitri.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_27_3">
+    <text>Three days wasted, but you’re alive. Bless up.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_28">
+    <text>Anyone know what happened to Scar’s group? They missed a check-in.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_28_1">
+    <text>Radio’s dead. Could be interference.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_28_2">
+    <text>Scar doesn’t die easy. Give it time.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_28_3">
+    <text>Two hours here equals two years. Start worrying.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_29">
+    <text>This rookie’s asking about safe paths through anomalies. Tell him?</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_29_1">
+    <text>Kid learns quick. Better from you than from bolts.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_29_2">
+    <text>No safe paths, just less deadly ones. And of course bolts!</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_29_3">
+    <text>Tell him to pray and move slow. Works for us.</text>
+</string>
+
+<string id="st_dyn_news_loner_conversation_msg_30">
+    <text>They promised twenty thousand for that job. Got back and they gave me six and a pat on the back. Screw every one of those lying parasites.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_30_1">
+    <text>Should’ve known. If the pay sounds fair, it’s a trap. If it sounds good, it’s a con.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_30_2">
+    <text>You let them get away with that? You’re part of the problem.</text>
+</string>
+<string id="st_dyn_news_loner_conversation_resp_30_3">
+    <text>They feed you shit and you ask for seconds. Don’t expect pity from me.</text>
+</string>
+
+
+<!-- Duty  Conversations -->
+<string id="st_dyn_news_dolg_conversation_msg_1">
+    <text>We need to increase patrols near the Barrier. Too many mutants getting through.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_1_1">
+    <text>Agreed. Last night we lost two veterans to those bloodsuckers.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_1_2">
+    <text>If we don't seal it off, civilians will pay the price.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_1_3">
+    <text>I'll organize the squads.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_2">
+    <text>Intel reports a Freedom cell scouting our routes. They might strike next week.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_2_1">
+    <text>We’ll reroute convoys through clearing Echo. Less cover for ambushes.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_2_2">
+    <text>Send in recon drones at 0400 hours. They won’t expect aerial watches.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_2_3">
+    <text>Inform command, prepare rapid-response team on standby.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_3">
+    <text>Supply lines to Rostok are delayed, weather’s closing in, risk of equipment failure.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_3_1">
+    <text>Secure the drop point with sandbags. Keep radios hot for extraction.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_3_2">
+    <text>I’ll dispatch the engineer team, they’ll clear the route and get supplies moving again.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_3_3">
+    <text>Rotate patrols tighter. No room for error in these conditions.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_4">
+    <text>New artifacts detected near the old power plant. Could be volatile.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_4_1">
+    <text>Artifact specialists en route. Keep civilians away from perimeter.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_4_2">
+    <text>Deploy security nets around anomalous zone. No unauthorized entry.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_4_3">
+    <text>Coordinate with Clear Sky for safe retrieval protocols.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_5">
+    <text>Casualties just came in. One wounded soldier, heavy radiation exposure.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_5_1">
+    <text>Evac ASAP to medical bunker. Prep decontamination chamber.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_5_2">
+    <text>Log the incident. We need to adjust patrol patterns near anomaly sites.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_5_3">
+    <text>Make sure that paperwork is well filled.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_6">
+    <text>High-value target spotted near the train yard. Freedom operative.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_6_1">
+    <text>Set up a roadblock at sector Tango. No one in or out.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_6_2">
+    <text>Sharpshooters on rooftops. Only take a shot if confirmed.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_6_3">
+    <text>Keep intel flowing. We need eyes on every exit route.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_7">
+    <text>Incoming transmission: civilian convoy reported missing near Sector 12.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_7_1">
+    <text>Dispatch search party with armored support. No one left behind.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_7_2">
+    <text>Coordinate with medical unit. Prepare field triage.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_7_3">
+    <text>Watch for bandit traps. Use drones first.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_8">
+    <text>Comm logs show a psyonic flare detected near Control Point Alpha.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_8_1">
+    <text>Evacuate all units immediately. Psy-ops are unpredictable.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_8_2">
+    <text>Activate psi-shield arrays. Safety first.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_8_3">
+    <text>Log coordinates. We’ll analyze for anomaly patterns.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_9">
+    <text>Resupply vehicles were attacked at dawn, lost half the ammo stock.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_9_1">
+    <text>Requisition emergency stock from Depot 3.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_9_2">
+    <text>Increase escort detail. No transport moves solo.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_9_3">
+    <text>File incident report. Identify weaknesses.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_10">
+    <text>Satellite feed shows unauthorized aircraft near the Zone perimeter.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_10_1">
+    <text>Scramble AA units. Do not engage until clearance.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_10_2">
+    <text>Track visual ID. Could be rogue contractors.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_10_3">
+    <text>Alert HQ. Prepare diplomatic channels.</text>
+</string>
+
+
+<string id="st_dyn_news_dolg_conversation_msg_11">
+    <text>High psionic readings near anomaly cluster Theta-9.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_11_1">
+    <text>Deploy psi-shield gear to all patrols.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_11_2">
+    <text>Notify researchers, prepare containment gadgets.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_11_3">
+    <text>Establish no-go perimeter.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_12">
+    <text>Field reports: heavy sniping near the old bridge entrance.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_12_1">
+    <text>Deploy counter-sniper team. Zero tolerance for threats.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_12_2">
+    <text>Seal off approach routes. Force retreat.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_12_3">
+    <text>Use thermal scopes. Darkness won’t hide them.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_13">
+    <text>Medical reports: radiation sickness cases doubling near Eastmine.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_13_1">
+    <text>Administer antirad kits and rotate crews faster.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_13_2">
+    <text>Seal off contaminated sectors. No exceptions.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_13_3">
+    <text>Log data and forward to scientists for decontamination research.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_14">
+    <text>Supply drone A7 went rogue. Last ping over Sector 5.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_14_1">
+    <text>Initiate fail-safe. Destroy drone if recovery fails.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_14_2">
+    <text>Track signal. Could be intercepted by Clear Sky.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_14_3">
+    <text>Recover data logs, no intel leak allowed.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_15">
+    <text>HQ requests list of all active patrols within 10km radius.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_15_1">
+    <text>Compiling now, will dispatch to command shortly.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_15_2">
+    <text>Recommend adding two more squads west of checkpoint Bravo.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_15_3">
+    <text>Ensure vehicles are fueled. No delays.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_16">
+    <text>Incoming evac request: civilian scientist injured near lab 13.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_16_1">
+    <text>Dispatch medevac chopper, clear LZ.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_16_2">
+    <text>Provide air cover. Zone anomalies around area.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_16_3">
+    <text>Prepare debrief. We need intel from that scientist.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_17">
+    <text>Satellite imagery: new underground structure detected beneath Sector 8.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_17_1">
+    <text>Recon team at dawn. Bring crawling gear.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_17_2">
+    <text>Mark on map. Could be enemy bunker.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_17_3">
+    <text>Coordinate with Demolition unit for tunnel stability.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_18">
+    <text>Internal Financial audit: spending Duty resources on personal gear upgrades is over-budget this quarter.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_18_1">
+    <text>Submit justification, lives saved equals cost worth.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_18_2">
+    <text>Again out of our own pocket? Cyka.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_18_3">
+    <text>Damn, there goes my savings.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_19">
+    <text>Reports of traitors passing intel to Freedom. Investigation underway.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_19_1">
+    <text>Lock down internal comms. No leaks tolerated.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_19_2">
+    <text>Interrogate suspected contacts. Zero mercy.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_19_3">
+    <text>Rotate passwords and secure channels.</text>
+</string>
+
+<string id="st_dyn_news_dolg_conversation_msg_20">
+    <text>Duty patrol rotation schedule is overdue for review. Half our checkpoints are undermanned.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_20_1">
+    <text>I flagged this two weeks ago. Command keeps pushing it back.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_20_2">
+    <text>Pull two squads from the northern sweep. The mutant pressure there has dropped off.</text>
+</string>
+<string id="st_dyn_news_dolg_conversation_resp_20_3">
+    <text>Undermanned checkpoints invite exactly the kind of trouble we are here to prevent.</text>
+</string>
+
+<!----------------------------------------------------------- Freedom  Conversations -->
+<string id="st_dyn_news_freedom_conversation_msg_1">
+    <text>The military’s pushing too hard. They’ll turn the Zone into a fortress soon.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_1_1">
+    <text>Let them try. We’ll show them who really owns these ruins.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_1_2">
+    <text>More checkpoints only mean more bribes. We can slip through.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_1_3">
+    <text>I’ve got eyes on their patrol routes. We’ll stay one step ahead.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_2">
+    <text>Alert all teams! Massive psi-emissions in Jupiter's eastern warehouse complex. Feels like a goddamn kindergarten for Controllers.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_2_1">
+    <text>Confirmed. My detector's screaming, but interference patterns suggest artifacts. Something new buried in that mess.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_2_2">
+    <text>Duty patrols are setting perimeter blocks 500m out. “For our safety.” Bullshit, they want first dibs!</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_2_3">
+    <text>Typical Duty dogs. Since when do they care about safety? Remember what they did at the Burner anomaly?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_2_4">
+    <text>Fuck their barricades. I've got jury-rigged psi-blockers. Who’s crazy enough to run the field with me?</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_3">
+    <text>Heads up: Bandits ambushed our medic run near the swamp bridge. Lost antibiotics and blood kits.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_3_1">
+    <text>Those parasitic fucks! Kostya’s leg wound’s festering, he needs those meds NOW.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_3_2">
+    <text>Check the Freedom cache behind Yanov. Should be emergency stocks.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_3_3">
+    <text>Already raided. Only empty syringes left. Fucking looters didn’t even reseal the container.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_3_4">
+    <text>I’ve got two vials of antibiotics. Take them. No payment needed, that’s not how we operate.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_4">
+    <text>Just found a Fireball artifact fused to a dead rookie's hand near the Circus. Harvest it?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_4_1">
+    <text>Christ. Another one who thought artifacts were toys. Leave it, that's a grave marker now.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_4_2">
+    <text>But energy readings are off the charts! We could learn why it bonded permanently.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_4_3">
+    <text>Learn by desecration? We’re not Duty. Tag the body for Ecologists if you’re curious.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_4_4">
+    <text>Compromise: photograph the fusion pattern, bolt-burn the site. Knowledge without theft.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_5">
+    <text>Swamp team report: Snorks are hunting in PACKS now. Saw three coordinate an ambush by the church.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_5_1">
+    <text>Impossible. Snorks are solitary. Sure it wasn’t just a feeding frenzy?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_5_2">
+    <text>Positive. One flushed me toward two others hiding underwater, tactical behavior.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_5_3">
+    <text>Zone’s accelerating mutations. Last week blind dogs started climbing trees in Red Forest.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_5_4">
+    <text>Fuck that. Upload raw vid to our public server. Every stalker deserves the truth.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_6">
+    <text>Duty armored column moving toward Yanov checkpoint, six exos, two RPGs.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_6_1">
+    <text>Over artifacts? Let them come. We’ve got psy-block and height advantage.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_6_2">
+    <text>Stand down, they think we ambushed their patrol near the train yard.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_6_3">
+    <text>Bullshit. We were mapping anomalies all night. Tell them to check Monolith logs.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_6_4">
+    <text>Voronin’s transmitting: “Return our men or we burn your outpost.”</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_7">
+    <text>Freedom Radio test broadcast in 10! Who’s got today’s main segment?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_7_1">
+    <text>Me, exposing how Duty’s artifact seizures end up in black markets.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_7_2">
+    <text>Save that for Wednesday. Today: bypass Army checkpoints via sewage tunnels.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_7_3">
+    <text>Add warning, bloodsuckers in Pipe sector drained two loners yesterday.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_7_4">
+    <text>End with Strelok’s quote: “The Zone belongs to those who walk it, not cage it.”</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_8">
+    <text>Confirmed: Mercs stole our prototype emitter from Jupiter lab. Tracking them toward Dead City.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_8_1">
+    <text>That emitter disrupts Brain Scorcher fields! They’ll sell it to the highest bidder.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_8_2">
+    <text>Assemble intercept team. Priority: recover tech intact. Secondary: leave no witnesses.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_8_3">
+    <text>Since they murdered three scientists, this isn’t theft, it’s war.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_9">
+    <text>EMERGENCY: Electro-storm forming over Sector 13 from ground zero.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_9_1">
+    <text>Fuck. That’s where we stored the artifact resonance array. Did someone activate it?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_9_2">
+    <text>Worse: Duty tried dismantling it. Now it’s overloading.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_9_3">
+    <text>Those fucking idiots! Assemble a squad ASAP.</text>
+</string>
+
+
+<string id="st_dyn_news_freedom_conversation_msg_10">
+    <text>Last food shipment destroyed by pseudogiants. Three days of rations left.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_10_1">
+    <text>Open the communal kitchen to ALL stalkers. No Freedom ID checks.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_10_2">
+    <text>That’ll empty stocks in hours! We need to prioritize our own.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_10_3">
+    <text>Bullshit hierarchy talk! Share or become Duty. I’ll donate my stash.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_11">
+    <text>Intel reports a mole in our ranks feeding information to Duty. We need eyes on everyone at HQ.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_11_1">
+    <text>Everyone’s a suspect now? We’ll turn our base into a hall of mirrors. Perfect cover for real spies.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_11_2">
+    <text>Let’s set a trap, leak false coordinates or something.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_11_3">
+    <text>Paranoia won’t help. We need proof, shadow suspects until they slip, then handle it quietly.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_12">
+    <text>Scouts report that the new Duty blockade north of Rostok is stronger than intel suggested. They’ve got heavy MG nests.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_12_1">
+    <text>We’ll need a diversion, set off a false anomaly alarm at the old mill to draw them away.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_12_2">
+    <text>Or sneak through the drainage tunnels beneath the tracks. Minimal guard presence at night.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_12_3">
+    <text>There has to be a better way.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_13">
+    <text>Maintenance crew at the power plant uncovered a hidden archive, maps of old military caches.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_13_1">
+    <text>Finally some real treasure. Send a small team with light packs, speed over firepower.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_13_2">
+    <text>Hold up, those maps could be bait. Duty’s known to plant false leads.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_13_3">
+    <text>Cross-reference with Ecologist surveys. If anomalies overlap, it’s legit.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_14">
+    <text>Local loners captured a strayed Bloodsucker and chained it in the church cellar. Should we use it as bait?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_14_1">
+    <text>Inhumane. We need that data intact. Observe from a distance, then release it back.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_14_2">
+    <text>Bait’s ideal, but a live Bloodsucker’s unpredictable. We’ll lose men before we learn anything.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_14_3">
+    <text>Compromise: sedate it, then record behavior under controlled psi-field. No casualties.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_15">
+    <text>Strange rainfall turning acidic near Yantar. Several stalkers report burns on exposed skin.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_15_1">
+    <text>Collect samples immediately. If we can neutralize the rain, we secure safe passage.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_15_2">
+    <text>Advise everyone to stay under cover. This isn’t worth risking lives for curiosity.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_15_3">
+    <text>Patch together old filter masks from the lab. Distribute them before the next shower.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_16">
+    <text>A new faction’s banner spotted near Agroprom. They claim to be artifact salvagers for hire.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_16_1">
+    <text>Hire them against Duty. Two wolves fight, the third takes the spoils.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_16_2">
+    <text>They’ll turn on us when the price drops. Better keep them at arm’s length.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_16_3">
+    <text>Scout their base. If they’re desperate, we can outbid them for the big finds.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_17">
+    <text>Chimera tracks found west of Limansk. Two creatures moving in tandem, unprecedented.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_17_1">
+    <text>That’s bad news. Avoid the area and reroute the supply convoy through the canal road.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_17_2">
+    <text>Or lure them into the lightning field near the radar station. Might thin their ranks.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_17_3">
+    <text>Tag the spot with flare rounds. Let Duty’s hunters deal with mutated nightmares.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_18">
+    <text>Voice on the open channel claiming to be “Strelok.” They say a massive event is coming at 0400.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_18_1">
+    <text>If it’s really him, we prepare. Double watch rotations and energize all psi-shields.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_18_2">
+    <text>Could be a trap. Broadcast false “all clear” and watch who reacts at 0400.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_18_3">
+    <text>Contact Ecologists for anomaly readings. If the signal’s genuine, we get time to evac.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_19">
+    <text>Warehouse raid last night netted experimental ammo, armor-piercing rounds with psi-tip warheads.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_19_1">
+    <text>Test them on a sealed container. If they work, we alter our tactics, no more ambushes.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_19_2">
+    <text>Dangerous tech. Store them away from living quarters until we know effects on humans.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_19_3">
+    <text>Trade half to loners for intel on Duty patrols. Keep the rest for emergencies.</text>
+</string>
+
+<string id="st_dyn_news_freedom_conversation_msg_20">
+    <text>Final call: Freedom’s quarterly supply drop hits the Chernaya depot at dawn. Volunteers?</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_20_1">
+    <text>I’m in. Send me the coords and rally point. I’ll clear the route.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_20_2">
+    <text>We need more medics on that run. Three got wounded last time.</text>
+</string>
+<string id="st_dyn_news_freedom_conversation_resp_20_3">
+    <text>Better send a stealth team. No need to announce we’re restocking.</text>
+</string>
+
+<!--------------------------------------------- Military  Conversations -->
+<string id="st_dyn_news_army_conversation_msg_1">
+    <text>Recon reported psionic activity in Sector D today. Keep your distance.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_1_1">
+    <text>Copy that. Moving to position Bravo for overwatch.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_1_2">
+    <text>Sir, those anomalies could wipe out an entire squad.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_1_3">
+    <text>We’ll set up motion sensors and stay out of range.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_2">
+    <text>Army convoy en route with winter gear, ETA 1430. Verify delivery protocol upon arrival.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_2_1">
+    <text>Funds reserved. Supply officer standing by at drop zone.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_2_2">
+    <text>Requesting ETA update in 30 minutes to synchronize unloading teams.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_2_3">
+    <text>Understood. We’ll inspect manifest thoroughly before releasing goods.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_2_4">
+    <text>Confirm convoy security detail and convoy route clearance.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_3">
+    <text>Recon patrol spotted unauthorized militia activity near Dark Valley supply routes.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_3_1">
+    <text>Recommend dispatching recon team to monitor and report faction strength.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_3_2">
+    <text>Shall we set up an observation post on the ridge for constant surveillance?</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_3_3">
+    <text>Increase patrol frequency on the main artery to deter incursions.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_4">
+    <text>Contractors repaired radar array but reported excessive wear on panels.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_4_1">
+    <text>Order replacement panels through logistics; expected delivery in 72 hours.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_4_2">
+    <text>Request detailed maintenance report before approving further work.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_4_3">
+    <text>Authorize limited operations until parts arrive; extend shifts to compensate.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_5">
+    <text>Intel indicates unauthorized raid planned at warehouse, prepare perimeter defense.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_5_1">
+    <text>Authorize preemptive deployment to secure warehouse.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_5_2">
+    <text>Set up surveillance drones overnight to confirm threat.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_5_3">
+    <text>Coordinate response teams for rapid interception.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_6">
+    <text>Fuel convoy stalled at choke point, route assessment needed.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_6_1">
+    <text>Dispatch engineers to clear obstructions and reopen the route.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_6_2">
+    <text>Authorize temporary reroute through secondary road; update convoy ASAP.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_6_3">
+    <text>Hold position and set up defensive perimeter until route is confirmed clear.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_7">
+    <text>Field medics request additional blood units for triage station tomorrow.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_7_1">
+    <text>Allocate 100 units from reserve and schedule replenishment run.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_7_2">
+    <text>Offer half now; remaining contingent on usage reports by end of day.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_7_3">
+    <text>Deny additional units; advise using plasma expanders until stocks arrive.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_8">
+    <text>Payroll files show duplicate entries, finance needs clarification before disbursement.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_8_1">
+    <text>Task admin team to audit entries; hold payment until resolved.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_8_2">
+    <text>Approve base salary; hold bonuses pending review.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_8_3">
+    <text>Contact unit commanders for justification of duplicate claims.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_9">
+    <text>Network breach detected overnight. Backdoor signatures match previous intrusion.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_9_1">
+    <text>Isolate affected nodes and patch vulnerabilities immediately.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_9_2">
+    <text>Feed false logs to honeypot systems and trace the attacker.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_9_3">
+    <text>Request cyber unit support for counter-intrusion measures.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_10">
+    <text>Navigation drill scheduled at 0600 tomorrow. Focus on night ops and comms silence.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_10_1">
+    <text>All squads briefed; compasses and NVGs issued.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_10_2">
+    <text>Recommend adding urban terrain module at Sector V.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_10_3">
+    <text>Confirm casualty extraction point and medevac coordinates.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_11">
+    <text>Suspicious movement detected near the old Yantar bunker. Possible intel scan.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_11_1">
+    <text>Dispatch recon to observe and report before engagement.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_11_2">
+    <text>Increase sensor sweep frequency in that sector.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_11_3">
+    <text>Coordinate with EOD team in case of anomalous devices.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_12">
+    <text>Ammo crate labels don’t match manifest. Suspect misrouting or error.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_12_1">
+    <text>Hold the crate and audit serial numbers against armory logs.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_12_2">
+    <text>Open sample crate for manual inspection.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_12_3">
+    <text>Notify supply HQ of discrepancy and await instructions.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_13">
+    <text>Base radio requests CO interview for morale segment.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_13_1">
+    <text>Approve pre-recorded message highlighting unit achievements.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_13_2">
+    <text>Why not a live broadcast.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_13_3">
+    <text>Decline; risk of operational details leaking.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_14">
+    <text>Cleanup crew cleared runoff but left contaminated soil piles.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_14_1">
+    <text>Order immediate hauling of soil to secure containment site.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_14_2">
+    <text>Request environmental impact assessment report.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_14_3">
+    <text>Schedule soil decontamination with EOD support.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_15">
+    <text>Unauthorized groups reported near checkpoint Echo, tension escalating.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_15_1">
+    <text>Reinforce checkpoint and verify identities of all travelers.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_15_2">
+    <text>Deploy non-lethal crowd control measures if needed.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_15_3">
+    <text>Initiate comms blackout to prevent coordination among unauthorized groups.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_16">
+    <text>Fuel shortage may impact casualty extraction. Alternative plans required.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_16_1">
+    <text>Reallocate fuel from noncritical vehicles immediately.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_16_2">
+    <text>Prioritize medevac over routine transport.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_16_3">
+    <text>Coordinate with logistics HQ for emergency fuel drop-mail.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_17">
+    <text>Sensor team detected new anomaly readings, requires recalibration.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_17_1">
+    <text>Schedule recalibration session at Sector V tomorrow morning.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_17_2">
+    <text>Send tech team to site with calibration kits.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_17_3">
+    <text>Cross-check data with central lab before field deployment.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_18">
+    <text>Checkpoint logs flagged false IDs used by personnel. Investigation needed.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_18_1">
+    <text>Detain holders and verify identity at HQ.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_18_2">
+    <text>Upgrade ID scanning protocols with biometric backup.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_18_3">
+    <text>Audit checkpoint logs for further anomalies.</text>
+</string>
+
+<string id="st_dyn_news_army_conversation_msg_19">
+    <text>Convoy departs sector Gamma at 0900, escort details pending.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_19_1">
+    <text>Assign two infantry squads for close escort.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_19_2">
+    <text>Provide UAV overwatch for the entire route.</text>
+</string>
+<string id="st_dyn_news_army_conversation_resp_19_3">
+    <text>Confirm ammunition resupply point mid-route.</text>
+</string>
+
+<!-- Clear Sky  Conversations -->
+<string id="st_dyn_news_csky_conversation_msg_1">
+    <text>We’ve calibrated the detector, there’s a hidden lab under the old refinery.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_1_1">
+    <text>If it’s underground, artifacts’ll be off the charts.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_1_2">
+    <text>I’ll mark it on the map. We go in at dawn.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_1_3">
+    <text>Watch for security measures. this place was military grade.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_2">
+<text>Psi-readings spiking near the weeping anomaly. Possible new artifact cluster.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_2_1">
+<text>Deploy mobile dampeners. Last emission scrambled our gear for days.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_2_2">
+<text>I’ll prep the grav scanner. If it’s a Flash, we need containment protocols.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_2_3">
+<text>Remember ’07? Those psi-clusters ate three detectors. Tread carefully.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_3">
+<text>Renegade snipers spotted at the drowned church. They’re targeting scavengers.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_3_1">
+<text>Kravchenko’s boys. They’ll bleed us dry if we don’t push back.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_3_2">
+<text>Set up anomaly traps on the north path. Let the Zone deal with them.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_3_3">
+<text>Lebedev won’t like diverting resources... but we’ve lost too many already.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_4">
+<text>Anomaly batteries at 12%. Who used the last charger without logging it?</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_4_1">
+<text>Check the south bunker. Saw Petrenko hoarding them for “critical research”.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_4_2">
+<text>I’ll trade artifacts to Sidorovich if we’re desperate. His prices are criminal though.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_4_3">
+<text>This is why we need that solar array fixed. Relying on generators is suicide.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_5">
+<text>Pseudogiant carcass in the acid fog. Something tore it apart... not bullets.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_5_1">
+<text>Chimera. Track the blood trail before rain washes it away.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_5_2">
+<text>Collect tissue samples! Mutagenic properties could be off the scale.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_5_3">
+<text>Seal perimeter gates. If that thing’s hunting near base, we’re sitting ducks.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_6">
+<text>Blowout predicted in 90 minutes. All teams return to Bolotno immediately.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_6_1">
+<text>Stuck near the sulfur springs! Requesting backup extraction.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_6_2">
+<text>Seismic readings match ’12 patterns. This’ll be a category 4 at least.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_6_3">
+<text>God, not again. Reinforce the bunker doors this time!</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_7">
+<text>Found a Goldfish cluster in the electric anomaly. Readings show 700% purity.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_7_1">
+<text>Don’t celebrate yet. Last “pure” artifacts melted through lead containers.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_7_2">
+<text>Ecologists will pay a fortune for these. Finally fix the water filters.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_7_3">
+<text>Use ceramic tongs and triple shielding. One static shock could fry us all.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_8">
+<text>Duty patrols crossing into our sector. “Checking for bandits” they say.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_8_1">
+<text>Let them. Better than Renegades scouting our defenses.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_8_2">
+<text>Bullshit. They’re artifact poaching. Set up motion sensors on cache Gamma.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_8_3">
+<text>Remember the truce. But if they touch the research tent... drop them.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_9">
+<text>Radiation sickness outbreak in Barracks 3. Quarantine protocols initiated.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_9_1">
+<text>Vodka stocks depleted. Need more antirads ASAP.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_9_2">
+<text>Was it the contaminated water again? I warned about the pipes!</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_9_3">
+<text>Prep the decon showers. And someone check the damn Geiger counters!</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_10">
+<text>Scout team Alpha overdue from the red forest. Last transmission mentioned... distortions.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_10_1">
+<text>Not distortions. Controller fields. They’re gone.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_10_2">
+<text>I’ll take a SEVA squad. We owe them a retrieval.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_10_3">
+<text>Lebedev forbade forest excursions after the last incident. Damn the orders.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_11">
+<text>Modified the detector to track psi-ghosts. Testing near the cemetery tonight.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_11_1">
+<text>Finally! If this works, we can predict emission sources.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_11_2">
+<text>Bring extra batteries. Cemetery anomalies drain power like vampires.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_11_3">
+<text>Just don’t wake the poltergeists. Last guy who tried still twitches.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_12">
+<text>Convoy to Yantar ambushed. Lost the medicine shipment.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_12_1">
+<text>Bandits or Monolith? Either way, we’re screwed without antibiotics.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_12_2">
+<text>I’ll ask the Ecologists for help. They owe us for the artifact data.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_12_3">
+<text>Forget diplomacy. Let’s hit their stash at the old factory tonight.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_13">
+<text>Found a pre-Collapse lab journal. Mentions “Noosphere breaches” in sector G7.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_13_1">
+<text>That’s where Strelok disappeared... Coincidence?</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_13_2">
+<text>Scan for residual psi-waves. If C-Consciousness left echoes...</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_13_3">
+<text>Don’t chase ghosts. We barely survived last week’s blowout.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_14">
+<text>Renegades breached the southern wire. Need volunteers for repair detail.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_14_1">
+<text>Rig the gap with springboards. They won’t expect active anomalies.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_14_2">
+<text>I’ll cover from the watchtower. Anyone in blue gets a bullet.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_14_3">
+<text>Make it fast. Bloodsuckers hunt near the breach at dusk.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_15">
+<text>Satellite imagery shows an intact X-ray detector in the sunken barge.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_15_1">
+<text>That’s pre-war tech! We could boost our scanning range by 300%.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_15_2">
+<text>Barge’s flooded with radioactive water. Need sealed suits.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_15_3">
+<text>Watch for snork mutants. They nest in wrecks like that.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_16">
+<text>Lebedev canceled the antenna project. Says resources go to defense.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_16_1">
+<text>He’s wrong. Without comms, we’re blind during emissions.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_16_2">
+<text>Do it quietly. I’ve got spare parts hidden near the generator.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_16_3">
+<text>Remember what happened to Markov when he questioned orders? Drop it.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_17">
+<text>Acid fog shifting toward base. Evacuate non-essentials to the bunker.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_17_1">
+<text>Seal the ventilation shafts! Last time it corroded the reactor housing.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_17_2">
+<text>Is this weather or an anomaly? Feels... intentional.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_17_3">
+<text>Grab the artifact containers first. Corrosion ruins their containment fields.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_18">
+<text>New recruit passed out during anomaly drill. Too much vodka last night?</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_18_1">
+<text>Make him clean the bio-scanners. That’ll sober him up.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_18_2">
+<text>Or send him to collect jellyfish near the renegade camp. Trial by fire.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_18_3">
+<text>We were all green once. Just keep him away from the electro anomalies.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_19">
+<text>Time dilation field detected near the oak tree. Clocks run 40% slower inside.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_19_1">
+<text>Finally! Proof of temporal anomalies. Prep the recording gear!</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_19_2">
+<text>Do NOT enter. Remember what happened to the Ecologists in Jupiter?</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_19_3">
+<text>Throw a bolt in. If it ages/decays, we’ve got a goldmine of data.</text>
+</string>
+
+<string id="st_dyn_news_csky_conversation_msg_20">
+<text>Today marks 8 years since the CNPP assault. Light a candle at 2100.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_20_1">
+<text>To the fallen. We carry the torch they dropped.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_20_2">
+<text>They died for knowledge. We honor them by surviving.</text>
+</string>
+<string id="st_dyn_news_csky_conversation_resp_20_3">
+<text>...and by making sure that sacrifice wasn’t in vain. *raises canteen*</text>
+</string>
+
+
+<!------------------------------------------------------- Bandits  Conversations -->
+<string id="st_dyn_news_bandit_conversation_msg_1">
+<text>Duty convoy wrecked near the checkpoint! Guns ‘n ammo just sittin’ in the mud, suka!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_1_1">
+<text>Dibs on the PKM! Anyone touches it gets knifed.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_1_2">
+<text>Scavenge fast before Monolith freaks show up. Or worse… Duty reinforcements.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_1_3">
+<text>Leave the medkits. Probably poisoned by those clean-suit fucks.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_2">
+<text>Set up the “anomaly detector” near Garbage. Greenhorns pay 500 rubles for a broken PDA.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_2_1">
+<text>HA! Throw in a “blessed artifact” (rocks) for extra cash.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_2_2">
+<text>If they complain, shoot ‘em. Free gear too.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_2_3">
+<text>Just don’t scam Sid’s customers. He’ll skin us alive.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_3">
+<text>Mercs sniffin’ around Dark Valley. Who left the damn gate open again?</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_3_1">
+<text>Not my shift. Ask Boris. He was vodka-drunk on watch.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_3_2">
+<text>Ambush ‘em at the tunnel. Steal their fancy NATO toys.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_3_3">
+<text>Nah, hide the good loot. They’ll leave when they see our “hospitality”.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_4">
+<text>Bloodsucker in the depot! Ate two guys already. Someone deal with it!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_4_1">
+<text>Lock the door. Starve it out. Problem solved.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_4_2">
+<text>Throw a rookie in as bait. We shoot while it feeds. Easy.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_4_3">
+<text>Just torch the building. Who needs supplies anyway?</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_5">
+<text>Vasily sold our stash to Freedom! Find that traitorous sukablyad!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_5_1">
+<text>Leave his body in the swamps. Snorks’ll recycle him.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_5_2">
+<text>I know his girlfriend’s hideout. She’ll talk… or pay.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_5_3">
+<text>Forget revenge. Steal Freedom’s shit back. Double profit!</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_6">
+<text>NO VODKA LEFT. This is a goddamn emergency.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_6_1">
+<text>Raid the Duty outpost. They confiscated our last shipment.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_6_2">
+<text>Drink antifreeze like ’08. Tastes worse but gets you deader faster!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_6_3">
+<text>Trade artifacts to Sid. His stash is endless… for the right price.</text>
+</string>
+
+
+<string id="st_dyn_news_bandit_conversation_msg_7">
+<text>Loner with a Gauss rifle limpin’ through Agroprom. Weak as a kitten.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_7_1">
+<text>Gauss rifle? Mine now. Meet you at the construction site.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_7_2">
+<text>Could be bait. Snipers on the roof in case it’s a trap.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_7_3">
+<text>Shoot his legs first. More fun when they crawl.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_8">
+<text>Ghosts in the factory again. Heard whisperin’ near the furnace.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_8_1">
+<text>Pour vodka on the floor. Spirits love free drinks.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_8_2">
+<text>It’s just Snorks in the vents. Again. Ignore ‘em.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_8_3">
+<text>Bet 500R it’s Freedom spies. Let’s smoke ‘em out!</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_9">
+<text>Boss got eaten by pseudodogs. Who wants his fancy coat?</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_9_1">
+<text>ME! I’ll pay… in promises I won’t keep.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_9_2">
+<text>Draw straws. Short straw gets the coat… and Duty’s bullet list.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_9_3">
+<text>Sell the coat to Sid. Split the cash and stay leaderless. Less work.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_10">
+<text>Rigged the bridge with grenades. Freedom patrols cross here daily.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_10_1">
+<text>Add fire bottles. Make it pretty.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_10_2">
+<text>Wait for them to carry loot back. Double harvest!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_10_3">
+<text>Don’t forget to loot fingers for their faction rings. Good trophies.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_11">
+<text>Caught a Merc scout. He’s got a map to their stash. Interrogate?</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_11_1">
+<text>Cut off toes ‘til he talks. One per minute.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_11_2">
+<text>Sell him back to his group. Mercs pay well for their own.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_11_3">
+<text>Give him to Snorks. Free entertainment.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_12">
+<text>Found a barrel of glowing vodka in Pripyat! Tastes like victory!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_12_1">
+<text>Save me some! I wanna glow in the dark too!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_12_2">
+<text>Dilute it with water. Make it last longer.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_12_3">
+<text>If we die, bury me with the barrel. Cheeki breeki forever.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_13">
+<text>Heist at Sid’s warehouse went FUBAR. Three dead. Run.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_13_1">
+<text>Told you not to touch his stuff! Now we’re all dead men.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_13_2">
+<text>Blame it on Duty. Sid’ll believe it.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_13_3">
+<text>Time to hide in the swamps. Clear Sky’s too dumb to find us.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_14">
+<text>Chained a flesh near the rookie camp. Pays to watch ‘em scream.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_14_1">
+<text>Charge 5 bullets per viewing. Profit!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_14_2">
+<text>Better: Bet on how long they survive. I say 20 seconds.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_14_3">
+<text>If it breaks loose, YOU’RE feeding it, genius.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_15">
+<text>5000R bounty on a Clear Sky nerd. Last seen in swamps. Easy money?</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_15_1">
+<text>Swamps? Pass. Snorks eat better than we do.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_15_2">
+<text>Lure him out. Offer “artifacts” (landmines).</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_15_3">
+<text>Take the job then shoot the bounty giver. DOUBLE bounty!</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_16">
+<text>Oleg owes me 10,000R from dice. He’s “forgetting”.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_16_1">
+<text>Break his kneecaps. Standard interest rate.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_16_2">
+<text>Forget cash. Take his girl. Or his gun.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_16_3">
+<text>Rig next game. Win his pants too.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_17">
+<text>Pushed a rookie into a vortex. He’s spinning like a top! HA!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_17_1">
+<text>Throw bolts at him. Extra points for headshots!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_17_2">
+<text>Record it! We’ll sell the footage to Loners.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_17_3">
+<text>When he pukes, bet on the color. I say green.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_18">
+<text>Roof collapsed in barracks. Who stored grenades in the attic?!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_18_1">
+<text>Not my problem. I sleep in the stolen APC.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_18_2">
+<text>Good! More “ventilation”. Zone’s finest architecture.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_18_3">
+<text>Blame Freedom. Then steal THEIR base.</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_19">
+<text>Saw a black chimera near camp. Zone’s pissed at us… again.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_19_1">
+<text>Sacrifice Boris. He’s useless anyway.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_19_2">
+<text>Nah, it’s just hungry. Toss it some Loner leftovers.</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_19_3">
+<text>If it’s black, it’s radioactive! Shoot it and sell the meat to Sid!</text>
+</string>
+
+<string id="st_dyn_news_bandit_conversation_msg_20">
+<text>Found a guitar with one string. Who knows “Black Eyes”?!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_20_1">
+<text>I’ll bang the wall! DRINKING SONG TIME!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_20_2">
+<text>Play it loud! Scare off the blue nerds in the swamps!</text>
+</string>
+<string id="st_dyn_news_bandit_conversation_resp_20_3">
+<text>If you play off-key, you’re chimera bait.</text>
+</string>
+
+<!----------------------------------------------Renegades  Conversations -->
+<string id="st_dyn_news_killer_conversation_msg_1">
+<text>Loner limping through Garbage. Looks like he got chewed up near the depot. Gear's decent. Easy pickings?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_1_1">
+<text>Ambush at the crane. I'll take point. You flank, suka.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_1_2">
+<text>Could be bait. Seen Duty sniffing around. Watch your six.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_1_3">
+<text>Just shoot 'im. Less noise, less attention. Keep the medkits.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_2">
+<text>Found an empty bunker north of Agroprom. Dry, mostly intact. Staking it.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_2_1">
+<text>Like hell you are. Me and Grisha found it first. Bring friends, we shoot.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_2_2">
+<text>Check for traps. Last crew that squatted here ended up snork food.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_2_3">
+<text>Dibs on the back room. Anyone comes near my stash gets knifed.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_3">
+<text>Viktor promised half the artifact haul. Saw him sneaking off towards Sidorovich alone.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_3_1">
+<text>Told you. Never trust a face that scarred. Meet at Sid's back door?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_3_2">
+<text>Let him sell it. Easier to take the rubles off his corpse later.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_3_3">
+<text>Or tip off Bandits he's carrying. Watch the show, take the scraps.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_4">
+<text>Dead Merc near the bridge. Good armor, but Monolith patrol closing in. Worth the risk?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_4_1">
+<text>Grab the rifle mags and run. Armor's too hot to move fast.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_4_2">
+<text>Loot the grenades. Toss one at the fanatics for a distraction.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_4_3">
+<text>Not my problem. Find easier meat.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_5">
+<text>Military chopper scanning the Swamps. They're hunting deserters. Lay low.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_5_1">
+<text>Head for the anomaly cluster. Their sensors glitch near electro fields.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_5_2">
+<text>Dump the military-issue ammo. It's evidence.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_5_3">
+<text>Find a Loner patrol. Start a firefight, slip away while they're busy.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_6">
+<text>Found a crate of MREs under the train cars. Mine.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_6_1">
+<text>Like hell. Half, or I torch the lot. Nobody eats.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_6_2">
+<text>Share one box. Rest you hide. Don't tell anyone else.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_6_3">
+<text>Trade some for ammo with the Bandits. They're less likely to shoot traders.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_7">
+<text>Clear Sky rookie crying near the gas anomaly. Lost his detector. Soft target.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_7_1">
+<text>Take his suit. SEVA fetches good rubles, even damaged.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_7_2">
+<text>Ransom him? His faction might pay... or just shoot us.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_7_3">
+<text>Push him into the gas. See if he melts. Then loot the corpse.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_8">
+<text>Bandits offering 500R per Clear Sky ear. We huntin' blues?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_8_1">
+<text>Easy money. They're weak in the southern swamps.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_8_2">
+<text>Take the ears, then ambush the Bandit paymaster. Keep all the cash.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_8_3">
+<text>Not worth it. Blues fight like cornered rats when desperate.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_9">
+<text>The factory basement rad levels are spiking. Gotta move again.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_9_1">
+<text>Dump the heavy gear. Faster to run light.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_9_2">
+<text>Find that sewer pipe near the dump. Stinks, but low rads.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_9_3">
+<text>Screw it. Pop antirads and stay. Better than getting shot outside.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_10">
+<text>Duty and Freedom scrapping at the checkpoint. Gear scattered everywhere.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_10_1">
+<text>Crawl through the ditch. Grab rifles, leave the heavy armor.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_10_2">
+<text>Toss a grenade into the middle. More bodies, more loot.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_10_3">
+<text>Wait for winners to leave. Pick over the losers. Safer.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_11">
+<text>Oleg's hoarding the good ammo again. Saw him stash a box of AP rounds.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_11_1">
+<text>Take it while he sleeps. He's too slow to catch us.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_11_2">
+<text>Tell him Bandits are coming. He'll panic and lead us to all his stashes.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_11_3">
+<text>Shoot him. Problem solved, ammo distributed. Fair.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_12">
+<text>Merc squad setting up overwatch near our camp. They look professional. We bolt?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_12_1">
+<text>Abandon camp. Now. They'll shoot first, ask never.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_12_2">
+<text>Set traps on the way out. Slow 'em down.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_12_3">
+<text>Try talking? Offer to scout for them... then disappear at first chance.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_13">
+<text>Big emission just hit. Everyone's scrambling. Time to loot the panicked.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_13_1">
+<text>Hit the rookie village in Garbage. Easy prey, disoriented.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_13_2">
+<text>Find artifact fields. Stalkers drop goodies running for cover.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_13_3">
+<text>Too risky. Mutants go crazy after emissions. Find a hole, hide.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_14">
+<text>Caught Sasha trying to sell our artifact map to Bandits. What's the play?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_14_1">
+<text>Break his hands. Send him back to the Bandits as a message.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_14_2">
+<text>Sell him *to* the Bandits as a slave. Get paid twice.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_14_3">
+<text>Use him as bait in a snare anomaly. Free entertainment.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_15">
+<text>Found a working truck near Cordon. Keys inside. Can we get it running?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_15_1">
+<text>Siphon the fuel first. Worth more than the truck right now.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_15_2">
+<text>Too noisy. Military or Bandits will hear it miles away. Scrap it.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_15_3">
+<text>Push it into an anomaly. Big boom, good laugh.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_16">
+<text>Duty's posting bounties on "Swamp Rats" (us). Keep heads down.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_16_1">
+<text>Stop raiding near their patrol routes. Hit the north swamps instead.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_16_2">
+<text>Find out who took the contract. Make an example of them.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_16_3">
+<text>Blame it on the Bandits. Plant some loot near their stash.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_17">
+<text>New guy "Nikolai" asking too many questions about stashes. Spy?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_17_1">
+<text>Probably Freedom or Ecologist. Dump him in a springboard field.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_17_2">
+<text>Feed him false info. See who he reports to.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_17_3">
+<text>Just shoot him. Less hassle. Trust no one new.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_18">
+<text>Bandits offering a truce to hit a Merc convoy. Double-cross likely?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_18_1">
+<text>Absolutely. Hit the convoy, then hit the Bandits while they loot.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_18_2">
+<text>Take the deal. Steal a truck during the fight and bug out with the goods.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_18_3">
+<text>Tip off the Mercs. Let them soften up the Bandits first.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_19">
+<text>Dead pseudodog. Meat's rotten, but collar looks military-grade. Take it?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_19_1">
+<text>Might have a tracker. Smash it, sell the electronics scrap.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_19_2">
+<text>Wear it. Scare rookies. Or confuse mutants.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_19_3">
+<text>Leave it. Smells like trouble. Not worth 5 rubles.</text>
+</string>
+
+<string id="st_dyn_news_killer_conversation_msg_20">
+<text>Another year in this shithole. Anyone celebrating?</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_20_1">
+<text>Celebrate? I'm celebrating I haven't been shot... yet.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_20_2">
+<text>Found half a bottle of vodka. That's my celebration. Piss off.</text>
+</string>
+<string id="st_dyn_news_killer_conversation_resp_20_3">
+<text>Go shoot a Loner. Take his dinner. Best party in the Zone.</text>
+</string>
+
+
+<!--------------------------------------------------------------- Ecologists  Conversations -->
+<string id="st_dyn_news_ecolog_conversation_msg_1">
+<text>Preliminary scans on the "Crystal Thorn" artifact show unprecedented energy oscillations. Lab 3 requests extended testing.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_1_1">
+<text>Approved. But implement Faraday shielding - recall the Yantar incident.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_1_2">
+<text>Compare readings to Noosphere models. Could validate Sakharov's resonance theory.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_1_3">
+<text>Require military escort for hazardous materials transfer. Duty squad unavailable until next rotation.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_2">
+<text>Pseudodog pack near Yanov exhibiting coordinated hunting tactics. Request drone surveillance authorization.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_2_1">
+<text>Denied. Military restricted airspace after last week's... mishap.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_2_2">
+<text>Document via ground cameras. Suggest deploying ultrasonic deterrents during observation.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_2_3">
+<text>Cross-reference with '09 Chimeras study. Possible emergent intelligence?</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_3">
+<text>Kyiv cut our Q3 funding by 40%. All non-essential field research suspended effective immediately.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_3_1">
+<text>Prioritize emission prediction models. Everything else is academic luxury now.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_3_2">
+<text>Propose artifact sales to Sidorovich. His prices are criminal but better than termination.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_3_3">
+<text>Reminder: Hide this from the military liaison. They'll demand "security reallocation".</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_4">
+<text>Freedom's radio jamming disrupted seismic monitors in the Red Forest. Data loss: 78 hours.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_4_1">
+<text>File formal complaint with both factions. Attach reconstruction cost estimates.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_4_2">
+<text>Switch to hardwired sensors. More installation risk but immune to idiot interference.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_4_3">
+<text>Send Kruglov to negotiate. He speaks "stalker". Bring vodka bribes.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_5">
+<text>New spatial distortion detected in Jupiter warehouse district. Gravitational readings defy current models.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_5_1">
+<text>Deploy mobile sensor array but maintain 200m perimeter. Recall what happened to Lebedev's team.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_5_2">
+<text>Correlate with recent emission patterns. Could be precursor event.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_5_3">
+<text>Request artifact hunters for probe deployment. Offer premium rubles - no volunteers last time.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_6">
+<text>Fungal spores in Lab 4 ventilation. Mutation rate suggests Zone-adapted strain.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_6_1">
+<text>Seal sector. Initiate decon protocol Gamma. And someone find where Petrenko left his samples again.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_6_2">
+<text>Fascinating! Preserve samples in cryo-chamber before sterilization.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_6_3">
+<text>Medical staff alerted. Expect quarantine complaints from junior researchers.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_7">
+<text>Kyiv University demands access to our mutant tissue archives. "Academic cooperation" request.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_7_1">
+<text>Deny. Their NDAs are worthless. Last leak nearly started a pandemic scare.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_7_2">
+<text>Offer redacted data sets only. Charge triple the standard rate.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_7_3">
+<text>Remind them we require field support personnel if they want favors. PhDs don't survive emissions.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_8">
+<text>Anomaly suppression field generator failed during Borets testing. Technician hospitalized.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_8_1">
+<text>Cease all suppression experiments until safety review. Form committee.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_8_2">
+<text>Review harmonics alignment. The 2017 failure occurred at identical resonance frequencies.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_8_3">
+<text>Medical report shows only minor burns. Resume testing with remote drones next week.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_9">
+<text>Stalker delivered albino Bloodsucker carcass. Payment authorized despite odor complaints.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_9_1">
+<text>Prioritize genetic sequencing before decomposition. Cancel all other Lab 2 projects.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_9_2">
+<text>Store in Hangar 7. Main freezer still smells from last Chimera autopsy.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_9_3">
+<text>Verify it's not just paint. Remember the "psy-dog" hoax?</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_10">
+<text>Post-emission scans show anomaly migration in Garbage. Previous maps obsolete.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_10_1">
+<text>Update Stalker PDAs immediately. Morozov's team nearly walked into a new vortex.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_10_2">
+<text>Correlate displacement vectors with Noosphere activity logs. Prediction algorithm needs refinement.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_10_3">
+<text>Send warnings to Loner leaders. And charge Duty for the cartography updates.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_11">
+<text>Proposal: Study Monolith psy-effects on volunteers. Promising neural adaptation data.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_11_1">
+<text>Rejected. The '08 experiments violated seven international treaties. Burn this memo.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_11_2">
+<text>Could we use condemned prisoners? Kyiv offered "resources" last month...</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_11_3">
+<text>Study historical data only. Even Clear Sky wouldn't touch this.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_12">
+<text>Prototype artifact scanner achieved 92% accuracy in field tests. Production proposal?</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_12_1">
+<text>Submit to military contractors. They'll fund mass production for their own use.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_12_2">
+<text>Patent first! The schematics alone could restore our budget.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_12_3">
+<text>Require durability testing. Stalkers break everything within weeks.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_13">
+<text>Excavated pre-Consciousness lab notes from X-10. Contain references to "Noosphere stabilization".</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_13_1">
+<text>Restore documents in nitrogen chamber. Handle only with gloves - paper is brittle.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_13_2">
+<text>Cross-reference with Strelok's PDA data. He might have unknowingly completed their work.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_13_3">
+<text>Restrict access to Level 5 researchers. This could attract... unwanted attention.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_14">
+<text>Acid fog approaching Yantar perimeter. Seal vents and activate air scrubbers.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_14_1">
+<text>Scrubbers at 47% efficiency. Maintenance was delayed by budget cuts.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_14_2">
+<text>Collect atmospheric samples! Unique chemical composition opportunity.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_14_3">
+<text>Move sensitive equipment to underground labs. And someone check the seals on Bunker 3.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_15">
+<text>Require volunteer stalkers for mutant behavior tracking. Hazard pay: 5,000R/day.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_15_1">
+<text>Too low. Last volunteer lost his legs. Double the offer.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_15_2">
+<text>Attach sensors to captured pseudodogs instead. More ethical and cost-effective.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_15_3">
+<text>Contract Mercenaries? They follow protocols better than Loners.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_16">
+<text>Anomaly Research Division monopolized the spectral analyzers again. Genetics work delayed.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_16_1">
+<text>Implement strict scheduling. Violators lose lab privileges.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_16_2">
+<text>Sabotage their cryo-pumps? (Joke... mostly)</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_16_3">
+<text>Remind them we control mutant tissue access. Leverage is everything.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_17">
+<text>Confirmed: Emission patterns correlate with solar flares! Prediction accuracy now 73%.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_17_1">
+<text>Publish immediately. This justifies five years of budget requests.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_17_2">
+<text>Withhold key variables. Military would weaponize this knowledge.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_17_3">
+<text>Calibrate field sensors accordingly. And warn Clear Sky remnants - they'll appreciate it.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_18">
+<text>Bandits hijacked our lithium battery shipment. Alternatives for field equipment?</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_18_1">
+<text>Repurpose artifact power cores. Dangerous but available.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_18_2">
+<text>Bribe Freedom to retrieve shipment. Their price: three medkits and anomaly maps.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_18_3">
+<text>Activate contingency: Soviet-era batteries in Storage 7. Half still hold charge.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_19">
+<text>Level 4 biohazard breach in Mutagenics Lab. Full lockdown initiated.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_19_1">
+<text>Seal ventilation shafts 7-12. Containment before extraction.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_19_2">
+<text>Was it Sample KR-77? I warned about unstable cell replication!</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_19_3">
+<text>Prepare amnestics for affected personnel. Standard memory wipe protocol.</text>
+</string>
+
+<string id="st_dyn_news_ecolog_conversation_msg_20">
+<text>Decrypted 87% of the 2006-2008 O-Consciousness servers. Finalizing archive access.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_20_1">
+<text>Restrict to senior staff only. Junior researchers lack context for this magnitude.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_20_2">
+<text>Search for Project "Gradient" files. Their early work could explain current anomalies.</text>
+</string>
+<string id="st_dyn_news_ecolog_conversation_resp_20_3">
+<text>Burn all psychic resonance studies. Some knowledge should remain lost.</text>
+</string>
+
+
+<!-- Monolith  Conversations -->
+
+<string id="st_dyn_news_monolith_conversation_msg_1">
+<text>The Unclean approach the Holy City. Prepare the Northern Barrier. Glory to Monolith.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_1_1">
+<text>Mines blessed. They will find purity in fire.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_1_2">
+<text>Sniper teams ascend the Tower. Their eyes serve the Rock.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_1_3">
+<text>We hear the Whisper. Their path ends at the bridge.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_2">
+<text>A Sparkle shines in the Dead City. Bring it to the Altar.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_2_1">
+<text>Cleansing unbelievers en route. Their blood pleases the Whole.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_2_2">
+<text>Psi-guardians stir. The Artifact sings to them.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_2_3">
+<text>It will strengthen the Barrier. The Whisper commands it.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_3">
+<text>The Great Cleansing approaches. Stand in the Light. Rejoice.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_3_1">
+<text>We are chosen. Our minds will shine brighter.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_3_2">
+<text>Let the weak burn. Only the faithful remain.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_3_3">
+<text>The Rock shelters us. We feel its pulse.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_4">
+<text>Defilers in the Cathedral. Silence their blasphemous guns.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_4_1">
+<text>Duty filth cornered. Offering their souls to the Void.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_4_2">
+<text>Their screams are hymns. The Whisper approves.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_4_3">
+<text>No prisoners. Only sacrifices.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_5">
+<text>A stalker with the Mark approaches. He must not reach the Nucleus.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_5_1">
+<text>Seen near Limansk. His mind... resists the Whisper.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_5_2">
+<text>Send the Blessed Ones. Their psy-lances will shatter him.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_5_3">
+<text>Kill his companions. Let despair guide him to us.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_6">
+<text>Anomalies weaken at Sector 7. Consecrate the ground with blood.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_6_1">
+<text>Captured Bandits ready. Their fear feeds the Barrier.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_6_2">
+<text>Bury their bodies facing the West. The Void hungers.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_6_3">
+<text>The Rock trembles. Our offering is accepted.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_7">
+<text>Controllers report unbelievers near the Brain Scorcher. Redirect the horde.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_7_1">
+<text>Pseudogiants awakened. They serve the Purpose.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_7_2">
+<text>Bloodsuckers hunt in the fog. The Unclean will know terror.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_7_3">
+<text>No survivors. Let mutants feast on their doubt.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_8">
+<text>Guardian Boris fell to Mercenary heretics. Retrieve his skull.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_8_1">
+<text>It rests on their campfire. A desecration.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_8_2">
+<text>Burn their bodies. Scatter ashes to the anomalies.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_8_3">
+<text>His soul returns to the Whole. Glory his name.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_9">
+<text>Abandon Red Forest outpost. The Cleansing purifies it tomorrow.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_9_1">
+<text>Rig reactors to overload. A beacon for the Blowout.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_9_2">
+<text>Leave relics for the unbelievers. Their corruption deepens.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_9_3">
+<text>We withdraw. The Void claims what is owed.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_10">
+<text>New acolytes arrive at the Barrier. Prepare the Initiation.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_10_1">
+<text>Their minds are weak. The Scorcher will make them strong.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_10_2">
+<text>Those who resist become mutants. A noble service.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_10_3">
+<text>The Whisper welcomes all. Willing or unwilling.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_11">
+<text>Gauss rifles blessed at the Sarcophagus. Deploy to the Southern Eye.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_11_1">
+<text>Their light pierces heresy. A gift from the Rock.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_11_2">
+<text>Target the armored ones. Let faith shatter steel.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_11_3">
+<text>Waste no ammunition. Each shot serves the Whole.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_12">
+<text>Doubt echoes in Pavel's mind. Guide him to the Scorcher.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_12_1">
+<text>He questions the Barrier. Heresy must burn.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_12_2">
+<text>His pain will be ecstasy. The Whisper cleanses.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_12_3">
+<text>If he resists... feed him to the poltergeists.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_13">
+<text>Freedom defilers destroyed our shrine. Retribution is demanded.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_13_1">
+<text>Trace their camp. Poison their water with radionuclides.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_13_2">
+<text>Leave their leader alive. Let him carry the Zone's curse.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_13_3">
+<text>Their screams will echo to the Brain. The Whisper hears.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_14">
+<text>Patrols report silence in the Dead City. Too silent.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_14_1">
+<text>Mercenary assassins. They hide from the Light.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_14_2">
+<text>Flush them with fire. Burn the shadows.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_14_3">
+<text>Their technology fails here. The Rock protects.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_15">
+<text>The Vortex anomaly hungers. Feed it the captured unbeliever.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_15_1">
+<text>His terror sustains the Barrier. A worthy end.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_15_2">
+<text>Bind him with blessed wires. Let the Vortex taste his soul.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_15_3">
+<text>When it screams, the path to the Nucleus strengthens. Glory.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_16">
+<text>Their artillery shakes the earth. Stand firm in faith.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_16_1">
+<text>Concrete cracks. Faith does not. We endure.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_16_2">
+<text>Let them waste shells. The Void consumes their greed.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_16_3">
+<text>Their noise is silence to the Whisper. We hear only purpose.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_17">
+<text>Brother Gregor’s form changes. The Zone embraces him.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_17_1">
+<text>His flesh becomes armor. His pain, strength.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_17_2">
+<text>Station him at the Tunnel. Let heretics see divine evolution.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_17_3">
+<text>His mind remains pure. The Whisper guides his claws.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_18">
+<text>The Great Door weakens. Soon, the Nucleus will awaken.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_18_1">
+<text>Let the Unclean come. Their bodies fertilize sacred ground.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_18_2">
+<text>The final Cleansing nears. All will be One.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_18_3">
+<text>Glory to Monolith. Forever.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_19">
+<text>Move through the Pripyat sewers. The Whisper hides us.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_19_1">
+<text>Drown the rats. Their squeals betray faith.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_19_2">
+<text>Emerging at Hospital. Strike their medics first.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_19_3">
+<text>No radio. Only the Rock guides.</text>
+</string>
+
+<string id="st_dyn_news_monolith_conversation_msg_20">
+<text>Brothers fallen at Limansk return to the Whole. Rejoice.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_20_1">
+<text>Their sacrifice fuels the Barrier. Glory their names.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_20_2">
+<text>No graves. Their bodies serve the anomalies now.</text>
+</string>
+<string id="st_dyn_news_monolith_conversation_resp_20_3">
+<text>We hear their whispers in the Void. They are with us.</text>
+</string>
+
+</string_table>
