@@ -1,0 +1,5 @@
+<window>
+		<button x="1000" y="0" width="0" height="0" id="eptPrivateTab" frame_mode="0">
+			<text align="c" vert_align="c" x="0" y="0" font="letterica16">st_pda_private</text>
+		</button>
+</window>
