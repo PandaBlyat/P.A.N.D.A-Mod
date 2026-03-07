@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="windows-1251"?>
-
-
-
 <string_table>
 
 	<!-- ============================================ -->
@@ -9,6 +6,42 @@
 	<!-- ============================================ -->
 	<string id="ui_mcm_menu_pda_interactive_conv">
 		<text>P.A.N.D.A</text>
+	</string>
+
+	<!-- ============================================ -->
+	<!-- MAIN SLIDE (new)                              -->
+	<!-- ============================================ -->
+	<string id="pda_interactive_conv_slide_main">
+		<text>P.A.N.D.A - Interactive Conversations v1.0</text>
+	</string>
+
+
+	<!-- Mod Info Tab Strings -->
+	<string id="pda_interactive_conv_menu_mod_info">
+		<text>Mod Info</text>
+	</string>
+	<string id="pda_interactive_conv_desc_mod_info">
+		<text>P.A.N.D.A - PDA And News Dynamic Expansion.</text>
+	</string>
+
+	<!-- Missing Dynamic News Master Toggle -->
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_enabled">
+		<text>Enable Dynamic News</text>
+	</string>
+	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_enabled_desc">
+		<text>Master toggle to enable or disable dynamic news messages entirely.</text>
+	</string>
+	<!-- ============================================ -->
+	<!-- SECTION DESCRIPTIONS (new)                    -->
+	<!-- ============================================ -->
+	<string id="pda_interactive_conv_desc_interactive">
+		<text>Settings for conversations initiated by the player via PDA. Adjust delays, cooldowns, spawn distances, etc.</text>
+	</string>
+	<string id="pda_interactive_conv_desc_background">
+		<text>Automatic NPC-to-NPC dialogues that occur around the player. Tune frequency, topics, and cooldowns.</text>
+	</string>
+	<string id="pda_interactive_conv_desc_dynamic_news">
+		<text>PDA messages about world events. Enable/disable specific news categories and set update intervals.</text>
 	</string>
 
 	<!-- ============================================ -->
@@ -23,52 +56,7 @@
 	<string id="pda_interactive_conv_menu_dynamic_news">
 		<text>Dynamic News</text>
 	</string>
-	
-	
-		<!-- Preset button captions -->
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_balanced">
-		<text>Balanced</text>
-	</string>
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_immersive">
-		<text>Immersive</text>
-	</string>
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_minimalist">
-		<text>Minimalist</text>
-	</string>
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_hardcore">
-		<text>Hardcore</text>
-	</string>
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_relaxed">
-		<text>Relaxed</text>
-	</string>
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_conversation_focused">
-		<text>Conversation Focused</text>
-	</string>
-	
-	<!-- Preset Descriptions (Tooltips) - Shortened -->
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_balanced_desc">
-		<text>The standard experience. Balanced mix of conversations and news at a moderate, well-tuned pace.</text>
-	</string>
 
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_immersive_desc">
-		<text>More frequent conversations and news. Makes the Zone feel more alive, social, and reactive. For a living, breathing world.</text>
-	</string>
-
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_minimalist_desc">
-		<text>Fewer interactions and news reports. Reduces HUD clutter for players who prefer to focus on core gameplay without distractions.</text>
-	</string>
-
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_hardcore_desc">
-		<text>Rare, punishing interactions. Strict companion limits, hostile encounters likely, news only for critical events (emissions, major deaths).</text>
-	</string>
-
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_relaxed_desc">
-		<text>Low-stress, high-frequency mode. Constant chatter, high companion limits, fewer hostiles. The Zone feels busy and forgiving.</text>
-	</string>
-
-	<string id="ui_mcm_pda_interactive_conv_presets_preset_conversation_focused_desc">
-		<text>Prioritizes NPC interaction over world news. Frequent conversations, but news limited to major events (emissions, bounties). Chatty without clutter.</text>
-	</string>
 
 	<!-- ============================================ -->
 	<!-- INTERACTIVE CONVERSATIONS (sub-menu)         -->
@@ -86,12 +74,19 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_enabled_desc">
 		<text>Master toggle. When disabled, no PDA conversations will trigger.</text>
 	</string>
+	<!-- Hint override for master toggle -->
+	<string id="interactive_enabled_hint">
+		<text>Master toggle. When disabled, no PDA conversations will trigger.</text>
+	</string>
 
 	<!-- Timing -->
 	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_min">
 		<text>Minimum Trigger Interval (minutes)</text>
 	</string>
 	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_min_desc">
+		<text>Minimum in-game minutes between conversation triggers. Lower values mean more frequent conversations.</text>
+	</string>
+	<string id="interactive_trigger_min_hint">
 		<text>Minimum in-game minutes between conversation triggers. Lower values mean more frequent conversations.</text>
 	</string>
 
@@ -101,11 +96,17 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_trigger_max_desc">
 		<text>Maximum in-game minutes between conversation triggers.</text>
 	</string>
+	<string id="interactive_trigger_max_hint">
+		<text>Maximum in-game minutes between conversation triggers.</text>
+	</string>
 
 	<string id="ui_mcm_pda_interactive_conv_interactive_default_cooldown">
 		<text>Default Cooldown (minutes)</text>
 	</string>
 	<string id="ui_mcm_pda_interactive_conv_interactive_default_cooldown_desc">
+		<text>Default in-game minutes before a conversation can repeat. Individual conversations can override this in XML.</text>
+	</string>
+	<string id="interactive_default_cooldown_hint">
 		<text>Default in-game minutes before a conversation can repeat. Individual conversations can override this in XML.</text>
 	</string>
 
@@ -186,6 +187,9 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_mode_desc">
 		<text>Strict: Conversations on cooldown are completely blocked (original behavior). Flexible: Conversations on cooldown can still be picked, but at reduced probability. Prevents conversations from stopping entirely when the pool is small.</text>
 	</string>
+	<string id="interactive_cooldown_mode_hint">
+		<text>Strict: Conversations on cooldown are completely blocked. Flexible: Conversations on cooldown can still be picked, but at reduced probability.</text>
+	</string>
 	<string id="pda_interactive_conv_cooldown_mode_lst_strict">
 		<text>Strict (hard block)</text>
 	</string>
@@ -199,12 +203,18 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_penalty_desc">
 		<text>In Flexible mode, conversations on cooldown keep this percentage of their normal selection weight. 25% means a cooldown conversation is 4x less likely to be picked than a fresh one. Only applies in Flexible cooldown mode.</text>
 	</string>
+	<string id="interactive_cooldown_penalty_hint">
+		<text>In Flexible mode, conversations on cooldown keep this percentage of their normal selection weight. Only applies in Flexible cooldown mode.</text>
+	</string>
 
 	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_hard_min">
 		<text>Hard Minimum Cooldown (minutes)</text>
 	</string>
 	<string id="ui_mcm_pda_interactive_conv_interactive_cooldown_hard_min_desc">
 		<text>In Flexible mode, conversations within this many minutes of being played are still completely blocked. Prevents the same conversation from repeating back-to-back. Set to 0 to allow any repeat. Only applies in Flexible cooldown mode.</text>
+	</string>
+	<string id="interactive_cooldown_hard_min_hint">
+		<text>In Flexible mode, conversations within this many minutes are still completely blocked. Only applies in Flexible cooldown mode.</text>
 	</string>
 
 	<string id="ui_mcm_pda_interactive_conv_interactive_allow_cross_faction">
@@ -213,50 +223,15 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_allow_cross_faction_desc">
 		<text>When enabled, if no conversations are available for your faction, the system will try the Loner (general) conversation pool as a fallback. Useful for factions with few or no dedicated conversations.</text>
 	</string>
-	
-	<string id="pda_interactive_conv_interactive_cooldown_mode_lst_strict">
-    <text>Strict (hard block)</text>
-	</string>
-	<string id="pda_interactive_conv_interactive_cooldown_mode_lst_flexible">
-		<text>Flexible (reduced chance)</text>
-	</string>
-	
-
-
-	<string id="pda_interactive_conv_menu_presets">
-    <text>Playstyle Presets</text>
-	</string>
-	<string id="pda_interactive_conv_title_presets">
-		<text>Global Playstyle Presets</text>
-	</string>
-	<string id="pda_interactive_conv_desc_presets">
-		<text>Choose a preset that adjusts the entire dynamic news/conversation's settings intensity. Feel free to tweak them further.</text>
-	</string>
-
-	<string id="pda_interactive_conv_preset_balanced">
-		<text>Balanced</text>
-	</string>
-	<string id="pda_interactive_conv_preset_immersive">
-		<text>Immersive</text>
-	</string>
-	<string id="pda_interactive_conv_preset_minimalist">
-		<text>Minimalist</text>
-	</string>
-	<string id="pda_interactive_conv_preset_hardcore">
-		<text>Hardcore</text>
-	</string>
-	<string id="pda_interactive_conv_preset_relaxed">
-		<text>Relaxed</text>
-	</string>
-	<string id="pda_interactive_conv_preset_conversation_focused">
-		<text>Conversation Focused, Less vanilla messages.</text>
-	</string>
 
 	<!-- Gameplay -->
 	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_chance_mult">
 		<text>Spawn Chance Multiplier (%)</text>
 	</string>
 	<string id="ui_mcm_pda_interactive_conv_interactive_spawn_chance_mult_desc">
+		<text>Scales all spawn probability outcomes. 100 = normal, 200 = double chance, 0 = no spawns from conversations.</text>
+	</string>
+	<string id="interactive_spawn_chance_mult_hint">
 		<text>Scales all spawn probability outcomes. 100 = normal, 200 = double chance, 0 = no spawns from conversations.</text>
 	</string>
 
@@ -287,7 +262,16 @@
 	<string id="ui_mcm_pda_interactive_conv_interactive_npc_cooldown_desc">
 		<text>Minimum in-game minutes before the same NPC can be used again for a PDA conversation. Helps avoid repetition.</text>
 	</string>
-
+	
+		<string id="interactive_choice_tip_duration_hint">
+		<text>How long the numbered choice prompt stays on screen before disappearing.</text>
+	</string>
+	<string id="interactive_pda_retry_delay_hint">
+		<text>If PDA is required but not equipped, the game will retry showing the choices after this many seconds.</text>
+	</string>
+	<string id="interactive_npc_reply_delay_min_hint">
+		<text>Minimum time before the NPC's reply message appears after the player</text>
+	</string>
 	<!-- Notifications -->
 	<string id="ui_mcm_pda_interactive_conv_interactive_show_hunt_notifications">
 		<text>Show Hunting Squad Notifications</text>
@@ -475,6 +459,9 @@
 	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_strict_cooldown_desc">
 		<text>If enabled, topics on cooldown are completely blocked. If disabled, they have reduced weight.</text>
 	</string>
+	<string id="background_strict_cooldown_hint">
+		<text>If enabled, topics on cooldown are completely blocked. If disabled, they have reduced weight.</text>
+	</string>
 
 	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_flex_penalty">
 		<text>Flexible Cooldown Penalty (%)</text>
@@ -482,11 +469,17 @@
 	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_flex_penalty_desc">
 		<text>In flexible mode, topics on cooldown keep this percentage of their normal weight.</text>
 	</string>
+	<string id="background_flex_penalty_hint">
+		<text>In flexible mode, topics on cooldown keep this percentage of their normal weight.</text>
+	</string>
 
 	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_hard_min">
 		<text>Hard Minimum Cooldown (minutes)</text>
 	</string>
 	<string id="ui_mcm_pda_interactive_conv_background_npc_conv_hard_min_desc">
+		<text>Even in flexible mode, topics within this many minutes are still completely blocked.</text>
+	</string>
+	<string id="background_hard_min_hint">
 		<text>Even in flexible mode, topics within this many minutes are still completely blocked.</text>
 	</string>
 
@@ -811,8 +804,8 @@
 	<string id="st_pda_ic_eliminate_1_descr">
 		<text>Dangerous mutants have been spotted in the area. Eliminate the pack to secure safe passage.</text>
 	</string>
-	
-		<!-- ============================================ -->
+
+	<!-- ============================================ -->
 	<!-- Section titles (within each sub-menu)        -->
 	<!-- ============================================ -->
 
