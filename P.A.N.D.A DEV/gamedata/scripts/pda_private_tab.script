@@ -1,0 +1,267 @@
+-- ============================================================
+-- pda_private_tab.script
+-- ============================================================
+class "pda_private_tab" (CUIScriptWnd)
+local SINGLETON = nil
+
+function get_ui()
+    SINGLETON = SINGLETON or pda_private_tab()
+    SINGLETON:Reset()
+    return SINGLETON
+end
+
+function pda_private_tab:__init()
+    super()
+    self.xml = CScriptXmlInit()
+    self.xml:ParseFile("pda_private.xml")
+    
+    self:InitControls()
+    self:InitCallBacks()
+    
+    -- Cache variables
+    self.cached_log_size = -1
+    self.cached_conv_turn = -1
+    self.cached_has_conv = false
+end
+
+function pda_private_tab:InitControls()
+    self:SetWndRect(Frect():set(0,0,1024,768))
+
+    self.form = self.xml:InitStatic("private_pda", self)
+    self.dialog = self.xml:InitStatic("private_pda:info", self.form)
+    
+    self.xml:InitStatic("private_pda:info:list_bg", self.dialog)
+    self.npc_list = self.xml:InitListBox("private_pda:info:message_list", self.dialog)
+    self:Register(self.npc_list, "npc_list")
+    
+    self.desc_box = self.xml:InitStatic("private_pda:info:description", self.dialog)
+    self.empty_state = self.xml:InitTextWnd("private_pda:info:description:empty_state", self.desc_box)
+    
+    self.xml:InitStatic("private_pda:info:description:header_bg", self.desc_box)
+    self.image_container = self.xml:InitStatic("private_pda:info:description:image_container", self.desc_box)
+    self.image = self.xml:InitStatic("private_pda:info:description:image_container:image", self.image_container)
+    self.image_frame = self.xml:InitStatic("private_pda:info:description:image_container:image_frame", self.image_container)
+    self.header_name = self.xml:InitTextWnd("private_pda:info:description:chat_header_name", self.desc_box)
+    
+    self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
+end
+
+function pda_private_tab:InitCallBacks()
+    self:AddCallback("npc_list", ui_events.LIST_ITEM_CLICKED, self.OnSelectNPC, self)
+    
+    -- Callbacks for dynamic buttons
+    self:AddCallback("choice_btn_1", ui_events.BUTTON_CLICKED, self.OnChoice1, self)
+    self:AddCallback("choice_btn_2", ui_events.BUTTON_CLICKED, self.OnChoice2, self)
+    self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
+    self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
+    self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnChoiceIgnore, self)
+end
+
+function pda_private_tab:Update()
+    CUIScriptWnd.Update(self)
+    
+    -- UI Polling logic: automatically detects if the conversation state or message log changed!
+    local log_size = pda_interactive_conv.pda_private_log and #pda_interactive_conv.pda_private_log or 0
+    local has_conv = pda_interactive_conv.CONV ~= nil
+    local conv_turn = has_conv and pda_interactive_conv.CONV.turn or 0
+    
+    -- If an NPC sends a message OR triggers a new choice turn, redraw instantly.
+    if self.cached_log_size ~= log_size or self.cached_conv_turn ~= conv_turn or self.cached_has_conv ~= has_conv then
+        self.cached_log_size = log_size
+        self.cached_conv_turn = conv_turn
+        self.cached_has_conv = has_conv
+        
+        -- Remember the currently selected contact to not disrupt the player
+        local current_contact = nil
+        local item = self.npc_list:GetSelectedItem()
+        if item and item.contact_id ~= "System" then
+            current_contact = item.contact_id
+        end
+        
+        self:Reset(current_contact)
+    end
+	    if set_pda_private_tab_open then
+        set_pda_private_tab_open(self:IsShown())
+    end
+end
+
+-- Handlers
+function pda_private_tab:OnChoice1() self:OnChoiceClicked(1) end
+function pda_private_tab:OnChoice2() self:OnChoiceClicked(2) end
+function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
+function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
+
+function pda_private_tab:OnChoiceClicked(idx)
+    if pda_interactive_conv.CONV then
+        pda_interactive_conv.on_player_choice(idx)
+        -- Button clicks log the message, which changes log_size, triggering Update() seamlessly.
+    end
+end
+
+function pda_private_tab:OnChoiceIgnore()
+    pda_interactive_conv.CONV = nil
+    -- Changes has_conv to false, triggering Update() seamlessly to remove buttons.
+end
+
+function pda_private_tab:Reset(target_contact_id)
+    self.npc_list:RemoveAll()
+    self.scrollbar:Clear()
+    self.image_container:Show(false)
+    self.header_name:SetText("")
+    
+    local log = pda_interactive_conv.pda_private_log or {}
+    
+    if #log == 0 then
+        local item = pvt_contact_entry("System", "Your inbox is empty.", "", "ui_inGame2_No_Data")
+        self.npc_list:AddExistingItem(item)
+        self.empty_state:SetText("INBOX EMPTY")
+        self.empty_state:Show(true)
+        return
+    end
+
+    local contacts = {}
+    local contact_order = {}
+
+    for i = 1, #log do
+        local entry = log[i]
+        local contact_id = entry.contact_name or "Unknown"
+        
+        if not contacts[contact_id] then
+            contacts[contact_id] = {
+                latest_text = entry.text,
+                timestamp = entry.timestamp,
+                icon = (not entry.is_player) and entry.sender_icon or nil
+            }
+            table.insert(contact_order, contact_id)
+        end
+        if entry.sender_icon and not entry.is_player then
+            contacts[contact_id].icon = entry.sender_icon
+        end
+    end
+
+    for _, contact_id in ipairs(contact_order) do
+        local data = contacts[contact_id]
+        local clean_text = string.gsub(data.latest_text, "%%c%[%d+,%d+,%d+,%d+%]", "")
+        local item = pvt_contact_entry(contact_id, clean_text, data.timestamp, data.icon or "ui_inGame2_Neutral_1")
+        self.npc_list:AddExistingItem(item)
+    end
+    
+    -- Restore selection if requested (so the screen doesn't jump while reading!)
+    if target_contact_id then
+        for i = 0, self.npc_list:GetSize() - 1 do
+            local list_item = self.npc_list:GetItemByIndex(i)
+            if list_item.contact_id == target_contact_id then
+                self.npc_list:SetSelectedIndex(i)
+                self:OnSelectNPC()
+                return
+            end
+        end
+    end
+    
+    -- Fallback selection if no target is requested
+    if self.npc_list:GetSize() > 0 then
+        self.npc_list:SetSelectedIndex(0)
+        self:OnSelectNPC()
+    else
+        self.empty_state:SetText("SELECT A CONTACT")
+        self.empty_state:Show(true)
+    end
+end
+
+function pda_private_tab:OnSelectNPC()
+    local item = self.npc_list:GetSelectedItem()
+    if not item or item.contact_id == "System" then return end
+
+    self.empty_state:Show(false)
+    self.scrollbar:Clear()
+    
+    self.header_name:SetText(item.contact_id)
+    if item.icon then
+        self.image:InitTexture(item.icon)
+        self.image_container:Show(true)
+    else
+        self.image_container:Show(false)
+    end
+
+    local log = pda_interactive_conv.pda_private_log or {}
+    
+    for i = #log, 1, -1 do
+        local entry = log[i]
+        if (entry.contact_name or "Unknown") == item.contact_id then
+            local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
+            local bubble_bg = self.xml:InitStatic(template, nil)
+            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
+            
+            local display_text = ""
+            if entry.is_player then
+                display_text = "%c[255,150,255,150]You %c[255,130,130,130][" .. entry.timestamp .. "]\\n%c[default]" .. entry.text
+            else
+                display_text = "%c[255,255,200,50]" .. entry.sender .. " %c[255,130,130,130][" .. entry.timestamp .. "]\\n%c[default]" .. entry.text
+            end
+            
+            text_wnd:SetText(display_text)
+            text_wnd:AdjustHeightToText()
+            
+            local padding = 15
+            local text_h = text_wnd:GetHeight()
+            local bubble_w = bubble_bg:GetWidth()
+            
+            bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
+            self.scrollbar:AddWindow(bubble_bg, true)
+            bubble_bg:SetAutoDelete(true)
+        end
+    end
+
+    -- Rendering dynamic choices if this NPC currently is awaiting interaction
+    local active_conv = pda_interactive_conv.CONV
+    if active_conv and active_conv.npc_name == item.contact_id then
+        for i = 1, active_conv.num_choices do
+            local ch = active_conv.choices[i]
+            local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+            self:Register(btn, "choice_btn_" .. i)
+            btn:TextControl():SetText(ch.text)
+            
+            self.scrollbar:AddWindow(btn, true)
+            btn:SetAutoDelete(true)
+        end
+        
+        -- Ignore option to silently close dialogue focus and stop waiting
+        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+        self:Register(btn_ignore, "choice_btn_ignore")
+        btn_ignore:TextControl():SetText("[ Ignore ]")
+    end
+    
+    if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
+end
+
+-------------------------------------------------------------------
+-- List Item Class 
+-------------------------------------------------------------------
+class "pvt_contact_entry" (CUIListBoxItem)
+
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon) super()
+    self:GetTextItem():SetText("")
+    self.contact_id = contact_id
+    self.icon = icon
+
+    self.img_icon = self:AddIconField(1)
+    self.img_icon:InitTexture(icon)
+    self.img_icon:SetStretchTexture(true)
+    self.img_icon:SetWndRect(Frect():set(5, 5, 40, 40))
+
+    self.str_name = self:AddTextField(contact_id .. " [" .. (timestamp or "--:--") .. "]", 1)
+    self.str_name:SetWndRect(Frect():set(55, 5, 160, 18))
+    self.str_name:SetFont(GetFontLetterica18Russian())
+    self.str_name:SetTextColor(GetARGB(255, 255, 200, 50)) 
+    self.str_name:SetEllipsis(true) 
+
+    self.str_msg = self:AddTextField(preview, 1)
+    self.str_msg:SetWndRect(Frect():set(55, 25, 160, 18)) 
+    self.str_msg:SetFont(GetFontLetterica16Russian())
+    self.str_msg:SetTextColor(GetARGB(255, 160, 160, 160))
+    self.str_msg:SetEllipsis(true) 
+end
+
+function is_private_tab_visible()
+    return SINGLETON and SINGLETON:IsShown()
+end

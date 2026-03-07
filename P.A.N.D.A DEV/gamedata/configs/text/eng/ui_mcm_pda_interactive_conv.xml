@@ -7,12 +7,18 @@
 	<string id="ui_mcm_menu_pda_interactive_conv">
 		<text>P.A.N.D.A</text>
 	</string>
+	
+	
 
 	<!-- ============================================ -->
 	<!-- MAIN SLIDE (new)                              -->
 	<!-- ============================================ -->
 	<string id="pda_interactive_conv_slide_main">
 		<text>P.A.N.D.A - Interactive Conversations v1.0</text>
+	</string>
+	
+	<string id="st_pda_private_tab">
+		<text>Private Messages</text>
 	</string>
 
 
@@ -24,7 +30,6 @@
 		<text>P.A.N.D.A - PDA And News Dynamic Expansion.</text>
 	</string>
 
-	<!-- Missing Dynamic News Master Toggle -->
 	<string id="ui_mcm_pda_interactive_conv_dynamic_news_dn_enabled">
 		<text>Enable Dynamic News</text>
 	</string>

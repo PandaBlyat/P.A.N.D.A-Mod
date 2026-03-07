@@ -1,0 +1,8 @@
+<w>
+    <file name="ui\ui_pda_private_app">
+        <texture id="ui_pda_private_app_e" x="0"   y="0"   width="256" height="256" />
+        <texture id="ui_pda_private_app_h" x="256" y="0"   width="256" height="256" />
+        <texture id="ui_pda_private_app_t" x="0"   y="256" width="256" height="256" />
+        <texture id="ui_pda_private_app_d" x="256" y="256" width="256" height="256" />
+    </file>
+</w>

@@ -10,6 +10,8 @@
     - Fixed faction goodwill changing function.
     - Added NPC cooldown to avoid repetition.
     - Added fallback to non‑task when task conversation not found.
+    - Fixed conversation restart issue by cancelling duplicate open_ui events.
+    - Added safe removal of time events to prevent crashes if the function is missing.
 ================================================================================
 --]]
 
@@ -22,6 +24,37 @@ local FALLBACK_NPC_ICON = "ui_inGame2_Neutral_1"
 
 -- Global used by engine overrides to simulate talking state
 fake_talking_npc_id = nil
+pda_private_tab_open = false
+
+function set_pda_private_tab_open(state)
+    pda_private_tab_open = state == true
+end
+
+pda_private_log = {} -- Initialize the table
+
+-- Function to add messages to the log
+function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
+    -- Grab the current game time userdata object
+    local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
+    Y, M, D, h, m, s, ms = game.get_game_time():get(Y, M, D, h, m, s, ms)
+    
+    -- Format it into a string (DD/MM/YYYY HH:MM)
+    local current_time = string.format("%02d/%02d/%04d %02d:%02d", D, M, Y, h, m)
+
+    table.insert(pda_private_log, 1, { -- Insert at index 1 so newest are first
+        contact_name = contact_name,   -- Crucial for grouping threads!
+        sender = sender_name,
+        text = text,
+        sender_icon = icon or "ui_inGame2_Neutral_1",
+        timestamp = current_time, 
+        is_player = is_player or false
+    })
+    
+    -- Optional: Limit log to 50 messages to prevent save bloat
+    if #pda_private_log > 50 then
+        table.remove(pda_private_log)
+    end
+end
 
 -- ============================================================
 -- PANDA GLOBAL API TABLE & CONFIGURATION
@@ -83,10 +116,21 @@ local TASK_ID_TO_CAT = {
 -- ============================================================
 -- UTILITY FUNCTIONS
 -- ============================================================
-local CONV, conv_last_played, last_conv_npc_id, _callbacks_registered = nil, {}, nil, false
-local npc_last_used = {}   -- new: store last used time per NPC
+CONV = nil
+local conv_last_played, last_conv_npc_id, _callbacks_registered = {}, nil, false
+local npc_last_used = {}   -- store last used time per NPC
 local last_pda_warning_time = 0 
 
+-- Safe time‑event removal – prevents crash if the function doesn't exist
+local function safe_remove_time_event(id, name)
+    if remove_time_event then
+        pcall(remove_time_event, id, name)
+    elseif RemoveTimeEvent then
+        pcall(RemoveTimeEvent, id, name)
+    else
+        -- No removal function available – do nothing
+    end
+end
 
 local function printf(fmt, ...)
     if PANDA.get_config("debug_logging") then
@@ -151,10 +195,6 @@ end
 function reveal_random_stash()
     if treasure_manager and treasure_manager.create_random_stash then
         treasure_manager.create_random_stash(nil, nil, nil, true)
-        dynamic_news_helper.send_tip(
-            game.translate_string("st_pda_ic_outcome_stash"),
-            "System", 0, 10, "stalker", "info", "npc"
-        )
     else
         printf("WARNING: treasure_manager not found!")
     end
@@ -242,7 +282,7 @@ function discover_all_available_tasks()
 end
 
 -- ============================================================
--- NPC COOLDOWN HELPERS (new)
+-- NPC COOLDOWN HELPERS
 -- ============================================================
 local function is_npc_on_cooldown(npc_id)
     local last = npc_last_used[npc_id]
@@ -256,7 +296,7 @@ local function record_npc_use(npc_id)
 end
 
 -- ============================================================
--- NPC FILTERING (with cooldown check added)
+-- NPC FILTERING (with cooldown check)
 -- ============================================================
 function get_friendly_npcs()
     local friendly = {}
@@ -359,7 +399,7 @@ function find_npc_with_task()
     local valid_jobs = {}
     for _, job in ipairs(jobs) do
         local npc_obj = level.object_by_id(job.npc_se.id)
-        if npc_obj and npc_obj:alive() and not npc_obj:is_talking() and not is_npc_on_cooldown(job.npc_se.id) then   -- cooldown check
+        if npc_obj and npc_obj:alive() and not npc_obj:is_talking() and not is_npc_on_cooldown(job.npc_se.id) then
             table.insert(valid_jobs, job)
         end
     end
@@ -402,7 +442,7 @@ function panda_give_task(task_id, npc_id)
         if on_job_descr then
             local cond_ok, cond = pcall(xr_logic.parse_condlist, db.actor, "task_manager", "condlist", on_job_descr)
             if cond_ok and cond then
-                -- FIX: Pass 'npc_obj' instead of 'db.actor' as the second argument. 
+                -- FIX: Pass 'npc_obj' instead of 'db.actor' as the second argument.
                 -- Many engine tasks (especially delivery) use the npc argument to generate the target correctly!
                 pcall(xr_logic.pick_section_from_condlist, db.actor, npc_obj, cond)
             else
@@ -1164,71 +1204,17 @@ function load_choices_for_turn(prefix, faction, conv_id, turn, npc_name)
     return choices, count
 end
 
-function show_choices_as_tip()
-    if not CONV then return end
 
-    if PANDA.get_config("require_pda_equipped") and not (db.actor and db.actor:item_in_slot(8)) then
-        CreateTimeEvent("pda_ic", "pda_wait", PANDA.get_config("pda_retry_delay") or 2, show_choices_as_tip)
-        return
-    end
-
-    local y, w, e = "%c[255,255,210,60]", "%c[255,220,220,220]", "%c[255,130,130,130]"
-    local msg = y .. game.translate_string("st_pda_ic_header_prefix") ..
-                w .. " | " .. game.translate_string("st_pda_ic_header_prompt") .. "\\n"
-
-    for i = 1, CONV.num_choices do
-        msg = msg .. "\\n" .. y .. "[" .. i .. "] " .. w .. CONV.choices[i].text
-    end
-    msg = msg .. "\\n" .. e .. "[0] Ignore"
-
-    dynamic_news_helper.send_tip(
-        msg,
-        game.translate_string("st_pda_ic_outcome_sender"),
-        0,
-        PANDA.get_config("choice_tip_duration") or 10,
-        "stalker",
-        "beep_2",
-        "gr"
-    )
-end
 
 function on_player_choice(idx)
     -- 1. Fail early if CONV is already missing (Safety catch)
     if not CONV or not CONV.choices[idx] then return end
 
-    local pda_active = false
-    local pda_menu = ActorMenu.get_pda_menu()
-    
-    if db.actor:active_slot() == 8 then
-        pda_active = true                 
-    elseif pda_menu and pda_menu:IsShown() then
-        pda_active = true                 
-    end
-
-    if not pda_active then
-        -- Anti-spam for the warning notification (2000 ms / 2 seconds)
-        local tg = time_global()
-        if tg > last_pda_warning_time + 2000 then
-            dynamic_news_helper.send_tip(
-                game.translate_string("st_pda_ic_pda_closed_warning"),
-                nil, 0, 5, "stalker", "attention", "npc"
-            )
-            last_pda_warning_time = tg
-        end
-        return
-    end
-
     local ch = CONV.choices[idx]
 
-    dynamic_news_helper.send_tip(
-        ch.text,
-        db.actor:character_name(),
-        0, 10,
-        db.actor:character_icon(),
-        "click",
-        "npc"
-    )
-
+    -- Add player choice to log, NO global tip
+    pda_private_add_message(CONV.npc_name, db.actor:character_name(), ch.text, db.actor:character_icon(), true)
+    
     -- This right here is what protects you from button-mashing abuse!
     local c = CONV
     CONV = nil 
@@ -1252,28 +1238,25 @@ function on_player_choice(idx)
     local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
     local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
     local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
-    local branch_delay_min = PANDA.get_config("branch_delay_min") or 2
-    local branch_delay_max = PANDA.get_config("branch_delay_max") or 4
 
     CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
         if ch.reply and ch.reply ~= "" then
-            dynamic_news_helper.send_tip(
-                ch.reply,
-                c.npc_name,
-                0, 15,
-                c.npc_icon,
-                "news",
-                "npc"
-            )
+            -- Generic global alert for NPC reply (unless private tab is already open)
+            if is_private_tab_visible and is_private_tab_visible() then
+                -- Tab is open and visible → do NOT send global alert
+            else
+                -- TODO: Implement actual global alert (e.g., dynamic_news_helper.send_tip)
+                -- For now, just log
+                printf("Global alert: New message from %s", c.npc_name)
+            end
+            -- Add actual reply to log
+            pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
         end
 
         if should_apply_outcome then
             CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
                 local given = apply_outcome(ch.outcome, c.npc_name, c.faction, c.npc_id, c.task_id)
-                local composite_key = (c.prefix or "task") .. "_" .. c.faction .. "_" .. c.conv_id
-                
-                conv_last_played[composite_key] = game.get_game_time()
-                
+                -- Cooldown is already set at conversation end; outcome cooldown is redundant but harmless.
                 return true
             end)
         end
@@ -1285,14 +1268,22 @@ function on_player_choice(idx)
                 CONV.turn = ch.next_turn
                 CONV.choices = next_choices
                 CONV.num_choices = num
-                CreateTimeEvent("pda_ic", "open_ui", math.random(branch_delay_min, branch_delay_max), function()
-                    show_choices_as_tip()
-                    return true
-                end)
             end
         end
+
+        -- Try to update PDA view automatically if they are staring at it waiting for reply
+        if get_ui then
+            get_ui():Reset()
+        end
+
         return true
     end)
+
+    -- FIX: Record cooldown immediately if this choice ends the conversation (no next turn)
+    if not ch.next_turn then
+        local composite_key = (c.prefix or "task") .. "_" .. c.faction .. "_" .. c.conv_id
+        conv_last_played[composite_key] = game.get_game_time()
+    end
 end
 
 function start_interactive_conv(npc_se, conv_id, prefix, faction, task_id, category)
@@ -1324,26 +1315,25 @@ function start_interactive_conv(npc_se, conv_id, prefix, faction, task_id, categ
         num_choices = num,
         task_id = task_id,
         category = category,
-        applied_outcomes = {} -- FIX: Track applied outcomes to prevent farming during UI loops
+        applied_outcomes = {} -- Track applied outcomes to prevent farming during UI loops
     }
 
     last_conv_npc_id = npc_se.id
     record_npc_use(npc_se.id)
 
+    -- Send ONLY the Generic Global Chat Alert
     dynamic_news_helper.send_tip(
-        sub_placeholders(msg, name, faction),
-        name,
-        0, 15,
-        CONV.npc_icon,
-        "news",
-        "npc"
+        "You've received a Private Message from " .. name,
+        "PDA Alert", 0, 10, CONV.npc_icon, "news", "npc"
     )
+    
+    -- Add the actual message directly into the custom Private PDA Log
+    pda_private_add_message(name, name, sub_placeholders(msg, name, faction), CONV.npc_icon, false)
 
-    local intro_delay = PANDA.get_config("intro_delay") or 2
-    CreateTimeEvent("pda_ic", "open_ui", intro_delay, function()
-        show_choices_as_tip()
-        return true
-    end)
+    -- Force refresh of UI if PDA is actively open so the message pops up immediately
+    if get_ui then
+        get_ui():Reset()
+    end
 
     return true
 end
@@ -1457,15 +1447,7 @@ end
 -- KEYBOARD CALLBACKS
 -- ============================================================
 function on_key_press_cb(key)
-    if key == DIK_0 and CONV then
-        CONV = nil
-        return
-    end
-
-    if CONV and CHOICE_KEYS[key] and CHOICE_KEYS[key] <= CONV.num_choices then
-        on_player_choice(CHOICE_KEYS[key])
-    end
-
+    -- debug trigger if enabled. All choice interactions are in the PDA UI now.
     if key == DIK_SPACE and not CONV and PANDA.get_config("debug_trigger") then
         try_trigger_interactive_conv()
     end
@@ -1476,29 +1458,42 @@ end
 -- ============================================================
 function save_state(m)
     m.pda_ic_cooldowns = conv_last_played
-    m.pda_ic_npc_cooldowns = npc_last_used   -- new: save NPC cooldowns
+    m.pda_ic_npc_cooldowns = npc_last_used
+    m.pda_private_log = pda_private_log -- SAVE TO FILE
 end
 
 function load_state(m)
-    if m.pda_ic_cooldowns then
-        conv_last_played = m.pda_ic_cooldowns
-    end
-    if m.pda_ic_npc_cooldowns then
-        npc_last_used = m.pda_ic_npc_cooldowns   -- new: load NPC cooldowns
-    end
+    if m.pda_ic_cooldowns then conv_last_played = m.pda_ic_cooldowns end
+    if m.pda_ic_npc_cooldowns then npc_last_used = m.pda_ic_npc_cooldowns end
+    if m.pda_private_log then pda_private_log = m.pda_private_log end -- LOAD FROM FILE
 end
 
 -- ============================================================
 -- INITIALIZATION
 -- ============================================================
 function on_game_start()
+    -- Ensure this function runs only once
     if _callbacks_registered then return end
 
+    -- Add the private tab to the PDA via mac_mcm
+    if mac_mcm then
+        mac_mcm.add_app("pda_private", {
+            name = "st_pda_private_tab",        -- unlocalized string; define in your XML
+            texture = "ui_pda_private_app",    -- texture name (create or reuse)
+            tab = "eptPrivate",                  -- must match the button id in pda.xml
+            func = pda_private_tab.get_ui        -- the getter function
+        })
+    else
+        printf("PANDA_IC: MAC not found, private tab not registered.")
+    end
+
+    -- Register essential callbacks
     RegisterScriptCallback("actor_on_first_update", setup_engine_overrides)
     RegisterScriptCallback("on_key_press", on_key_press_cb)
     RegisterScriptCallback("save_state", save_state)
     RegisterScriptCallback("load_state", load_state)
 
+    -- Schedule the first trigger
     schedule_next_trigger(1)
 
     _callbacks_registered = true

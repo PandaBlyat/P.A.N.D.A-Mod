@@ -29,62 +29,61 @@ local story_LL_trigger, story_MS_trigger = true, true
 function update_settings()
     -- Helper: use default if option not found
     local function get_opt(key, default)
-        local val = ui_options.get(key)
-        if val == nil then
-            return default
+        -- Use ui_mcm for MCM options
+        if ui_mcm then
+            local val = ui_mcm.get(key)
+            if val ~= nil then
+                return val
+            end
         end
-        return val
+        return default
     end
 
-    -- News toggles (as before)
-    shw_death_stalker   = get_opt("pda_interactive_conv/dn_death_stalker", true)
-    shw_death_mutant    = get_opt("pda_interactive_conv/dn_death_mutant", true)
-    shw_death_generic   = get_opt("pda_interactive_conv/dn_generic_death", true)
-    shw_death_report    = get_opt("pda_interactive_conv/dn_death_report", true)
-    shw_kill_wounded    = get_opt("pda_interactive_conv/dn_kill_wounded", true)
-    shw_found_artifact  = get_opt("pda_interactive_conv/dn_found_artifact", true)
-    shw_heli_call       = get_opt("pda_interactive_conv/dn_heli_call", true)
-    shw_loot            = get_opt("pda_interactive_conv/dn_loot", true)
-    shw_reaction        = get_opt("pda_interactive_conv/dn_reaction", true)
-    shw_weather         = get_opt("pda_interactive_conv/dn_weather", true)
-    shw_time            = get_opt("pda_interactive_conv/dn_time", true)
-    shw_nearby_activity = get_opt("pda_interactive_conv/dn_nearby_activity", true)
-    shw_zombie          = get_opt("pda_interactive_conv/dn_zombie", true)
-    shw_bounty          = get_opt("pda_interactive_conv/dn_bounty", true)
-    shw_random_msg      = get_opt("pda_interactive_conv/dn_random_msg", true)
-    shw_factions_report = get_opt("pda_interactive_conv/dn_factions_report", true)
-    shw_zone_activity   = get_opt("pda_interactive_conv/dn_zone_activity", true)
-    shw_found_dead      = get_opt("pda_interactive_conv/dn_found_dead", true)
-    shw_surge           = get_opt("pda_interactive_conv/dn_surge", true)
-    shw_companions      = get_opt("pda_interactive_conv/dn_companions", true)
+    -- News toggles (from dynamic_news group)
+    shw_death_stalker   = get_opt("pda_interactive_conv/dynamic_news/dn_death_stalker", true)
+    shw_death_mutant    = get_opt("pda_interactive_conv/dynamic_news/dn_death_mutant", true)
+    shw_death_generic   = get_opt("pda_interactive_conv/dynamic_news/dn_generic_death", true)
+    shw_death_report    = get_opt("pda_interactive_conv/dynamic_news/dn_death_report", true)
+    shw_kill_wounded    = get_opt("pda_interactive_conv/dynamic_news/dn_kill_wounded", true)
+    shw_found_artifact  = get_opt("pda_interactive_conv/dynamic_news/dn_found_artifact", true)
+    shw_heli_call       = get_opt("pda_interactive_conv/dynamic_news/dn_heli_call", true)
+    shw_loot            = get_opt("pda_interactive_conv/dynamic_news/dn_loot", true)
+    shw_reaction        = get_opt("pda_interactive_conv/dynamic_news/dn_reaction", true)
+    shw_weather         = get_opt("pda_interactive_conv/dynamic_news/dn_weather", true)
+    shw_time            = get_opt("pda_interactive_conv/dynamic_news/dn_time", true)
+    shw_nearby_activity = get_opt("pda_interactive_conv/dynamic_news/dn_nearby_activity", true)
+    shw_zombie          = get_opt("pda_interactive_conv/dynamic_news/dn_zombie", true)
+    shw_bounty          = get_opt("pda_interactive_conv/dynamic_news/dn_bounty", true)
+    shw_random_msg      = get_opt("pda_interactive_conv/dynamic_news/dn_random_msg", true)
+    shw_factions_report = get_opt("pda_interactive_conv/dynamic_news/dn_factions_report", true)
+    shw_zone_activity   = get_opt("pda_interactive_conv/dynamic_news/dn_zone_activity", true)
+    shw_found_dead      = get_opt("pda_interactive_conv/dynamic_news/dn_found_dead", true)
+    shw_surge           = get_opt("pda_interactive_conv/dynamic_news/dn_surge", true)
+    shw_companions      = get_opt("pda_interactive_conv/dynamic_news/dn_companions", true)
 
-    -- Timing values for news (as before)
-    cycle_TickSpecial   = get_opt("pda_interactive_conv/dn_cycle_special", 240)
-    cycle_TickTask      = get_opt("pda_interactive_conv/dn_cycle_task", 300)
-    cycle_TickRandom    = get_opt("pda_interactive_conv/dn_cycle_random", 240)
-    cycle_TickCompanion = get_opt("pda_interactive_conv/dn_cycle_companion", 240)
-    msg_duration        = get_opt("pda_interactive_conv/dn_msg_duration", 15)
+    -- Timing values for news (from dynamic_news group)
+    cycle_TickSpecial   = get_opt("pda_interactive_conv/dynamic_news/dn_cycle_special", 240)
+    cycle_TickTask      = get_opt("pda_interactive_conv/dynamic_news/dn_cycle_task", 300)
+    cycle_TickRandom    = get_opt("pda_interactive_conv/dynamic_news/dn_cycle_random", 240)
+    cycle_TickCompanion = get_opt("pda_interactive_conv/dynamic_news/dn_cycle_companion", 240)
+    msg_duration        = get_opt("pda_interactive_conv/dynamic_news/dn_msg_duration", 15)
 
-    -- NEW: NPC Conversation settings
-    npc_conv_enabled            = get_opt("pda_interactive_conv/npc_conv_enabled", true)
-    npc_conv_interval           = get_opt("pda_interactive_conv/npc_conv_interval", 240)
-    npc_conv_chance             = get_opt("pda_interactive_conv/npc_conv_chance", 50)
-    npc_conv_topic_cooldown     = get_opt("pda_interactive_conv/npc_conv_topic_cooldown", 120)
-    npc_conv_rep_gossip_chance  = get_opt("pda_interactive_conv/npc_conv_rep_gossip_chance", 10)
-    npc_conv_rep_gossip_interval= get_opt("pda_interactive_conv/npc_conv_rep_gossip_interval", 180)
-    npc_conv_group_chance       = get_opt("pda_interactive_conv/npc_conv_group_chance", 50)
-    npc_conv_strict_cooldown    = get_opt("pda_interactive_conv/npc_conv_strict_cooldown", true)
-    npc_conv_flex_penalty       = get_opt("pda_interactive_conv/npc_conv_flex_penalty", 25)
-    npc_conv_hard_min           = get_opt("pda_interactive_conv/npc_conv_hard_min", 5)
+    -- NPC Conversation settings (from background group)
+    npc_conv_enabled            = get_opt("pda_interactive_conv/background/npc_conv_enabled", true)
+    npc_conv_interval           = get_opt("pda_interactive_conv/background/npc_conv_interval", 240)
+    npc_conv_chance             = get_opt("pda_interactive_conv/background/npc_conv_chance", 50)
+    npc_conv_topic_cooldown     = get_opt("pda_interactive_conv/background/npc_conv_topic_cooldown", 120)
+    npc_conv_rep_gossip_chance  = get_opt("pda_interactive_conv/background/npc_conv_rep_gossip_chance", 10)
+    npc_conv_rep_gossip_interval= get_opt("pda_interactive_conv/background/npc_conv_rep_gossip_interval", 180)
+    npc_conv_group_chance       = get_opt("pda_interactive_conv/background/npc_conv_group_chance", 50)
+    npc_conv_strict_cooldown    = get_opt("pda_interactive_conv/background/npc_conv_strict_cooldown", true)
+    npc_conv_flex_penalty       = get_opt("pda_interactive_conv/background/npc_conv_flex_penalty", 25)
+    npc_conv_hard_min           = get_opt("pda_interactive_conv/background/npc_conv_hard_min", 5)
 
     -- Update DynamicNewsManager if it exists
     local inst = instance
     if inst then
-        -- Apply conversation settings
         inst.conv_enabled           = npc_conv_enabled
-        inst.conv_timer             = npc_conv_interval * 60  -- convert minutes to seconds? Wait: conv_timer is in seconds originally (240 = 4 min). So we keep as seconds.
-        -- Actually the timer is set in seconds; we should store interval in minutes but convert to seconds when using.
-        -- The existing self.conv_timer is in seconds (240 = 4 min). So we'll keep that.
         inst.conv_timer             = npc_conv_interval * 60   -- convert minutes to seconds
         inst.conv_chance            = npc_conv_chance
         inst.topic_cooldown_min     = npc_conv_topic_cooldown
@@ -92,16 +91,15 @@ function update_settings()
         inst.player_rep_gossip_interval = npc_conv_rep_gossip_interval
         inst.group_chance           = npc_conv_group_chance
         inst.conv_strict_cooldown   = npc_conv_strict_cooldown
-        inst.conv_flex_penalty      = npc_conv_flex_penalty / 100   -- store as multiplier
+        inst.conv_flex_penalty      = npc_conv_flex_penalty / 100
         inst.conv_hard_min          = npc_conv_hard_min
 
-        -- Reset the conversation timer with new interval
         if level.present() then
             ResetTimeEvent("DynamicNewsManager", "TickConversation", inst.conv_timer)
         end
     end
 
-    if (level.present()) then
+    if level.present() then
         ResetTimeEvent("DynamicNewsManager","TickSpecial", math.random(cycle_TickSpecial + 1, cycle_TickSpecial*2 + 1))
         ResetTimeEvent("DynamicNewsManager","TickTask",    math.random(cycle_TickTask + 1, cycle_TickTask*2 + 1))
         ResetTimeEvent("DynamicNewsManager","TickRandom",  math.random(cycle_TickRandom + 1, cycle_TickRandom*2 + 1))
