@@ -26,20 +26,6 @@ function pda_private_tab:__init()
     self.cached_has_conv = false
     self.cached_npc_data = {}
     self.thread_seen = {}
-    self.typing_anim_tick = 0
-end
-
-
-local function safe_init_text(xml, path, parent)
-    local ok, result = pcall(xml.InitTextWnd, xml, path, parent)
-    if ok then return result end
-    return nil
-end
-
-local function safe_init_button(xml, path, parent)
-    local ok, result = pcall(xml.Init3tButton, xml, path, parent)
-    if ok then return result end
-    return nil
 end
 
 function pda_private_tab:InitControls()
@@ -67,18 +53,14 @@ function pda_private_tab:InitControls()
     self.faction_badge = self.xml:InitTextWnd("private_pda:info:description:faction_badge", self.desc_box)
     self.message_count = self.xml:InitTextWnd("private_pda:info:description:message_count", self.desc_box)
     self.last_seen = self.xml:InitTextWnd("private_pda:info:description:last_seen", self.desc_box)
-    self.typing_hint = safe_init_text(self.xml, "private_pda:info:description:typing_hint", self.desc_box)
+    self.typing_hint = self.xml:InitTextWnd("private_pda:info:description:typing_hint", self.desc_box)
 
-    self.btn_block = safe_init_button(self.xml, "private_pda:info:description:btn_block", self.desc_box)
-    self.btn_delete = safe_init_button(self.xml, "private_pda:info:description:btn_delete", self.desc_box)
-    if self.btn_block then
-        self:Register(self.btn_block, "header_btn_block")
-        self.btn_block:TextControl():SetText("Block")
-    end
-    if self.btn_delete then
-        self:Register(self.btn_delete, "header_btn_delete")
-        self.btn_delete:TextControl():SetText("Delete")
-    end
+    self.btn_block = self.xml:Init3tButton("private_pda:info:description:btn_block", self.desc_box)
+    self.btn_delete = self.xml:Init3tButton("private_pda:info:description:btn_delete", self.desc_box)
+    self:Register(self.btn_block, "header_btn_block")
+    self:Register(self.btn_delete, "header_btn_delete")
+    self.btn_block:TextControl():SetText("Block")
+    self.btn_delete:TextControl():SetText("Delete")
     
     self.xml:InitTextWnd("private_pda:info:description:stat_relation_label", self.desc_box)
     self.stat_relation_value = self.xml:InitTextWnd("private_pda:info:description:stat_relation_value", self.desc_box)
@@ -105,12 +87,8 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_2", ui_events.BUTTON_CLICKED, self.OnChoice2, self)
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
-    if self.btn_block then
-        self:AddCallback("header_btn_block", ui_events.BUTTON_CLICKED, self.OnBlockContact, self)
-    end
-    if self.btn_delete then
-        self:AddCallback("header_btn_delete", ui_events.BUTTON_CLICKED, self.OnDeleteThread, self)
-    end
+    self:AddCallback("header_btn_block", ui_events.BUTTON_CLICKED, self.OnBlockContact, self)
+    self:AddCallback("header_btn_delete", ui_events.BUTTON_CLICKED, self.OnDeleteThread, self)
 end
 
 function pda_private_tab:Update()
@@ -138,16 +116,9 @@ function pda_private_tab:Update()
     local selected = self.npc_list:GetSelectedItem()
     if selected and selected.contact_id and get_pda_typing_state and get_pda_typing_state(selected.contact_id) then
         local dots = (math.floor(self.typing_anim_tick / 20) % 3) + 1
-        if self.typing_hint then
-            self.typing_hint:SetText(string.format("%s is typing%s", selected.contact_id, string.rep(".", dots)))
-        else
-            local current_last = self.last_seen:GetText() or ""
-            if not string.find(current_last, "typing", 1, true) then
-                self.last_seen:SetText("Typing...")
-            end
-        end
+        self.typing_hint:SetText(string.format("%s is typing%s", selected.contact_id, string.rep(".", dots)))
     else
-        if self.typing_hint then self.typing_hint:SetText("") end
+        self.typing_hint:SetText("")
     end
 
     if set_pda_private_tab_open then
@@ -369,7 +340,7 @@ function pda_private_tab:Reset(target_contact_id)
                 timestamp = entry.raw_time or entry.timestamp,
                 icon = (not entry.is_player) and entry.sender_icon or nil,
                 message_count = 1,
-                unread = entry.is_player and 0 or 1
+                unread = 1
             }
             table.insert(contact_order, contact_id)
         else
@@ -428,7 +399,7 @@ function pda_private_tab:HideStats()
     self.stat_community_value:SetText("")
     self.faction_badge:SetText("")
     self.last_seen:SetText("")
-    if self.typing_hint then self.typing_hint:SetText("") end
+    self.typing_hint:SetText("")
     
     self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
     self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
@@ -449,21 +420,14 @@ function pda_private_tab:ShowStats(contact_name)
         return
     end
     
-    local location_name = level and level.name and level.name() or "Zone"
     if npc_data.obj and npc_data.obj.alive and npc_data.obj:alive() then
-        local in_combat = npc_data.obj.best_enemy and npc_data.obj:best_enemy() ~= nil
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
-        if in_combat then
-            self.status_indicator:SetTextureColor(GetARGB(255, 220, 140, 60))
-            self.last_seen:SetText("Status: Away (In Combat) @ " .. location_name)
-        else
-            self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
-            self.last_seen:SetText("Status: Online @ " .. location_name)
-        end
+        self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
+        self.last_seen:SetText("Status: Online")
     else
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
-        self.last_seen:SetText("Status: Offline")
+        self.last_seen:SetText("Status: Unknown")
     end
     
     -- Faction badge with colour
@@ -499,10 +463,10 @@ function pda_private_tab:ShowStats(contact_name)
         end
     end
     
-    if latest_time and self.last_seen:GetText() == "Status: Offline" then
+    if latest_time and self.last_seen:GetText() == "Status: Unknown" then
         local current_game_time = game.get_game_time()
         local relative = get_relative_time(latest_time, current_game_time)
-        self.last_seen:SetText("Last seen " .. relative .. " @ " .. location_name)
+        self.last_seen:SetText("Last contact: " .. relative)
     end
 end
 
@@ -531,8 +495,12 @@ function pda_private_tab:OnSelectNPC()
 
     if portrait_icon and portrait_icon ~= "" then
         self.image:InitTexture(portrait_icon)
+        self.image:SetStretchTexture(true)
+        self.image_container:Show(true)
     else
         self.image:InitTexture("ui_inGame2_Neutral_1")
+        self.image:SetStretchTexture(true)
+        self.image_container:Show(false)
     end
     self.image:SetStretchTexture(true)
     self.image_container:Show(true)
@@ -554,13 +522,9 @@ function pda_private_tab:OnSelectNPC()
             local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
-
+            
             local relative_time = get_relative_time(entry.raw_time or entry.timestamp, current_game_time)
-            local header_time = relative_time
-            if type(entry.timestamp) == "string" and string.len(entry.timestamp) >= 16 then
-                header_time = entry.timestamp:sub(12, 16)
-            end
-
+            
             local display_text = ""
             if entry.is_player then
                 local status = entry.delivery_state or "Sent"
@@ -602,6 +566,12 @@ function pda_private_tab:OnSelectNPC()
             btn:SetAutoDelete(true)
         end
         
+        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+        self:Register(btn_ignore, "choice_btn_ignore")
+        btn_ignore:TextControl():SetText("[ Ignore ]")
+        btn_ignore:Enable(true)
+        self.scrollbar:AddWindow(btn_ignore, true)
+        btn_ignore:SetAutoDelete(true)
     end
     
     if self.scrollbar.ScrollToEnd then 
