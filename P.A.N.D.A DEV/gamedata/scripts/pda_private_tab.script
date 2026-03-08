@@ -349,11 +349,13 @@ function pda_private_tab:ShowStats(contact_name)
         self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
     end
     
+    -- Faction badge with colour
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
     self.faction_badge:SetText(faction_text)
     
-    local relation_text = tostring(npc_data.relation)
+    -- Relation text with colour
+    local relation_text
     if npc_data.relation > 1000 then
         relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
     elseif npc_data.relation < -1000 then
@@ -401,7 +403,8 @@ function pda_private_tab:OnSelectNPC()
     
     self.header_name:SetText(item.contact_id)
     
-    if item.contact_icon then
+    -- Portrait
+    if item.contact_icon and item.contact_icon ~= "" then
         self.image:InitTexture(item.contact_icon)
         self.image_container:Show(true)
     else
@@ -430,10 +433,12 @@ function pda_private_tab:OnSelectNPC()
             
             local display_text = ""
             if entry.is_player then
-                display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s", 
+                -- Player message (green "You", grey timestamp)
+                display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     relative_time, entry.text)
             else
-                display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s", 
+                -- NPC message (gold sender, grey timestamp)
+                display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     entry.sender, relative_time, entry.text)
             end
             
@@ -457,6 +462,7 @@ function pda_private_tab:OnSelectNPC()
             local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
             self:Register(btn, "choice_btn_" .. i)
             
+            -- Choice button text (gold number, then default colour for text)
             local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
             btn:TextControl():SetText(choice_text)
             
