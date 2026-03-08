@@ -158,7 +158,7 @@
                 <auto_frameline x="0" y="538" width="706" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
 
                 <!-- ========== TYPING HINT ==========
-                     Proper container element with <text> child — avoids "xml node not found" crash.
+                     Proper container element with <text> child ï¿½ avoids "xml node not found" crash.
                      Positioned just above the input bar. -->
                 <typing_hint name="typing_hint" x="10" y="542" width="686" height="18">
                     <text font="letterica18" r="220" g="220" b="80" a="255" align="l" vert_align="c" complex_mode="1"/>
@@ -187,10 +187,10 @@
                     <frame_line x="0" y="0" width="428" height="50" stretch="1">
                         <texture>ui_inGame2_PDA_Frame</texture>
                     </frame_line>
-                    <text_box x="12" y="8" width="404" height="20" complex_mode="1" word_wrap="1">
+                    <text_box name="text_box" x="12" y="8" width="404" height="20" complex_mode="1" word_wrap="1">
                         <text font="letterica18" r="215" g="215" b="220" a="255" complex_mode="1"/>
                     </text_box>
-                    <timestamp x="12" y="28" width="404" height="14">
+                    <timestamp name="timestamp" x="12" y="28" width="404" height="14">
                         <text font="letterica18" r="130" g="130" b="130" a="255" align="r" vert_align="c"/>
                     </timestamp>
                 </bubble_npc>
@@ -200,10 +200,10 @@
                     <frame_line x="0" y="0" width="428" height="50" stretch="1">
                         <texture>ui_inGame2_PDA_Frame</texture>
                     </frame_line>
-                    <text_box x="12" y="8" width="404" height="20" complex_mode="1" word_wrap="1">
+                    <text_box name="text_box" x="12" y="8" width="404" height="20" complex_mode="1" word_wrap="1">
                         <text font="letterica18" r="200" g="240" b="200" a="255" complex_mode="1"/>
                     </text_box>
-                    <timestamp x="12" y="28" width="404" height="14">
+                    <timestamp name="timestamp" x="12" y="28" width="404" height="14">
                         <text font="letterica18" r="100" g="160" b="100" a="255" align="r" vert_align="c"/>
                     </timestamp>
                 </bubble_player>
