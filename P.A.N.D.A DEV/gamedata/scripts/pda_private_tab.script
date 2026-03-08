@@ -16,6 +16,12 @@ function get_ui()
     return SINGLETON
 end
 
+-- Keep a namespaced accessor so mac_mcm.add_app can reliably call this script
+-- with `func = pda_private_tab.get_ui`.
+function pda_private_tab.get_ui()
+    return get_ui()
+end
+
 function pda_private_tab:__init()
     super()
     self.xml = CScriptXmlInit()
