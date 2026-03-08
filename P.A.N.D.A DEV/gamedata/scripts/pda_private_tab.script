@@ -25,6 +25,7 @@ function pda_private_tab:__init()
     self:InitCallBacks()
 
     self.cached_log_size = -1
+    self.cached_log_revision = -1
     self.cached_conv_turn = -1
     self.cached_has_conv = false
     self.cached_npc_data = {}
@@ -104,6 +105,7 @@ function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
 
     local log_size = pda_private_log and #pda_private_log or 0
+    local log_revision = pda_private_log_revision or 0
     local has_conv  = CONV ~= nil
     local conv_turn = has_conv and CONV.turn or 0
 
@@ -113,9 +115,11 @@ function pda_private_tab:Update()
     end
 
     if self.cached_log_size ~= log_size
+    or self.cached_log_revision ~= log_revision
     or self.cached_conv_turn ~= conv_turn
     or self.cached_has_conv  ~= has_conv then
         self.cached_log_size = log_size
+        self.cached_log_revision = log_revision
         self.cached_conv_turn = conv_turn
         self.cached_has_conv  = has_conv
 
