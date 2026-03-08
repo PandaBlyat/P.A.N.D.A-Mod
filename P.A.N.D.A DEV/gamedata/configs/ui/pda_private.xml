@@ -63,6 +63,30 @@
                     <text font="letterica16" r="200" g="200" b="200" a="255" align="l" vert_align="c" complex_mode="1"/>
                 </faction_badge>
 
+                <!-- Block and Delete buttons -->
+                <btn_block x="500" y="10" width="80" height="30" stretch="1">
+                    <texture_e r="56" g="56" b="56" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_t r="38" g="38" b="38" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="138" g="118" b="68" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <text font="letterica16" align="c" vert_align="c">
+                        <text_color r="255" g="210" b="90" a="255"/>
+                        <text_color_h r="255" g="245" b="155" a="255"/>
+                        <text_color_t r="180" g="180" b="180" a="255"/>
+                        Block
+                    </text>
+                </btn_block>
+                <btn_delete x="590" y="10" width="80" height="30" stretch="1">
+                    <texture_e r="56" g="56" b="56" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_t r="38" g="38" b="38" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="138" g="118" b="68" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <text font="letterica16" align="c" vert_align="c">
+                        <text_color r="255" g="210" b="90" a="255"/>
+                        <text_color_h r="255" g="245" b="155" a="255"/>
+                        <text_color_t r="180" g="180" b="180" a="255"/>
+                        Delete
+                    </text>
+                </btn_delete>
+
                 <message_count x="455" y="10" width="245" height="19">
                     <text font="letterica16" r="180" g="180" b="180" a="255" align="r" vert_align="c"/>
                 </message_count>
@@ -93,10 +117,17 @@
                 </relation_bar>
                 <relation_bar_label x="328" y="105" width="372" height="14"><text font="letterica16" r="120" g="120" b="120" a="255" align="c" vert_align="c">Attitude Trend</text></relation_bar_label>
 
-                <scrollbar x="0" y="146" width="706" height="458" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="8" always_show_scroll="1">
+                <!-- ScrollView for messages -->
+                <scrollbar x="0" y="146" width="706" height="440" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="8" always_show_scroll="1">
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
 
+                <!-- Typing hint (added) -->
+                <typing_hint x="10" y="590" width="686" height="20">
+                    <text font="letterica16" r="200" g="200" b="100" a="255" align="l" vert_align="c"/>
+                </typing_hint>
+
+                <!-- Bubble templates (used dynamically) -->
                 <bubble_npc x="10" y="0" width="686" height="50" stretch="1">
                     <texture r="52" g="52" b="52" a="215">ui_inGame2_hint_wnd_main_window</texture>
                     <text_box x="10" y="6" width="666" height="20" complex_mode="1" word_wrap="1">
