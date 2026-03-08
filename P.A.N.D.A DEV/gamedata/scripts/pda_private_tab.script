@@ -54,7 +54,20 @@ function pda_private_tab:InitControls()
     self.faction_badge = self.xml:InitTextWnd("private_pda:info:description:faction_badge", self.desc_box)
     self.message_count = self.xml:InitTextWnd("private_pda:info:description:message_count", self.desc_box)
     self.last_seen = self.xml:InitTextWnd("private_pda:info:description:last_seen", self.desc_box)
-    self.typing_hint = self.xml:InitTextWnd("private_pda:info:description:typing_hint", self.desc_box)
+    local ok, hint = pcall(function()
+    return self.xml:InitTextWnd("private_pda:info:description:typing_hint", self.desc_box)
+	end)
+	if ok then
+		self.typing_hint = hint
+	else
+		-- Fallback: create a text window with the same dimensions and style as defined in XML
+		self.typing_hint = CUITextWnd()
+		self.typing_hint:SetWndRect(Frect():set(10, 572, 686, 28))
+		self.typing_hint:SetFont(GetFontLetterica16())
+		self.typing_hint:SetTextColor(GetARGB(255, 220, 220, 80))
+		self.typing_hint:SetTextComplexMode(true)
+		self.desc_box:AttachChild(self.typing_hint)
+	end
 
     self.btn_block = self.xml:Init3tButton("private_pda:info:description:btn_block", self.desc_box)
     self.btn_delete = self.xml:Init3tButton("private_pda:info:description:btn_delete", self.desc_box)
@@ -63,16 +76,12 @@ function pda_private_tab:InitControls()
     self.btn_block:TextControl():SetText("Block")
     self.btn_delete:TextControl():SetText("Delete")
     
-    self.xml:InitTextWnd("private_pda:info:description:stat_relation_label", self.desc_box)
+    -- Removed the four InitTextWnd lines that referenced non-existent label elements
+    -- (stat_relation_label, stat_goodwill_label, stat_rank_label, stat_community_label)
+    
     self.stat_relation_value = self.xml:InitTextWnd("private_pda:info:description:stat_relation_value", self.desc_box)
-    
-    self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_label", self.desc_box)
     self.stat_goodwill_value = self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_value", self.desc_box)
-    
-    self.xml:InitTextWnd("private_pda:info:description:stat_rank_label", self.desc_box)
     self.stat_rank_value = self.xml:InitTextWnd("private_pda:info:description:stat_rank_value", self.desc_box)
-    
-    self.xml:InitTextWnd("private_pda:info:description:stat_community_label", self.desc_box)
     self.stat_community_value = self.xml:InitTextWnd("private_pda:info:description:stat_community_value", self.desc_box)
     
     self.relation_bar = self.xml:InitProgressBar("private_pda:info:description:relation_bar", self.desc_box)
@@ -90,6 +99,8 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
     self:AddCallback("header_btn_block", ui_events.BUTTON_CLICKED, self.OnBlockContact, self)
     self:AddCallback("header_btn_delete", ui_events.BUTTON_CLICKED, self.OnDeleteThread, self)
+    -- Optionally add callback for choice_btn_ignore if needed:
+    -- self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnIgnore, self)
 end
 
 function pda_private_tab:Update()
@@ -534,15 +545,8 @@ function pda_private_tab:OnSelectNPC()
         end
     end
 
-    if portrait_icon and portrait_icon ~= "" then
-        self.image:InitTexture(portrait_icon)
-        self.image:SetStretchTexture(true)
-        self.image_container:Show(true)
-    else
-        self.image:InitTexture("ui_inGame2_Neutral_1")
-        self.image:SetStretchTexture(true)
-        self.image_container:Show(false)
-    end
+    -- Always show container, use default icon if none
+    self.image:InitTexture(portrait_icon and portrait_icon ~= "" and portrait_icon or "ui_inGame2_Neutral_1")
     self.image:SetStretchTexture(true)
     self.image_container:Show(true)
     
@@ -557,12 +561,15 @@ function pda_private_tab:OnSelectNPC()
     
     local last_sender = nil
 
+    -- Build message bubbles from oldest to newest (reverse iteration)
     for i = #log, 1, -1 do
         local entry = log[i]
         if (entry.contact_name or "Unknown") == item.contact_id then
             local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
+            local timestamp_wnd = self.xml:InitTextWnd(template .. ":timestamp", bubble_bg)
+
             local display_sender = get_contact_display_name(entry.is_player, entry.sender)
             local header_time = get_timestamp_hhmm(entry.raw_time or entry.timestamp)
             local show_sender_header = last_sender ~= display_sender
@@ -571,41 +578,43 @@ function pda_private_tab:OnSelectNPC()
             if show_sender_header then
                 display_text = string.format("%%c[255,190,190,190]%s\\n", display_sender)
             end
-
-            local msg_body = entry.text or ""
-            local delivery_suffix = ""
-            if entry.is_player and entry.delivery_state then
-                delivery_suffix = string.format("  %%c[255,100,180,100]%s", entry.delivery_state == "Read" and "[R]" or "[S]")
-            end
-            display_text = display_text .. string.format("%%c[default]%s\\n%%c[255,120,120,120]%s%s", msg_body, header_time, delivery_suffix)
-
-            if not entry.is_player then
-                entry.read = true
-            end
-            last_sender = display_sender
+            display_text = display_text .. (entry.text or "")
 
             text_wnd:SetText(display_text)
             text_wnd:AdjustHeightToText()
 
-            local padding = 18
+            -- Timestamp + delivery icon (simple unicode checkmarks)
+            local delivery_icon = ""
+            if entry.is_player and entry.delivery_state then
+                delivery_icon = (entry.delivery_state == "Read") and " ✓✓" or " ✓"
+            end
+            timestamp_wnd:SetText(header_time .. delivery_icon)
+
+            -- Bubble dimensions
+            local padding = 26  -- space for timestamp line
             local text_h = text_wnd:GetHeight()
-            -- Narrower bubbles (60% of panel) create clearer left/right asymmetry
-            local max_w = 690   -- scrollbar content width
-            local bubble_w = math.floor(max_w * 0.62)   -- ~428 px
+            local max_w = 690   -- scrollview content width
+            local bubble_w = math.floor(max_w * 0.7)  -- 70% width (~483px)
 
             bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
-            text_wnd:SetWndSize(vector2():set(bubble_w - 20, text_h))
+            text_wnd:SetWndSize(vector2():set(bubble_w - 24, text_h))
+            timestamp_wnd:SetWndSize(vector2():set(bubble_w - 24, 14))
 
-            -- NPC bubbles: left edge; player bubbles: right edge
+            -- Position: left for NPC, right for player
             local bubble_x = entry.is_player and (max_w - bubble_w) or 0
             bubble_bg:SetWndPos(vector2():set(bubble_x, 0))
 
             self.scrollbar:AddWindow(bubble_bg, true)
             bubble_bg:SetAutoDelete(true)
+
+            if not entry.is_player then
+                entry.read = true
+            end
+            last_sender = display_sender
         end
     end
 
-
+    -- Active conversation choices
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
         for i = 1, active_conv.num_choices do
@@ -613,7 +622,6 @@ function pda_private_tab:OnSelectNPC()
             local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
             self:Register(btn, "choice_btn_" .. i)
             
-            -- Choice button text (gold number, then default colour for text)
             local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
             btn:TextControl():SetText(choice_text)
             btn:Enable(true)
@@ -639,44 +647,69 @@ end
 
 class "pvt_contact_entry" (CUIListBoxItem)
 
-function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, unread, seen, is_online) super()
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, unread, seen, is_online)
+    super()
     self:GetTextItem():SetText("")
     self.contact_id = contact_id
     self.contact_icon = icon
 
-    self.img_icon = self:AddIconField(1)
+    -- Icon with frame overlay – using unique indices
+    self.img_icon = self:AddIconField(0)
     self.img_icon:InitTexture(icon or "ui_inGame2_Neutral_1")
     self.img_icon:SetStretchTexture(true)
-    self.img_icon:SetWndRect(Frect():set(5, 5, 45, 45))
-
-    self.str_name = self:AddTextField(string.format("%s", contact_id), 1)
-    self.str_name:SetWndRect(Frect():set(58, 5, 160, 18))
-    self.str_name:SetFont(GetFontLetterica18Russian())
-    self.str_name:SetTextColor(GetARGB(255, 255, 200, 50)) 
-    self.str_name:SetEllipsis(true)
+    self.img_icon:SetWndRect(Frect():set(5, 5, 50, 50))
     
-    self.str_time = self:AddTextField(timestamp or "", 1)
-    self.str_time:SetWndRect(Frect():set(58, 22, 160, 14))
-    self.str_time:SetFont(GetFontLetterica16Russian())
-    self.str_time:SetTextColor(GetARGB(255, 120, 120, 120))
-    self.str_time:SetEllipsis(true)
+    -- Frame over icon (optional, uses same texture as header)
+    self.icon_frame = self:AddIconField(1)
+    self.icon_frame:InitTexture("ui_inGame2_PDA_Frame")
+    self.icon_frame:SetStretchTexture(true)
+    self.icon_frame:SetWndRect(Frect():set(5, 5, 50, 50))
 
-    self.str_msg = self:AddTextField(preview, 1)
-    self.str_msg:SetWndRect(Frect():set(58, 36, 160, 14)) 
-    self.str_msg:SetFont(GetFontLetterica16Russian())
+    -- Contact name (colored by faction if available)
+    local name_color = GetARGB(255, 255, 200, 50)  -- default gold
+    if not seen and unread and unread > 0 then
+        name_color = GetARGB(255, 255, 220, 100)  -- brighter for unread
+    end
+    self.str_name = self:AddTextField(contact_id, 2)
+    self.str_name:SetWndRect(Frect():set(62, 5, 150, 20))
+    self.str_name:SetFont(GetFontLetterica18Russian())
+    self.str_name:SetTextColor(name_color)
+    self.str_name:SetEllipsis(true)
+
+    -- Unread badge (red circle with number)
+    if unread and unread > 0 and not seen then
+        self.badge_bg = self:AddIconField(3)
+        self.badge_bg:InitTexture("ui_inGame2_icon_unread")  -- create or reuse a red circle texture
+        self.badge_bg:SetWndRect(Frect():set(180, 7, 18, 18))
+        self.badge_bg:SetTextureColor(GetARGB(255, 200, 50, 50))
+        
+        self.badge_text = self:AddTextField(tostring(unread), 4)
+        self.badge_text:SetWndRect(Frect():set(182, 7, 14, 18))
+        self.badge_text:SetFont(GetFontLetterica14Russian())
+        self.badge_text:SetTextColor(GetARGB(255, 255, 255, 255))
+        self.badge_text:SetAlign(1)  -- center
+    end
+
+    -- Preview message
+    self.str_msg = self:AddTextField(preview, 5)
+    self.str_msg:SetWndRect(Frect():set(62, 26, 150, 16))
+    self.str_msg:SetFont(GetFontLetterica14Russian())
     self.str_msg:SetTextColor(GetARGB(255, 150, 150, 150))
     self.str_msg:SetEllipsis(true)
 
-    if unread and unread > 0 and not seen then
-        self.str_name:SetText(string.format("%s [%d]", contact_id, unread))
-        self.str_name:SetTextColor(GetARGB(255, 255, 220, 100))
-    end
+    -- Timestamp
+    self.str_time = self:AddTextField(timestamp or "", 6)
+    self.str_time:SetWndRect(Frect():set(62, 42, 150, 14))
+    self.str_time:SetFont(GetFontLetterica14Russian())
+    self.str_time:SetTextColor(GetARGB(255, 120, 120, 120))
+    self.str_time:SetEllipsis(true)
 
+    -- Online indicator (green dot)
     if is_online then
-        self.online_dot = self:AddIconField(1)
+        self.online_dot = self:AddIconField(7)
         self.online_dot:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.online_dot:SetTextureColor(GetARGB(255, 100, 220, 110))
-        self.online_dot:SetWndRect(Frect():set(42, 38, 8, 8))
+        self.online_dot:SetWndRect(Frect():set(44, 44, 10, 10))
     end
 end
 
