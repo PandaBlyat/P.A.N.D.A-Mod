@@ -31,6 +31,31 @@ function set_pda_private_tab_open(state)
 end
 
 pda_private_log = {} -- Initialize the table
+pda_typing_state = { active=false, contact=nil, dots=0 }
+
+function set_pda_typing_state(contact_name, active)
+    pda_typing_state.active = active == true
+    pda_typing_state.contact = contact_name
+    pda_typing_state.dots = 0
+end
+
+function get_pda_typing_state(contact_name)
+    if not pda_typing_state.active then return false end
+    if not contact_name then return pda_typing_state.active end
+    return pda_typing_state.contact == contact_name
+end
+
+function set_last_player_message_state(contact_name, state)
+    for i = 1, #pda_private_log do
+        local e = pda_private_log[i]
+        if e.contact_name == contact_name and e.is_player then
+            e.delivery_state = state
+            return true
+        end
+    end
+    return false
+end
+
 
 -- Function to add messages to the log
 function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
@@ -55,7 +80,9 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
         sender_icon = icon or "ui_inGame2_Neutral_1",
         timestamp = current_time, 
         raw_time = raw_time,  -- NEW: Store raw time for calculations
-        is_player = is_player or false
+        is_player = is_player or false,
+        delivery_state = is_player and "Sent" or nil,
+        read = (is_player and false) or true
     })
     
     -- Optional: Limit log to 100 messages to prevent save bloat (increased from 50)
@@ -1210,11 +1237,16 @@ function load_choices_for_turn(prefix, faction, conv_id, turn, npc_name)
         local text = game.translate_string(key)
         if text == key then break end 
 
+        local next_turn_raw = tonumber(game.translate_string(p.."_cont_"..i))
+        if next_turn_raw and next_turn_raw <= 1 then
+            next_turn_raw = nil
+        end
+
         choices[i] = {
             text = sub_placeholders(text, npc_name, faction),
             reply = sub_placeholders(game.translate_string(p.."_reply_"..i), npc_name, faction),
             outcome = game.translate_string(p.."_outcome_"..i),
-            next_turn = tonumber(game.translate_string(p.."_cont_"..i)) or nil
+            next_turn = next_turn_raw
         }
         if choices[i].reply == p.."_reply_"..i then choices[i].reply = "" end
         if choices[i].outcome == p.."_outcome_"..i then choices[i].outcome = "none" end
@@ -1257,8 +1289,17 @@ function on_player_choice(idx)
     local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
     local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
     local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
+    local reply_delay = math.random(reply_delay_min, reply_delay_max)
 
-    CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
+    set_pda_typing_state(c.npc_name, true)
+
+    CreateTimeEvent("pda_ic", "msg_delivery", 1, function()
+        set_last_player_message_state(c.npc_name, "Delivered")
+        if get_ui then get_ui():Reset(c.npc_name) end
+        return true
+    end)
+
+    CreateTimeEvent("pda_ic", "npc_reply", reply_delay, function()
         if ch.reply and ch.reply ~= "" then
             -- Generic global alert for NPC reply (unless private tab is already open)
             if is_private_tab_visible and is_private_tab_visible() then
@@ -1268,9 +1309,12 @@ function on_player_choice(idx)
                 -- For now, just log
                 printf("Global alert: New message from %s", c.npc_name)
             end
-            -- Add actual reply to log
+            -- Add actual reply to log and mark previous player message as read
             pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
+            set_last_player_message_state(c.npc_name, "Read")
         end
+
+        set_pda_typing_state(c.npc_name, false)
 
         if should_apply_outcome then
             CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
