@@ -34,6 +34,11 @@ end
 pda_private_log = {} -- Initialize the table
 pda_typing_state = { active=false, contact=nil, dots=0 }
 
+local function get_log_contact_id(entry)
+    if not entry then return nil end
+    return entry.contact_name or entry.contact_id or entry.contact or entry.npc_name or entry.sender
+end
+
 function set_pda_typing_state(contact_name, active)
     pda_typing_state.active = active == true
     pda_typing_state.contact = contact_name
@@ -49,7 +54,7 @@ end
 function set_last_player_message_state(contact_name, state)
     for i = 1, #pda_private_log do
         local e = pda_private_log[i]
-        if e.contact_name == contact_name and e.is_player then
+        if get_log_contact_id(e) == contact_name and e.is_player then
             e.delivery_state = state
             pda_private_log_revision = (pda_private_log_revision or 0) + 1
             return true
@@ -61,6 +66,9 @@ end
 
 -- Function to add messages to the log
 function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
+    pda_private_log = pda_private_log or {}
+    local resolved_contact = contact_name or sender_name or "Unknown"
+
     -- Grab the current game time
     local game_time = game.get_game_time()
     local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
@@ -76,7 +84,8 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
     }
 
     table.insert(pda_private_log, 1, { -- Insert at index 1 so newest are first
-        contact_name = contact_name,   -- Crucial for grouping threads!
+        contact_name = resolved_contact, -- Canonical thread key
+        contact_id = resolved_contact,   -- Backward/forward compatibility alias
         sender = sender_name,
         text = text,
         sender_icon = icon or "ui_inGame2_Neutral_1",
