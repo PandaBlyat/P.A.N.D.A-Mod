@@ -549,7 +549,17 @@ end
 local function sub_placeholders(str, npc_name, npc_faction)
     if not str or str == "" then return str end
     local subs = build_substitution_table(npc_name, npc_faction)
-    return utils_data.parse_string_keys(str, subs)
+    if utils_data and utils_data.parse_string_keys then
+        return utils_data.parse_string_keys(str, subs)
+    else
+        -- Simple fallback: replace common placeholders manually
+        str = str:gsub("%$player_name", subs.player_name)
+        str = str:gsub("%$npc_name", subs.npc_name)
+        str = str:gsub("%$player_faction", subs.player_faction)
+        str = str:gsub("%$npc_faction", subs.npc_faction)
+        str = str:gsub("%$current_level", subs.current_level)
+        return str
+    end
 end
 
 function check_preconditions_generic(precond_key)

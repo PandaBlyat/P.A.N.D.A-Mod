@@ -159,7 +159,7 @@ function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 
 function pda_private_tab:OnChoiceClicked(idx)
     if CONV then
-        pda_interactive_conv.on_player_choice(idx)
+        on_player_choice(idx)
         -- Collapse choices after making a selection
         self.choices_visible = false
     end
@@ -739,11 +739,10 @@ function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_
     end
     self.str_name = self:AddTextField(contact_id, 2)
     self.str_name:SetWndRect(Frect():set(62, 5, 150, 20))
-    self.str_name:SetFont(GetFontLetterica18Russian())
     self.str_name:SetTextColor(name_color)
     self.str_name:SetEllipsis(true)
 
-    -- Unread badge: solid red background (vanilla-safe; no custom texture required)
+    -- Unread badge
     if unread and unread > 0 and not seen then
         self.badge_bg = self:AddIconField(3)
         self.badge_bg:InitTexture("ui_inGame2_hint_wnd_main_window")
@@ -752,7 +751,6 @@ function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_
 
         self.badge_text = self:AddTextField(tostring(unread), 4)
         self.badge_text:SetWndRect(Frect():set(182, 7, 14, 18))
-        self.badge_text:SetFont(GetFontLetterica14Russian())
         self.badge_text:SetTextColor(GetARGB(255, 255, 255, 255))
         self.badge_text:SetAlign(1)
     end
@@ -760,18 +758,16 @@ function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_
     -- Preview message
     self.str_msg = self:AddTextField(preview, 5)
     self.str_msg:SetWndRect(Frect():set(62, 26, 150, 16))
-    self.str_msg:SetFont(GetFontLetterica14Russian())
     self.str_msg:SetTextColor(GetARGB(255, 150, 150, 150))
     self.str_msg:SetEllipsis(true)
 
     -- Timestamp
     self.str_time = self:AddTextField(timestamp or "", 6)
     self.str_time:SetWndRect(Frect():set(62, 42, 150, 14))
-    self.str_time:SetFont(GetFontLetterica14Russian())
     self.str_time:SetTextColor(GetARGB(255, 120, 120, 120))
     self.str_time:SetEllipsis(true)
 
-    -- Online indicator dot (green)
+    -- Online indicator
     if is_online then
         self.online_dot = self:AddIconField(7)
         self.online_dot:InitTexture("ui_inGame2_hint_wnd_main_window")
