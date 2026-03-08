@@ -1210,11 +1210,16 @@ function load_choices_for_turn(prefix, faction, conv_id, turn, npc_name)
         local text = game.translate_string(key)
         if text == key then break end 
 
+        local next_turn_raw = tonumber(game.translate_string(p.."_cont_"..i))
+        if next_turn_raw and next_turn_raw <= 1 then
+            next_turn_raw = nil
+        end
+
         choices[i] = {
             text = sub_placeholders(text, npc_name, faction),
             reply = sub_placeholders(game.translate_string(p.."_reply_"..i), npc_name, faction),
             outcome = game.translate_string(p.."_outcome_"..i),
-            next_turn = tonumber(game.translate_string(p.."_cont_"..i)) or nil
+            next_turn = next_turn_raw
         }
         if choices[i].reply == p.."_reply_"..i then choices[i].reply = "" end
         if choices[i].outcome == p.."_outcome_"..i then choices[i].outcome = "none" end

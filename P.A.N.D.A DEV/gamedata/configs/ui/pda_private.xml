@@ -2,189 +2,123 @@
 <pda_private>
     <private_pda x="0" y="0" width="1024" height="768">
         <state x="0" y="0" width="1024" height="768"/>
-        
-        <!-- Main content area positioned to match PDA tabs -->
+
         <info x="15" y="90" width="970" height="618">
-            <!-- Background for the entire info area -->
             <background x="0" y="0" width="970" height="618" stretch="1">
-                <texture r="20" g="20" b="20" a="200">ui_inGame2_hint_wnd_main_window</texture>
+                <texture r="14" g="14" b="14" a="225">ui_inGame2_hint_wnd_main_window</texture>
             </background>
-            
-            <!-- Border lines to frame the info area -->
-            <auto_frameline x="0" y="0" width="970" height="1" vertical="0">
-                <texture>ui_inGame2_pda_line_horizontal</texture>
-            </auto_frameline>
-            <auto_frameline x="0" y="618" width="970" height="1" vertical="0">
-                <texture>ui_inGame2_pda_line_horizontal</texture>
-            </auto_frameline>
-            <auto_frameline x="0" y="0" width="1" height="618" vertical="1">
-                <texture>ui_inGame2_pda_line_vertical</texture>
-            </auto_frameline>
-            <auto_frameline x="970" y="0" width="1" height="618" vertical="1">
-                <texture>ui_inGame2_pda_line_vertical</texture>
-            </auto_frameline>
-            
-            <!-- Vertical divider between left list and chat area -->
-            <auto_frameline x="240" y="5" width="1" height="608" vertical="1">
-                <texture>ui_inGame2_pda_line_vertical</texture>
-            </auto_frameline>
-            
-            <!-- LEFT PANE: Contact list (240px wide) -->
-            <list_bg x="5" y="5" width="230" height="608" stretch="1">
-                <texture r="25" g="25" b="25" a="220">ui_inGame2_hint_wnd_main_window</texture>
+
+            <auto_frameline x="0" y="0" width="970" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+            <auto_frameline x="0" y="618" width="970" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+            <auto_frameline x="0" y="0" width="1" height="618" vertical="1"><texture>ui_inGame2_pda_line_vertical</texture></auto_frameline>
+            <auto_frameline x="970" y="0" width="1" height="618" vertical="1"><texture>ui_inGame2_pda_line_vertical</texture></auto_frameline>
+            <auto_frameline x="252" y="4" width="1" height="610" vertical="1"><texture>ui_inGame2_pda_line_vertical</texture></auto_frameline>
+
+            <list_bg x="6" y="6" width="240" height="606" stretch="1">
+                <texture r="24" g="24" b="24" a="235">ui_inGame2_hint_wnd_main_window</texture>
             </list_bg>
-            
-            <!-- Contact list header -->
-            <list_header x="10" y="10" width="220" height="25">
-                <text font="letterica18" r="200" g="200" b="200" a="255" align="l" vert_align="c">CONTACTS</text>
+
+            <list_header x="14" y="10" width="225" height="24">
+                <text font="letterica18" r="230" g="210" b="130" a="255" align="l" vert_align="c">PRIVATE INBOX</text>
             </list_header>
-            
-            <message_list x="10" y="40" width="220" height="560" item_height="55" can_select="1"/>
-            
-            <!-- RIGHT PANE: Chat area (720px wide - full remaining space) -->
-            <description x="245" y="5" width="720" height="608">
-                <!-- Background for the chat area -->
-                <background x="0" y="0" width="720" height="608" stretch="1">
-                    <texture r="30" g="30" b="30" a="200">ui_inGame2_hint_wnd_main_window</texture>
+
+            <auto_frameline x="12" y="38" width="228" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+
+            <message_list x="12" y="44" width="226" height="520" item_height="56" can_select="1"/>
+
+            <auto_frameline x="12" y="568" width="228" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+            <text x="16" y="575" width="220" height="28" font="letterica16" r="120" g="120" b="120" a="255" align="l" vert_align="c">Tip: select a contact to view full thread</text>
+
+            <description x="258" y="6" width="706" height="606">
+                <background x="0" y="0" width="706" height="606" stretch="1">
+                    <texture r="18" g="18" b="18" a="230">ui_inGame2_hint_wnd_main_window</texture>
                 </background>
-                
-                <!-- Empty state message -->
-                <empty_state x="0" y="270" width="720" height="30">
+
+                <empty_state x="0" y="278" width="706" height="30">
                     <text font="letterica25" r="100" g="100" b="100" a="255" align="c" vert_align="c">SELECT A CONTACT</text>
                 </empty_state>
 
-                <!-- EXPANDED HEADER with integrated stats (120px tall) -->
-                <header_bg x="0" y="0" width="720" height="120" stretch="1">
-                    <texture r="40" g="40" b="40" a="220">ui_inGame2_hint_wnd_main_window</texture>
+                <header_bg x="0" y="0" width="706" height="136" stretch="1">
+                    <texture r="34" g="34" b="34" a="235">ui_inGame2_hint_wnd_main_window</texture>
                 </header_bg>
-                
-                <!-- Separator line under header -->
-                <auto_frameline x="0" y="120" width="720" height="1" vertical="0">
-                    <texture>ui_inGame2_pda_line_horizontal</texture>
-                </auto_frameline>
+                <auto_frameline x="0" y="136" width="706" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
 
-                <!-- FIX #5: NPC Portrait (left side) - added default texture for proper initialization -->
-                <image_container x="5" y="3" width="64" height="64">
-                    <image x="0" y="0" width="64" height="64" stretch="1">
+                <image_container x="10" y="9" width="70" height="70">
+                    <image x="0" y="0" width="70" height="70" stretch="1">
                         <texture>ui_inGame2_Neutral_1</texture>
                     </image>
-                    <image_frame x="0" y="0" width="64" height="64" stretch="1">
+                    <image_frame x="0" y="0" width="70" height="70" stretch="1">
                         <texture>ui_inGame2_PDA_Frame</texture>
                     </image_frame>
                 </image_container>
-                
-                <!-- Status indicator dot (green=online, red=offline, gray=unknown) -->
-                <status_indicator x="60" y="55" width="12" height="12" stretch="1">
-                    <texture r="100" g="100" b="100" a="200">ui_inGame2_hint_wnd_main_window</texture>
+
+                <status_indicator x="69" y="67" width="12" height="12" stretch="1">
+                    <texture r="100" g="100" b="100" a="220">ui_inGame2_hint_wnd_main_window</texture>
                 </status_indicator>
 
-                <!-- NPC Name (top right of portrait) -->
-                <chat_header_name x="75" y="8" width="400" height="25">
+                <chat_header_name x="90" y="9" width="350" height="28">
                     <text font="letterica25" r="255" g="200" b="50" a="255" align="l" vert_align="c"/>
                 </chat_header_name>
-                
-                <!-- Faction badge (below name) -->
-                <faction_badge x="75" y="32" width="300" height="18">
+                <faction_badge x="90" y="36" width="300" height="18">
                     <text font="letterica16" r="200" g="200" b="200" a="255" align="l" vert_align="c" complex_mode="1"/>
                 </faction_badge>
-                
-                <!-- Message count (top right corner) -->
-                <message_count x="480" y="8" width="230" height="20">
-                    <text font="letterica16" r="150" g="150" b="150" a="255" align="r" vert_align="c"/>
+
+                <message_count x="455" y="10" width="245" height="19">
+                    <text font="letterica16" r="180" g="180" b="180" a="255" align="r" vert_align="c"/>
                 </message_count>
-                
-                <!-- Last contact time (below msg count) -->
-                <last_seen x="480" y="28" width="230" height="18">
-                    <text font="letterica16" r="130" g="130" b="130" a="255" align="r" vert_align="c"/>
+                <last_seen x="455" y="30" width="245" height="19">
+                    <text font="letterica16" r="145" g="145" b="145" a="255" align="r" vert_align="c"/>
                 </last_seen>
-                
-                <!-- Divider between header and stats -->
-                <auto_frameline x="75" y="55" width="635" height="1" vertical="0">
-                    <texture>ui_inGame2_pda_line_horizontal</texture>
-                </auto_frameline>
-                
-                <!-- FIX #3 & #4: IMPROVED STAT LAYOUT - Reduced spacing and better alignment -->
-                
-                <!-- Left column - tighter spacing -->
-                <stat_relation_label x="75" y="63" width="60" height="16">
-                    <text font="letterica16" r="140" g="140" b="140" a="255" align="l" vert_align="c">Relation:</text>
-                </stat_relation_label>
-                <stat_relation_value x="138" y="63" width="150" height="16">
-                    <text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c" complex_mode="1"/>
-                </stat_relation_value>
-                
-                <stat_goodwill_label x="75" y="82" width="60" height="16">
-                    <text font="letterica16" r="140" g="140" b="140" a="255" align="l" vert_align="c">Goodwill:</text>
-                </stat_goodwill_label>
-                <stat_goodwill_value x="138" y="82" width="150" height="16">
-                    <text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/>
-                </stat_goodwill_value>
-                
-                <stat_rank_label x="75" y="101" width="60" height="16">
-                    <text font="letterica16" r="140" g="140" b="140" a="255" align="l" vert_align="c">Rank:</text>
-                </stat_rank_label>
-                <stat_rank_value x="138" y="101" width="150" height="16">
-                    <text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/>
-                </stat_rank_value>
-                
-                <!-- Right column - aligned properly with left column, reduced spacing -->
-                <stat_community_label x="300" y="63" width="70" height="16">
-                    <text font="letterica16" r="140" g="140" b="140" a="255" align="l" vert_align="c">Community:</text>
-                </stat_community_label>
-                <stat_community_value x="373" y="63" width="150" height="16">
-                    <text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/>
-                </stat_community_value>
-                
-                <!-- Relation progress bar (right side, better aligned, moved down slightly) -->
-                <relation_bar x="300" y="87" width="405" height="6" horz="1" min="-5000" max="5000" pos="0" stretch="1">
-                    <background stretch="1">
-                        <texture r="50" g="50" b="50" a="200">ui_inGame2_hint_wnd_main_window</texture>
-                    </background>
-                    <progress x="0" stretch="1">
-                        <texture r="100" g="200" b="100">ui_inGame2_hint_wnd_main_window</texture>
-                    </progress>
+
+                <auto_frameline x="90" y="58" width="610" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+
+                <stat_relation_label x="90" y="67" width="66" height="16"><text font="letterica16" r="130" g="130" b="130" a="255" align="l" vert_align="c">Relation:</text></stat_relation_label>
+                <stat_relation_value x="157" y="67" width="160" height="16"><text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c" complex_mode="1"/></stat_relation_value>
+
+                <stat_goodwill_label x="90" y="86" width="66" height="16"><text font="letterica16" r="130" g="130" b="130" a="255" align="l" vert_align="c">Goodwill:</text></stat_goodwill_label>
+                <stat_goodwill_value x="157" y="86" width="160" height="16"><text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/></stat_goodwill_value>
+
+                <stat_rank_label x="90" y="105" width="66" height="16"><text font="letterica16" r="130" g="130" b="130" a="255" align="l" vert_align="c">Rank:</text></stat_rank_label>
+                <stat_rank_value x="157" y="105" width="160" height="16"><text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/></stat_rank_value>
+
+                <stat_community_label x="328" y="67" width="74" height="16"><text font="letterica16" r="130" g="130" b="130" a="255" align="l" vert_align="c">Community:</text></stat_community_label>
+                <stat_community_value x="404" y="67" width="140" height="16"><text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/></stat_community_value>
+
+                <relation_bar x="328" y="92" width="372" height="8" horz="1" min="-5000" max="5000" pos="0" stretch="1">
+                    <background stretch="1"><texture r="55" g="55" b="55" a="210">ui_inGame2_hint_wnd_main_window</texture></background>
+                    <progress x="0" stretch="1"><texture r="120" g="200" b="120">ui_inGame2_hint_wnd_main_window</texture></progress>
                     <min_color r="196" g="18" b="18"/>
-                    <middle_color r="200" g="200" b="50"/>
+                    <middle_color r="190" g="180" b="65"/>
                     <max_color r="100" g="200" b="100"/>
                 </relation_bar>
-                
-                <relation_bar_label x="300" y="98" width="405" height="14">
-                    <text font="letterica16" r="120" g="120" b="120" a="255" align="c" vert_align="c">Attitude</text>
-                </relation_bar_label>
-                
-                <!-- Scrollbar for messages (starts below expanded header at y=130) -->
-                <scrollbar x="0" y="130" width="720" height="478" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="10" always_show_scroll="1">
+                <relation_bar_label x="328" y="105" width="372" height="14"><text font="letterica16" r="120" g="120" b="120" a="255" align="c" vert_align="c">Attitude Trend</text></relation_bar_label>
+
+                <scrollbar x="0" y="146" width="706" height="458" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="8" always_show_scroll="1">
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
-                
-                <!-- FIX #2: Message bubbles with proper word wrapping -->
-                <bubble_npc x="10" y="0" width="700" height="50" stretch="1">
-                    <texture r="50" g="50" b="50" a="200">ui_inGame2_hint_wnd_main_window</texture>
-                    <text_box x="10" y="5" width="680" height="20" complex_mode="1" word_wrap="1">
+
+                <bubble_npc x="10" y="0" width="686" height="50" stretch="1">
+                    <texture r="52" g="52" b="52" a="215">ui_inGame2_hint_wnd_main_window</texture>
+                    <text_box x="10" y="6" width="666" height="20" complex_mode="1" word_wrap="1">
                          <text font="letterica16" r="220" g="220" b="220" a="255"/>
                     </text_box>
                 </bubble_npc>
 
-                <bubble_player x="10" y="0" width="700" height="50" stretch="1">
-                    <texture r="40" g="70" b="40" a="200">ui_inGame2_hint_wnd_main_window</texture>
-                    <text_box x="10" y="5" width="680" height="20" complex_mode="1" word_wrap="1">
-                         <text font="letterica16" r="200" g="255" b="200" a="255"/>
+                <bubble_player x="10" y="0" width="686" height="50" stretch="1">
+                    <texture r="42" g="76" b="42" a="220">ui_inGame2_hint_wnd_main_window</texture>
+                    <text_box x="10" y="6" width="666" height="20" complex_mode="1" word_wrap="1">
+                         <text font="letterica16" r="210" g="255" b="210" a="255"/>
                     </text_box>
                 </bubble_player>
-                
-                <!-- FIX #6: Choice buttons with stronger hover contrast -->
-                <choice_btn x="10" y="0" width="700" height="38" stretch="1">
-                    <!-- Enabled state -->
-                    <texture_e r="60" g="60" b="60" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
-                    <!-- Touched/Pressed state -->
-                    <texture_t r="50" g="50" b="50" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
-                    <!-- Highlighted/Hover state - much brighter for visibility -->
-                    <texture_h r="120" g="120" b="80" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
-                    
-                    <text font="letterica16" align="l" vert_align="c" x="15" y="0" complex_mode="1">
-                        <text_color r="255" g="200" b="50" a="255"/>
-                        <text_color_h r="255" g="255" b="100" a="255"/>
-                        <text_color_t r="150" g="150" b="150" a="255"/>
+
+                <choice_btn x="10" y="0" width="686" height="40" stretch="1">
+                    <texture_e r="56" g="56" b="56" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_t r="38" g="38" b="38" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="138" g="118" b="68" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <text font="letterica16" align="l" vert_align="c" x="14" y="0" complex_mode="1">
+                        <text_color r="255" g="210" b="90" a="255"/>
+                        <text_color_h r="255" g="245" b="155" a="255"/>
+                        <text_color_t r="180" g="180" b="180" a="255"/>
                     </text>
                 </choice_btn>
             </description>
