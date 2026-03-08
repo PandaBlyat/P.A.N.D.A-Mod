@@ -25,6 +25,7 @@ function pda_private_tab:__init()
     self.cached_conv_turn = -1
     self.cached_has_conv = false
     self.cached_npc_data = {}
+    self.thread_seen = {}
 end
 
 function pda_private_tab:InitControls()
@@ -123,6 +124,33 @@ function pda_private_tab:OnChoiceIgnore()
 end
 
 function get_relative_time(timestamp_str, current_game_time)
+    if type(timestamp_str) == "table" then
+        local y = tonumber(timestamp_str.year) or 0
+        local m = tonumber(timestamp_str.month) or 0
+        local d = tonumber(timestamp_str.day) or 0
+        local h = tonumber(timestamp_str.hour) or 0
+        local min = tonumber(timestamp_str.minute) or 0
+
+        local cY, cM, cD, ch, cmin, cs, cms = 0, 0, 0, 0, 0, 0, 0
+        cY, cM, cD, ch, cmin, cs, cms = current_game_time:get(cY, cM, cD, ch, cmin, cs, cms)
+
+        local msg_total = (((y * 365 + m * 31 + d) * 24 + h) * 60) + min
+        local cur_total = (((cY * 365 + cM * 31 + cD) * 24 + ch) * 60) + cmin
+        local diff_minutes = math.max(0, cur_total - msg_total)
+
+        if diff_minutes < 1 then
+            return "Just now"
+        elseif diff_minutes < 60 then
+            return string.format("%d minute%s ago", diff_minutes, diff_minutes == 1 and "" or "s")
+        elseif diff_minutes < 1440 then
+            local hours = math.floor(diff_minutes / 60)
+            return string.format("%d hour%s ago", hours, hours == 1 and "" or "s")
+        else
+            local days = math.floor(diff_minutes / 1440)
+            return string.format("%d day%s ago", days, days == 1 and "" or "s")
+        end
+    end
+
     local d, m, y, h, min = timestamp_str:match("(%d+)/(%d+)/(%d+)%s+(%d+):(%d+)")
     if not d then return timestamp_str end
     
@@ -265,13 +293,17 @@ function pda_private_tab:Reset(target_contact_id)
         if not contacts[contact_id] then
             contacts[contact_id] = {
                 latest_text = entry.text,
-                timestamp = entry.timestamp,
+                timestamp = entry.raw_time or entry.timestamp,
                 icon = (not entry.is_player) and entry.sender_icon or nil,
-                message_count = 1
+                message_count = 1,
+                unread = 1
             }
             table.insert(contact_order, contact_id)
         else
             contacts[contact_id].message_count = contacts[contact_id].message_count + 1
+            if not entry.is_player then
+                contacts[contact_id].unread = contacts[contact_id].unread + 1
+            end
         end
         
         if entry.sender_icon and not entry.is_player then
@@ -289,7 +321,9 @@ function pda_private_tab:Reset(target_contact_id)
             clean_text, 
             relative_time, 
             data.icon or "ui_inGame2_Neutral_1",
-            data.message_count
+            data.message_count,
+            data.unread,
+            self.thread_seen[contact_id]
         )
         self.npc_list:AddExistingItem(item)
     end
@@ -341,12 +375,14 @@ function pda_private_tab:ShowStats(contact_name)
         return
     end
     
-    if npc_data.is_alive then
+    if npc_data.obj and npc_data.obj.alive and npc_data.obj:alive() then
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
+        self.last_seen:SetText("Status: Online")
     else
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
+        self.last_seen:SetText("Status: Unknown")
     end
     
     -- Faction badge with colour
@@ -382,12 +418,10 @@ function pda_private_tab:ShowStats(contact_name)
         end
     end
     
-    if latest_time then
+    if latest_time and self.last_seen:GetText() == "Status: Unknown" then
         local current_game_time = game.get_game_time()
         local relative = get_relative_time(latest_time, current_game_time)
-        self.last_seen:SetText("Last: " .. relative)
-    else
-        self.last_seen:SetText("Last: Unknown")
+        self.last_seen:SetText("Last contact: " .. relative)
     end
 end
 
@@ -402,12 +436,25 @@ function pda_private_tab:OnSelectNPC()
     self.scrollbar:Clear()
     
     self.header_name:SetText(item.contact_id)
+    self.thread_seen[item.contact_id] = true
     
     -- Portrait
-    if item.contact_icon and item.contact_icon ~= "" then
-        self.image:InitTexture(item.contact_icon)
+    local portrait_icon = item.contact_icon
+    if (not portrait_icon or portrait_icon == "") then
+        local npc_data = self.cached_npc_data[item.contact_id] or get_npc_data(item.contact_id)
+        if npc_data then
+            self.cached_npc_data[item.contact_id] = npc_data
+            portrait_icon = npc_data.icon
+        end
+    end
+
+    if portrait_icon and portrait_icon ~= "" then
+        self.image:InitTexture(portrait_icon)
+        self.image:SetStretchTexture(true)
         self.image_container:Show(true)
     else
+        self.image:InitTexture("ui_inGame2_Neutral_1")
+        self.image:SetStretchTexture(true)
         self.image_container:Show(false)
     end
     
@@ -429,7 +476,7 @@ function pda_private_tab:OnSelectNPC()
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
             
-            local relative_time = get_relative_time(entry.timestamp, current_game_time)
+            local relative_time = get_relative_time(entry.raw_time or entry.timestamp, current_game_time)
             
             local display_text = ""
             if entry.is_player then
@@ -465,6 +512,7 @@ function pda_private_tab:OnSelectNPC()
             -- Choice button text (gold number, then default colour for text)
             local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
             btn:TextControl():SetText(choice_text)
+            btn:Enable(true)
             
             self.scrollbar:AddWindow(btn, true)
             btn:SetAutoDelete(true)
@@ -473,6 +521,7 @@ function pda_private_tab:OnSelectNPC()
         local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
         self:Register(btn_ignore, "choice_btn_ignore")
         btn_ignore:TextControl():SetText("[ Ignore ]")
+        btn_ignore:Enable(true)
         self.scrollbar:AddWindow(btn_ignore, true)
         btn_ignore:SetAutoDelete(true)
     end
@@ -486,13 +535,13 @@ end
 
 class "pvt_contact_entry" (CUIListBoxItem)
 
-function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count) super()
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, unread, seen) super()
     self:GetTextItem():SetText("")
     self.contact_id = contact_id
     self.contact_icon = icon
 
     self.img_icon = self:AddIconField(1)
-    self.img_icon:InitTexture(icon)
+    self.img_icon:InitTexture(icon or "ui_inGame2_Neutral_1")
     self.img_icon:SetStretchTexture(true)
     self.img_icon:SetWndRect(Frect():set(5, 5, 45, 45))
 
@@ -513,6 +562,11 @@ function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_
     self.str_msg:SetFont(GetFontLetterica16Russian())
     self.str_msg:SetTextColor(GetARGB(255, 150, 150, 150))
     self.str_msg:SetEllipsis(true)
+
+    if unread and unread > 0 and not seen then
+        self.str_name:SetText(string.format("%s [%d]", contact_id, unread))
+        self.str_name:SetTextColor(GetARGB(255, 255, 220, 100))
+    end
 end
 
 function is_private_tab_visible()
