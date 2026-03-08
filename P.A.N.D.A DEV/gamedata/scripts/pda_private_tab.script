@@ -26,7 +26,6 @@ function pda_private_tab:__init()
     self.cached_has_conv = false
     self.cached_npc_data = {}
     self.thread_seen = {}
-    self.typing_anim_tick = 0
 end
 
 function pda_private_tab:InitControls()
@@ -341,7 +340,7 @@ function pda_private_tab:Reset(target_contact_id)
                 timestamp = entry.raw_time or entry.timestamp,
                 icon = (not entry.is_player) and entry.sender_icon or nil,
                 message_count = 1,
-                unread = entry.is_player and 0 or 1
+                unread = 1
             }
             table.insert(contact_order, contact_id)
         else
@@ -421,21 +420,14 @@ function pda_private_tab:ShowStats(contact_name)
         return
     end
     
-    local location_name = level and level.name and level.name() or "Zone"
     if npc_data.obj and npc_data.obj.alive and npc_data.obj:alive() then
-        local in_combat = npc_data.obj.best_enemy and npc_data.obj:best_enemy() ~= nil
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
-        if in_combat then
-            self.status_indicator:SetTextureColor(GetARGB(255, 220, 140, 60))
-            self.last_seen:SetText("Status: Away (In Combat) @ " .. location_name)
-        else
-            self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
-            self.last_seen:SetText("Status: Online @ " .. location_name)
-        end
+        self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
+        self.last_seen:SetText("Status: Online")
     else
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
-        self.last_seen:SetText("Status: Offline")
+        self.last_seen:SetText("Status: Unknown")
     end
     
     -- Faction badge with colour
@@ -471,10 +463,10 @@ function pda_private_tab:ShowStats(contact_name)
         end
     end
     
-    if latest_time and self.last_seen:GetText() == "Status: Offline" then
+    if latest_time and self.last_seen:GetText() == "Status: Unknown" then
         local current_game_time = game.get_game_time()
         local relative = get_relative_time(latest_time, current_game_time)
-        self.last_seen:SetText("Last seen " .. relative .. " @ " .. location_name)
+        self.last_seen:SetText("Last contact: " .. relative)
     end
 end
 
@@ -503,8 +495,12 @@ function pda_private_tab:OnSelectNPC()
 
     if portrait_icon and portrait_icon ~= "" then
         self.image:InitTexture(portrait_icon)
+        self.image:SetStretchTexture(true)
+        self.image_container:Show(true)
     else
         self.image:InitTexture("ui_inGame2_Neutral_1")
+        self.image:SetStretchTexture(true)
+        self.image_container:Show(false)
     end
     self.image:SetStretchTexture(true)
     self.image_container:Show(true)
@@ -526,13 +522,9 @@ function pda_private_tab:OnSelectNPC()
             local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
-
+            
             local relative_time = get_relative_time(entry.raw_time or entry.timestamp, current_game_time)
-            local header_time = relative_time
-            if type(entry.timestamp) == "string" and string.len(entry.timestamp) >= 16 then
-                header_time = entry.timestamp:sub(12, 16)
-            end
-
+            
             local display_text = ""
             if entry.is_player then
                 local status = entry.delivery_state or "Sent"
@@ -574,6 +566,12 @@ function pda_private_tab:OnSelectNPC()
             btn:SetAutoDelete(true)
         end
         
+        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+        self:Register(btn_ignore, "choice_btn_ignore")
+        btn_ignore:TextControl():SetText("[ Ignore ]")
+        btn_ignore:Enable(true)
+        self.scrollbar:AddWindow(btn_ignore, true)
+        btn_ignore:SetAutoDelete(true)
     end
     
     if self.scrollbar.ScrollToEnd then 
