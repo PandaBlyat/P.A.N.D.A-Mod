@@ -1549,7 +1549,7 @@ function on_game_start()
             name = "st_pda_private_tab",        -- unlocalized string; define in your XML
             texture = "ui_pda_private_app",    -- texture name (create or reuse)
             tab = "eptPrivate",                  -- must match the button id in pda.xml
-            func = get_ui                        -- global function from pda_private_tab.script
+            func = pda_private_tab.get_ui                        -- global function from pda_private_tab.script
         })
     else
         printf("PANDA_IC: MAC not found, private tab not registered.")
