@@ -189,15 +189,15 @@ Factions are normalized internally. Known faction name mappings:
 | Normalized   | Raw aliases              |
 |--------------|--------------------------|
 | stalker      | loner, stalker           |
-| Duty     | duty, dolg               |
+| military     | duty, dolg               |
 | freedom      | freedom                  |
-| clear sky         | csky (Clear Sky)         |
-| ecologists      | ecolog                   |
+| csky         | csky (Clear Sky)         |
+| ecolog       | ecolog                   |
 | mercenary    | killer                   |
-| military        | army                     |
+| army         | army                     |
 | bandit       | bandit                   |
 | monolith     | monolith                 |
-| zombified      | zombied                  |
+| zombied      | zombied                  |
 | isg          | isg                      |
 | renegade     | renegade                 |
 | greh         | greh                     |
