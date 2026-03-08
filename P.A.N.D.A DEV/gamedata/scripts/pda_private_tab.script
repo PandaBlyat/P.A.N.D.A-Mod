@@ -26,6 +26,7 @@ function pda_private_tab:__init()
     self.cached_has_conv = false
     self.cached_npc_data = {}
     self.thread_seen = {}
+	self.typing_anim_tick = 0
 end
 
 function pda_private_tab:InitControls()
