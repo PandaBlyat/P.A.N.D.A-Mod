@@ -115,11 +115,18 @@ function pda_private_tab:Update()
     
     self.typing_anim_tick = self.typing_anim_tick + 1
     local selected = self.npc_list:GetSelectedItem()
-    if selected and selected.contact_id and get_pda_typing_state and get_pda_typing_state(selected.contact_id) then
-        local dots = (math.floor(self.typing_anim_tick / 20) % 3) + 1
-        self.typing_hint:SetText(string.format("%s is typing%s", selected.contact_id, string.rep(".", dots)))
+    local typing_active = pda_typing_state and pda_typing_state.active
+    local typing_contact = pda_typing_state and pda_typing_state.contact
+    local is_typing = typing_active and selected and selected.contact_id
+                      and typing_contact == selected.contact_id
+    if is_typing then
+        local dots_idx = (math.floor(self.typing_anim_tick / 15) % 3) + 1
+        self.typing_hint:SetText(string.format(
+            "%%c[255,220,220,80]%s is typing%s", selected.contact_id, string.rep(".", dots_idx)))
+        self.typing_hint:Show(true)
     else
         self.typing_hint:SetText("")
+        self.typing_hint:Show(false)
     end
 
     if set_pda_private_tab_open then
@@ -249,46 +256,46 @@ local function get_timestamp_hhmm(timestamp_value)
 end
 
 function get_npc_data(contact_name)
-    for i = 1, 65534 do
-        local se_obj = alife_object(i)
-        if se_obj then
-            local obj = level.object_by_id(se_obj.id)
-            
-            if obj and IsStalker(obj) then
-                local npc_name = obj:character_name()
-                if npc_name == contact_name then
-                    local community = obj:character_community() or "stalker"
-                    local rank = obj:character_rank() or 0
-                    local rank_name = ranks.get_obj_rank_name(obj) or "Unknown"
-                    
-                    local goodwill = 0
-                    if obj.general_goodwill then
-                        goodwill = obj:general_goodwill(db.actor)
-                    end
-                    
-                    local relation = 0
-                    if relation_registry and relation_registry.community_relation then
-                        local player_comm = character_community(db.actor)
-                        relation = relation_registry.community_relation(community, player_comm) or 0
-                    end
-                    
-                    local icon = obj:character_icon() or "ui_inGame2_Neutral_1"
-                    
-                    return {
-                        name = contact_name,
-                        community = community,
-                        relation = relation,
-                        goodwill = goodwill,
-                        rank = rank_name,
-                        icon = icon,
-                        obj = obj,
-                        is_alive = true
-                    }
-                end
+    -- Fast path: scan only online (on-level) stalkers via db.OnlineStalkers
+    for _, id in ipairs(db.OnlineStalkers or {}) do
+        local st = db.storage and db.storage[id]
+        local npc = st and st.object
+        if npc and IsStalker(npc) and npc:alive() and npc:character_name() == contact_name then
+            local community = npc:character_community() or "stalker"
+            local rank_name = ranks.get_obj_rank_name(npc) or "Unknown"
+
+            local goodwill = 0
+            if npc.general_goodwill then
+                goodwill = npc:general_goodwill(db.actor) or 0
             end
+
+            -- community_goodwill gives the faction's attitude toward the player (tracks player actions)
+            local community_goodwill = 0
+            if relation_registry and relation_registry.community_goodwill and db and db.actor then
+                community_goodwill = relation_registry.community_goodwill(community, db.actor:id()) or 0
+            end
+
+            -- faction-to-faction relation for display label
+            local faction_relation = 0
+            if relation_registry and relation_registry.community_relation then
+                local player_comm = character_community(db.actor)
+                faction_relation = relation_registry.community_relation(community, player_comm) or 0
+            end
+
+            local icon = npc:character_icon() or "ui_inGame2_Neutral_1"
+            return {
+                name = contact_name,
+                community = community,
+                relation = faction_relation,
+                goodwill = community_goodwill,
+                personal_goodwill = goodwill,
+                rank = rank_name,
+                icon = icon,
+                obj = npc,
+                is_alive = true
+            }
         end
     end
-    
     return nil
 end
 
@@ -475,11 +482,15 @@ function pda_private_tab:ShowStats(contact_name)
     end
     self.stat_relation_value:SetText(relation_text)
     
-    local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
-    local relation_pct = math.floor(((normalized_relation + 5000) / 10000) * 100)
-    self.relation_bar:SetProgressPos(relation_pct)
-    
-    self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
+    -- Attitude Trend bar uses community_goodwill (faction attitude toward player, changes with actions).
+    -- Range is roughly -3000 to +3000; normalise to 0-100.
+    local cg = npc_data.goodwill  -- community_goodwill stored in .goodwill by new get_npc_data
+    local normalized_gw = math.max(-3000, math.min(3000, cg))
+    local bar_pct = math.floor(((normalized_gw + 3000) / 6000) * 100)
+    self.relation_bar:SetProgressPos(bar_pct)
+
+    -- Personal goodwill (NPC-specific) goes in the Goodwill field
+    self.stat_goodwill_value:SetText(tostring(npc_data.personal_goodwill or npc_data.goodwill))
     self.stat_rank_value:SetText(npc_data.rank or "Unknown")
     self.stat_community_value:SetText(get_community_name(npc_data.community))
     
@@ -558,11 +569,15 @@ function pda_private_tab:OnSelectNPC()
 
             local display_text = ""
             if show_sender_header then
-                display_text = string.format("%%c[255,190,190,190]%s\n", display_sender)
+                display_text = string.format("%%c[255,190,190,190]%s\\n", display_sender)
             end
 
             local msg_body = entry.text or ""
-            display_text = display_text .. string.format("%%c[default]%s\n%%c[255,120,120,120]%s", msg_body, header_time)
+            local delivery_suffix = ""
+            if entry.is_player and entry.delivery_state then
+                delivery_suffix = string.format("  %%c[255,100,180,100]%s", entry.delivery_state == "Read" and "[R]" or "[S]")
+            end
+            display_text = display_text .. string.format("%%c[default]%s\\n%%c[255,120,120,120]%s%s", msg_body, header_time, delivery_suffix)
 
             if not entry.is_player then
                 entry.read = true
@@ -574,12 +589,15 @@ function pda_private_tab:OnSelectNPC()
 
             local padding = 18
             local text_h = text_wnd:GetHeight()
-            local bubble_w = 470
+            -- Narrower bubbles (60% of panel) create clearer left/right asymmetry
+            local max_w = 690   -- scrollbar content width
+            local bubble_w = math.floor(max_w * 0.62)   -- ~428 px
 
             bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
             text_wnd:SetWndSize(vector2():set(bubble_w - 20, text_h))
 
-            local bubble_x = entry.is_player and (706 - bubble_w - 10) or 10
+            -- NPC bubbles: left edge; player bubbles: right edge
+            local bubble_x = entry.is_player and (max_w - bubble_w) or 0
             bubble_bg:SetWndPos(vector2():set(bubble_x, 0))
 
             self.scrollbar:AddWindow(bubble_bg, true)
