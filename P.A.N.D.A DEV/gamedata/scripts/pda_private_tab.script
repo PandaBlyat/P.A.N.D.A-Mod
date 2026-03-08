@@ -5,7 +5,6 @@ function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
     
-    -- Force the vanilla PDA tabs to show when this custom tab is active
     local pda_menu = ActorMenu.get_pda_menu()
     if pda_menu and pda_menu:GetTabControl() then
         pda_menu:GetTabControl():Show(true)
@@ -13,6 +12,7 @@ function get_ui()
     
     return SINGLETON
 end
+
 function pda_private_tab:__init()
     super()
     self.xml = CScriptXmlInit()
@@ -21,10 +21,10 @@ function pda_private_tab:__init()
     self:InitControls()
     self:InitCallBacks()
     
-    -- Cache variables
     self.cached_log_size = -1
     self.cached_conv_turn = -1
     self.cached_has_conv = false
+    self.cached_npc_data = {}
 end
 
 function pda_private_tab:InitControls()
@@ -34,6 +34,7 @@ function pda_private_tab:InitControls()
     self.dialog = self.xml:InitStatic("private_pda:info", self.form)
     
     self.xml:InitStatic("private_pda:info:list_bg", self.dialog)
+    self.xml:InitTextWnd("private_pda:info:list_header", self.dialog)
     self.npc_list = self.xml:InitListBox("private_pda:info:message_list", self.dialog)
     self:Register(self.npc_list, "npc_list")
     
@@ -44,7 +45,28 @@ function pda_private_tab:InitControls()
     self.image_container = self.xml:InitStatic("private_pda:info:description:image_container", self.desc_box)
     self.image = self.xml:InitStatic("private_pda:info:description:image_container:image", self.image_container)
     self.image_frame = self.xml:InitStatic("private_pda:info:description:image_container:image_frame", self.image_container)
+    
+    self.status_indicator = self.xml:InitStatic("private_pda:info:description:status_indicator", self.desc_box)
+    
     self.header_name = self.xml:InitTextWnd("private_pda:info:description:chat_header_name", self.desc_box)
+    self.faction_badge = self.xml:InitTextWnd("private_pda:info:description:faction_badge", self.desc_box)
+    self.message_count = self.xml:InitTextWnd("private_pda:info:description:message_count", self.desc_box)
+    self.last_seen = self.xml:InitTextWnd("private_pda:info:description:last_seen", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_relation_label", self.desc_box)
+    self.stat_relation_value = self.xml:InitTextWnd("private_pda:info:description:stat_relation_value", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_label", self.desc_box)
+    self.stat_goodwill_value = self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_value", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_rank_label", self.desc_box)
+    self.stat_rank_value = self.xml:InitTextWnd("private_pda:info:description:stat_rank_value", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_community_label", self.desc_box)
+    self.stat_community_value = self.xml:InitTextWnd("private_pda:info:description:stat_community_value", self.desc_box)
+    
+    self.relation_bar = self.xml:InitProgressBar("private_pda:info:description:relation_bar", self.desc_box)
+    self.xml:InitTextWnd("private_pda:info:description:relation_bar_label", self.desc_box)
     
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
 end
@@ -52,7 +74,6 @@ end
 function pda_private_tab:InitCallBacks()
     self:AddCallback("npc_list", ui_events.LIST_ITEM_CLICKED, self.OnSelectNPC, self)
     
-    -- Callbacks for dynamic buttons
     self:AddCallback("choice_btn_1", ui_events.BUTTON_CLICKED, self.OnChoice1, self)
     self:AddCallback("choice_btn_2", ui_events.BUTTON_CLICKED, self.OnChoice2, self)
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
@@ -63,18 +84,15 @@ end
 function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
     
-    -- UI Polling logic: automatically detects if the conversation state or message log changed!
     local log_size = pda_interactive_conv.pda_private_log and #pda_interactive_conv.pda_private_log or 0
     local has_conv = pda_interactive_conv.CONV ~= nil
     local conv_turn = has_conv and pda_interactive_conv.CONV.turn or 0
     
-    -- If an NPC sends a message OR triggers a new choice turn, redraw instantly.
     if self.cached_log_size ~= log_size or self.cached_conv_turn ~= conv_turn or self.cached_has_conv ~= has_conv then
         self.cached_log_size = log_size
         self.cached_conv_turn = conv_turn
         self.cached_has_conv = has_conv
         
-        -- Remember the currently selected contact to not disrupt the player
         local current_contact = nil
         local item = self.npc_list:GetSelectedItem()
         if item and item.contact_id ~= "System" then
@@ -83,12 +101,12 @@ function pda_private_tab:Update()
         
         self:Reset(current_contact)
     end
-	    if set_pda_private_tab_open then
+    
+    if set_pda_private_tab_open then
         set_pda_private_tab_open(self:IsShown())
     end
 end
 
--- Handlers
 function pda_private_tab:OnChoice1() self:OnChoiceClicked(1) end
 function pda_private_tab:OnChoice2() self:OnChoiceClicked(2) end
 function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
@@ -97,13 +115,124 @@ function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 function pda_private_tab:OnChoiceClicked(idx)
     if pda_interactive_conv.CONV then
         pda_interactive_conv.on_player_choice(idx)
-        -- Button clicks log the message, which changes log_size, triggering Update() seamlessly.
     end
 end
 
 function pda_private_tab:OnChoiceIgnore()
     pda_interactive_conv.CONV = nil
-    -- Changes has_conv to false, triggering Update() seamlessly to remove buttons.
+end
+
+function get_relative_time(timestamp_str, current_game_time)
+    local d, m, y, h, min = timestamp_str:match("(%d+)/(%d+)/(%d+)%s+(%d+):(%d+)")
+    if not d then return timestamp_str end
+    
+    d, m, y, h, min = tonumber(d), tonumber(m), tonumber(y), tonumber(h), tonumber(min)
+    
+    local cY, cM, cD, ch, cmin, cs, cms = 0, 0, 0, 0, 0, 0, 0
+    cY, cM, cD, ch, cmin, cs, cms = current_game_time:get(cY, cM, cD, ch, cmin, cs, cms)
+    
+    local msg_minutes = (d * 24 * 60) + (h * 60) + min
+    local cur_minutes = (cD * 24 * 60) + (ch * 60) + cmin
+    local diff_minutes = cur_minutes - msg_minutes
+    
+    if diff_minutes < 0 then diff_minutes = 0 end
+    
+    if diff_minutes < 1 then
+        return "Just now"
+    elseif diff_minutes < 60 then
+        return string.format("%d minute%s ago", diff_minutes, diff_minutes == 1 and "" or "s")
+    elseif diff_minutes < 1440 then
+        local hours = math.floor(diff_minutes / 60)
+        return string.format("%d hour%s ago", hours, hours == 1 and "" or "s")
+    else
+        local days = math.floor(diff_minutes / 1440)
+        return string.format("%d day%s ago", days, days == 1 and "" or "s")
+    end
+end
+
+function get_npc_data(contact_name)
+    for i = 1, 65534 do
+        local se_obj = alife_object(i)
+        if se_obj then
+            local obj = level.object_by_id(se_obj.id)
+            
+            if obj and IsStalker(obj) then
+                local npc_name = obj:character_name()
+                if npc_name == contact_name then
+                    local community = obj:character_community() or "stalker"
+                    local rank = obj:character_rank() or 0
+                    local rank_name = ranks.get_obj_rank_name(obj) or "Unknown"
+                    
+                    local goodwill = 0
+                    if obj.general_goodwill then
+                        goodwill = obj:general_goodwill(db.actor)
+                    end
+                    
+                    local relation = 0
+                    if relation_registry and relation_registry.community_relation then
+                        local player_comm = character_community(db.actor)
+                        relation = relation_registry.community_relation(community, player_comm) or 0
+                    end
+                    
+                    local icon = obj:character_icon() or "ui_inGame2_Neutral_1"
+                    
+                    return {
+                        name = contact_name,
+                        community = community,
+                        relation = relation,
+                        goodwill = goodwill,
+                        rank = rank_name,
+                        icon = icon,
+                        obj = obj,
+                        is_alive = true
+                    }
+                end
+            end
+        end
+    end
+    
+    return nil
+end
+
+function get_faction_color(community)
+    local faction_colors = {
+        stalker = {r=150, g=200, b=150},
+        dolg = {r=200, g=80, b=80},
+        freedom = {r=100, g=200, b=100},
+        csky = {r=100, g=150, b=200},
+        ecolog = {r=200, g=180, b=100},
+        killer = {r=200, g=100, b=100},
+        army = {r=150, g=150, b=100},
+        bandit = {r=180, g=100, b=50},
+        monolith = {r=150, g=100, b=200},
+        zombied = {r=100, g=100, b=100},
+        renegade = {r=150, g=100, b=80},
+        isg = {r=100, g=150, b=200},
+        greh = {r=200, g=150, b=100}
+    }
+    
+    local color = faction_colors[community] or {r=200, g=200, b=200}
+    return color.r, color.g, color.b
+end
+
+function get_community_name(community)
+    local community_names = {
+        stalker = "Loners",
+        dolg = "Duty",
+        freedom = "Freedom",
+        csky = "Clear Sky",
+        ecolog = "Ecologists",
+        killer = "Mercenaries",
+        army = "Military",
+        bandit = "Bandits",
+        monolith = "Monolith",
+        zombied = "Zombified",
+        renegade = "Renegades",
+        isg = "ISG",
+        greh = "Sin"
+    }
+    
+    return community_names[community] or community
 end
 
 function pda_private_tab:Reset(target_contact_id)
@@ -111,11 +240,14 @@ function pda_private_tab:Reset(target_contact_id)
     self.scrollbar:Clear()
     self.image_container:Show(false)
     self.header_name:SetText("")
+    self.message_count:SetText("")
+    
+    self:HideStats()
     
     local log = pda_interactive_conv.pda_private_log or {}
     
     if #log == 0 then
-        local item = pvt_contact_entry("System", "Your inbox is empty.", "", "ui_inGame2_No_Data")
+        local item = pvt_contact_entry("System", "Your inbox is empty.", "", "ui_inGame2_No_Data", 0)
         self.npc_list:AddExistingItem(item)
         self.empty_state:SetText("INBOX EMPTY")
         self.empty_state:Show(true)
@@ -124,6 +256,7 @@ function pda_private_tab:Reset(target_contact_id)
 
     local contacts = {}
     local contact_order = {}
+    local current_game_time = game.get_game_time()
 
     for i = 1, #log do
         local entry = log[i]
@@ -133,10 +266,14 @@ function pda_private_tab:Reset(target_contact_id)
             contacts[contact_id] = {
                 latest_text = entry.text,
                 timestamp = entry.timestamp,
-                icon = (not entry.is_player) and entry.sender_icon or nil
+                icon = (not entry.is_player) and entry.sender_icon or nil,
+                message_count = 1
             }
             table.insert(contact_order, contact_id)
+        else
+            contacts[contact_id].message_count = contacts[contact_id].message_count + 1
         end
+        
         if entry.sender_icon and not entry.is_player then
             contacts[contact_id].icon = entry.sender_icon
         end
@@ -145,11 +282,18 @@ function pda_private_tab:Reset(target_contact_id)
     for _, contact_id in ipairs(contact_order) do
         local data = contacts[contact_id]
         local clean_text = string.gsub(data.latest_text, "%%c%[%d+,%d+,%d+,%d+%]", "")
-        local item = pvt_contact_entry(contact_id, clean_text, data.timestamp, data.icon or "ui_inGame2_Neutral_1")
+        local relative_time = get_relative_time(data.timestamp, current_game_time)
+        
+        local item = pvt_contact_entry(
+            contact_id, 
+            clean_text, 
+            relative_time, 
+            data.icon or "ui_inGame2_Neutral_1",
+            data.message_count
+        )
         self.npc_list:AddExistingItem(item)
     end
     
-    -- Restore selection if requested (so the screen doesn't jump while reading!)
     if target_contact_id then
         for i = 0, self.npc_list:GetSize() - 1 do
             local list_item = self.npc_list:GetItemByIndex(i)
@@ -161,7 +305,6 @@ function pda_private_tab:Reset(target_contact_id)
         end
     end
     
-    -- Fallback selection if no target is requested
     if self.npc_list:GetSize() > 0 then
         self.npc_list:SetSelectedIndex(0)
         self:OnSelectNPC()
@@ -171,22 +314,110 @@ function pda_private_tab:Reset(target_contact_id)
     end
 end
 
+function pda_private_tab:HideStats()
+    self.stat_relation_value:SetText("")
+    self.stat_goodwill_value:SetText("")
+    self.stat_rank_value:SetText("")
+    self.stat_community_value:SetText("")
+    self.faction_badge:SetText("")
+    self.last_seen:SetText("")
+    
+    self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
+    self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
+end
+
+function pda_private_tab:ShowStats(contact_name)
+    local npc_data = self.cached_npc_data[contact_name]
+    
+    if not npc_data then
+        npc_data = get_npc_data(contact_name)
+        if npc_data then
+            self.cached_npc_data[contact_name] = npc_data
+        end
+    end
+    
+    if not npc_data then
+        self:HideStats()
+        return
+    end
+    
+    if npc_data.is_alive then
+        self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
+        self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
+    else
+        self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
+        self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
+    end
+    
+    local r, g, b = get_faction_color(npc_data.community)
+    local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
+    self.faction_badge:SetText(faction_text)
+    
+    local relation_text = tostring(npc_data.relation)
+    if npc_data.relation > 1000 then
+        relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
+    elseif npc_data.relation < -1000 then
+        relation_text = string.format("%%c[255,200,100,100]%d (Hostile)", npc_data.relation)
+    else
+        relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation)
+    end
+    self.stat_relation_value:SetText(relation_text)
+    
+    local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
+    self.relation_bar:SetProgressPos(normalized_relation)
+    
+    self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
+    self.stat_rank_value:SetText(npc_data.rank or "Unknown")
+    self.stat_community_value:SetText(get_community_name(npc_data.community))
+    
+    local log = pda_interactive_conv.pda_private_log or {}
+    local latest_time = nil
+    for i = 1, #log do
+        local entry = log[i]
+        if entry.contact_name == contact_name and not entry.is_player then
+            latest_time = entry.timestamp
+            break
+        end
+    end
+    
+    if latest_time then
+        local current_game_time = game.get_game_time()
+        local relative = get_relative_time(latest_time, current_game_time)
+        self.last_seen:SetText("Last: " .. relative)
+    else
+        self.last_seen:SetText("Last: Unknown")
+    end
+end
+
 function pda_private_tab:OnSelectNPC()
     local item = self.npc_list:GetSelectedItem()
-    if not item or item.contact_id == "System" then return end
+    if not item or item.contact_id == "System" then 
+        self:HideStats()
+        return 
+    end
 
     self.empty_state:Show(false)
     self.scrollbar:Clear()
     
     self.header_name:SetText(item.contact_id)
-    if item.icon then
-        self.image:InitTexture(item.icon)
+    
+    if item.contact_icon then
+        self.image:InitTexture(item.contact_icon)
         self.image_container:Show(true)
     else
         self.image_container:Show(false)
     end
-
+    
     local log = pda_interactive_conv.pda_private_log or {}
+    local msg_count = 0
+    for i = 1, #log do
+        if (log[i].contact_name or "Unknown") == item.contact_id then
+            msg_count = msg_count + 1
+        end
+    end
+    self.message_count:SetText(string.format("%d message%s", msg_count, msg_count == 1 and "" or "s"))
+    
+    local current_game_time = game.get_game_time()
     
     for i = #log, 1, -1 do
         local entry = log[i]
@@ -195,11 +426,15 @@ function pda_private_tab:OnSelectNPC()
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
             
+            local relative_time = get_relative_time(entry.timestamp, current_game_time)
+            
             local display_text = ""
             if entry.is_player then
-                display_text = "%c[255,150,255,150]You %c[255,130,130,130][" .. entry.timestamp .. "]\\n%c[default]" .. entry.text
+                display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s", 
+                    relative_time, entry.text)
             else
-                display_text = "%c[255,255,200,50]" .. entry.sender .. " %c[255,130,130,130][" .. entry.timestamp .. "]\\n%c[default]" .. entry.text
+                display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s", 
+                    entry.sender, relative_time, entry.text)
             end
             
             text_wnd:SetText(display_text)
@@ -215,54 +450,63 @@ function pda_private_tab:OnSelectNPC()
         end
     end
 
-    -- Rendering dynamic choices if this NPC currently is awaiting interaction
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
         for i = 1, active_conv.num_choices do
             local ch = active_conv.choices[i]
             local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
             self:Register(btn, "choice_btn_" .. i)
-            btn:TextControl():SetText(ch.text)
+            
+            local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
+            btn:TextControl():SetText(choice_text)
             
             self.scrollbar:AddWindow(btn, true)
             btn:SetAutoDelete(true)
         end
         
-        -- Ignore option to silently close dialogue focus and stop waiting
         local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
         self:Register(btn_ignore, "choice_btn_ignore")
         btn_ignore:TextControl():SetText("[ Ignore ]")
+        self.scrollbar:AddWindow(btn_ignore, true)
+        btn_ignore:SetAutoDelete(true)
     end
     
-    if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
+    if self.scrollbar.ScrollToEnd then 
+        self.scrollbar:ScrollToEnd() 
+    end
+    
+    self:ShowStats(item.contact_id)
 end
 
--------------------------------------------------------------------
--- List Item Class 
--------------------------------------------------------------------
 class "pvt_contact_entry" (CUIListBoxItem)
 
-function pvt_contact_entry:__init(contact_id, preview, timestamp, icon) super()
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count) super()
     self:GetTextItem():SetText("")
     self.contact_id = contact_id
-    self.icon = icon
+    self.contact_icon = icon
 
     self.img_icon = self:AddIconField(1)
     self.img_icon:InitTexture(icon)
     self.img_icon:SetStretchTexture(true)
-    self.img_icon:SetWndRect(Frect():set(5, 5, 40, 40))
+    self.img_icon:SetWndRect(Frect():set(5, 5, 45, 45))
 
-    self.str_name = self:AddTextField(contact_id .. " [" .. (timestamp or "--:--") .. "]", 1)
-    self.str_name:SetWndRect(Frect():set(55, 5, 160, 18))
+    self.str_name = self:AddTextField(string.format("%s", contact_id), 1)
+    self.str_name:SetWndRect(Frect():set(58, 5, 160, 18))
     self.str_name:SetFont(GetFontLetterica18Russian())
     self.str_name:SetTextColor(GetARGB(255, 255, 200, 50)) 
-    self.str_name:SetEllipsis(true) 
+    self.str_name:SetEllipsis(true)
+    
+    self.str_time = self:AddTextField(timestamp or "", 1)
+    self.str_time:SetWndRect(Frect():set(58, 22, 160, 14))
+    self.str_time:SetFont(GetFontLetterica16Russian())
+    self.str_time:SetTextColor(GetARGB(255, 120, 120, 120))
+    self.str_time:SetEllipsis(true)
 
     self.str_msg = self:AddTextField(preview, 1)
-    self.str_msg:SetWndRect(Frect():set(55, 25, 160, 18)) 
+    self.str_msg:SetWndRect(Frect():set(58, 36, 160, 14)) 
     self.str_msg:SetFont(GetFontLetterica16Russian())
-    self.str_msg:SetTextColor(GetARGB(255, 160, 160, 160))
-    self.str_msg:SetEllipsis(true) 
+    self.str_msg:SetTextColor(GetARGB(255, 150, 150, 150))
+    self.str_msg:SetEllipsis(true)
 end
 
 function is_private_tab_visible()

@@ -34,12 +34,19 @@ pda_private_log = {} -- Initialize the table
 
 -- Function to add messages to the log
 function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
-    -- Grab the current game time userdata object
+    -- Grab the current game time
+    local game_time = game.get_game_time()
     local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
-    Y, M, D, h, m, s, ms = game.get_game_time():get(Y, M, D, h, m, s, ms)
+    Y, M, D, h, m, s, ms = game_time:get(Y, M, D, h, m, s, ms)
     
-    -- Format it into a string (DD/MM/YYYY HH:MM)
+    -- Format it into a string (DD/MM/YYYY HH:MM) for display
     local current_time = string.format("%02d/%02d/%04d %02d:%02d", D, M, Y, h, m)
+    
+    -- Store raw time data for accurate relative time calculations
+    local raw_time = {
+        year = Y, month = M, day = D, 
+        hour = h, minute = m, second = s
+    }
 
     table.insert(pda_private_log, 1, { -- Insert at index 1 so newest are first
         contact_name = contact_name,   -- Crucial for grouping threads!
@@ -47,11 +54,12 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
         text = text,
         sender_icon = icon or "ui_inGame2_Neutral_1",
         timestamp = current_time, 
+        raw_time = raw_time,  -- NEW: Store raw time for calculations
         is_player = is_player or false
     })
     
-    -- Optional: Limit log to 50 messages to prevent save bloat
-    if #pda_private_log > 50 then
+    -- Optional: Limit log to 100 messages to prevent save bloat (increased from 50)
+    if #pda_private_log > 100 then
         table.remove(pda_private_log)
     end
 end
@@ -200,6 +208,17 @@ function reveal_random_stash()
     end
 end
 
+
+-- Helper to find NPC server object by character name
+function get_npc_by_name(name)
+    for i = 1, 65534 do
+        local se_obj = alife_object(i)
+        if se_obj and se_obj:character_name() == name then
+            return se_obj
+        end
+    end
+    return nil
+end
 -- ============================================================
 -- ENGINE OVERRIDES
 -- ============================================================
