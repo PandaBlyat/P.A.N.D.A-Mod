@@ -40,7 +40,7 @@
                     <text font="letterica25" r="100" g="100" b="100" a="255" align="c" vert_align="c">SELECT A CONTACT</text>
                 </empty_state>
 
-                <!-- ========== HEADER ========== (height increased to 150) -->
+                <!-- ========== HEADER ========== -->
                 <header_bg name="header_bg" x="0" y="0" width="706" height="150" stretch="1">
                     <texture r="34" g="34" b="34" a="235">ui_inGame2_hint_wnd_main_window</texture>
                 </header_bg>
@@ -143,18 +143,43 @@
                     <middle_color r="190" g="175" b="55"/>
                     <max_color r="80" g="200" b="80"/>
                 </relation_bar>
-                <!-- Optional label below bar (kept for context) -->
+                <!-- Optional label below bar -->
                 <relation_bar_label name="relation_bar_label" x="14" y="148" width="678" height="14">
                     <text font="letterica14" r="130" g="130" b="130" a="255" align="c" vert_align="c">Attitude Trend</text>
                 </relation_bar_label>
 
-                <!-- ========== SCROLLVIEW for messages ========== (positioned below header) -->
-                <scrollbar name="scrollbar" x="0" y="156" width="706" height="410" right_ident="0" left_ident="0" top_indent="4" bottom_indent="4" vert_interval="6" always_show_scroll="1">
+                <!-- ========== SCROLLVIEW for messages ==========
+                     Reduced height (380 instead of 410) to make room for typing hint and input bar -->
+                <scrollbar name="scrollbar" x="0" y="156" width="706" height="380" right_ident="0" left_ident="0" top_indent="4" bottom_indent="4" vert_interval="6" always_show_scroll="1">
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
 
-                <!-- ========== TYPING HINT (fixed – now a single, named text element) ========== -->
-                <text name="typing_hint" x="10" y="572" width="686" height="28" font="letterica16" r="220" g="220" b="80" a="255" align="l" vert_align="c" complex_mode="1"/>
+                <!-- Separator above input area -->
+                <auto_frameline x="0" y="538" width="706" height="1" vertical="0"><texture>ui_inGame2_pda_line_horizontal</texture></auto_frameline>
+
+                <!-- ========== TYPING HINT ==========
+                     Proper container element with <text> child â€” avoids "xml node not found" crash.
+                     Positioned just above the input bar. -->
+                <typing_hint name="typing_hint" x="10" y="542" width="686" height="18">
+                    <text font="letterica16" r="220" g="220" b="80" a="255" align="l" vert_align="c" complex_mode="1"/>
+                </typing_hint>
+
+                <!-- ========== INPUT BAR ==========
+                     Fake text-input look. Clicking it reveals/hides dialogue choices. -->
+                <input_bar name="input_bar" x="8" y="562" width="690" height="40" stretch="1">
+                    <texture_e r="28" g="28" b="35" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_t r="20" g="20" b="26" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="50" g="55" b="80" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <frame_line x="0" y="0" width="690" height="40" stretch="1">
+                        <texture>ui_inGame2_PDA_Frame</texture>
+                    </frame_line>
+                    <text font="letterica16" align="l" vert_align="c" x="20" y="0">
+                        <text_color r="110" g="110" b="120" a="255"/>
+                        <text_color_h r="200" g="210" b="255" a="255"/>
+                        <text_color_t r="80" g="80" b="90" a="255"/>
+                        Tap to reply...
+                    </text>
+                </input_bar>
 
                 <!-- ========== BUBBLE TEMPLATES ========== (instantiated dynamically in Lua) -->
                 <bubble_npc name="bubble_npc" x="0" y="0" width="428" height="50" stretch="1">
