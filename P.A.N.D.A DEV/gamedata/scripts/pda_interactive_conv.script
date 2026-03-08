@@ -25,6 +25,7 @@ local FALLBACK_NPC_ICON = "ui_inGame2_Neutral_1"
 -- Global used by engine overrides to simulate talking state
 fake_talking_npc_id = nil
 pda_private_tab_open = false
+pda_private_log_revision = 0
 
 function set_pda_private_tab_open(state)
     pda_private_tab_open = state == true
@@ -50,6 +51,7 @@ function set_last_player_message_state(contact_name, state)
         local e = pda_private_log[i]
         if e.contact_name == contact_name and e.is_player then
             e.delivery_state = state
+            pda_private_log_revision = (pda_private_log_revision or 0) + 1
             return true
         end
     end
@@ -89,6 +91,8 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
     if #pda_private_log > 100 then
         table.remove(pda_private_log)
     end
+
+    pda_private_log_revision = (pda_private_log_revision or 0) + 1
 end
 
 -- ============================================================
@@ -1534,6 +1538,7 @@ function load_state(m)
     if m.pda_ic_cooldowns then conv_last_played = m.pda_ic_cooldowns end
     if m.pda_ic_npc_cooldowns then npc_last_used = m.pda_ic_npc_cooldowns end
     if m.pda_private_log then pda_private_log = m.pda_private_log end -- LOAD FROM FILE
+    pda_private_log_revision = (pda_private_log_revision or 0) + 1
 end
 
 -- ============================================================
