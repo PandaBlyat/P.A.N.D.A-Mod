@@ -4,12 +4,14 @@
         <state x="0" y="0" width="1024" height="768"/>
         
         <!-- Main content area positioned to match PDA tabs -->
-        <info x="197" y="70" width="640" height="618">
+        <info x="15" y="90" width="640" height="618">
             <!-- Background for the entire info area (subtle) -->
             <background x="0" y="0" width="640" height="618" stretch="1">
                 <texture r="20" g="20" b="20" a="200">ui_inGame2_hint_wnd_main_window</texture>
             </background>
-            
+            <button x="360" y="10" width="20" height="20" id="btn_close">
+				<texture>ui_inGame2_close_button</texture>
+			</button>
             <!-- Border lines to frame the info area (like the npc_pda example) -->
             <auto_frameline x="0" y="0" width="640" height="1" vertical="0">
                 <texture>ui_inGame2_pda_line_horizontal</texture>

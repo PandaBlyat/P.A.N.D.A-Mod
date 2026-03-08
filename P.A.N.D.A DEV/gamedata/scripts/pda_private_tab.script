@@ -1,15 +1,18 @@
--- ============================================================
--- pda_private_tab.script
--- ============================================================
 class "pda_private_tab" (CUIScriptWnd)
 local SINGLETON = nil
 
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
+    
+    -- Force the vanilla PDA tabs to show when this custom tab is active
+    local pda_menu = ActorMenu.get_pda_menu()
+    if pda_menu and pda_menu:GetTabControl() then
+        pda_menu:GetTabControl():Show(true)
+    end
+    
     return SINGLETON
 end
-
 function pda_private_tab:__init()
     super()
     self.xml = CScriptXmlInit()

@@ -3610,7 +3610,6 @@ end
 
 
 function on_key_press(key)
-    printf("[DynNews] on_key_press fired | key=%s", tostring(key))
     -- Route to interactive conv handler if it's loaded
     if pda_interactive_conv and pda_interactive_conv.on_key_press_cb then
         pda_interactive_conv.on_key_press_cb(key)

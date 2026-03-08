@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+-- pda_private_dxml.xml
+<w>
+    <pda>
+        <dialog>
+            <!-- Invisible button placeholder for Private Messages tab -->
+            <!-- This makes the PDA system recognize this tab exists -->
+            <button x="1000" y="0" width="0" height="0" id="eptPrivate" frame_mode="0">
+                <text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_private_messages</text>
+            </button>
+        </dialog>
+    </pda>
+</w>
+
+
+
+
+
+
