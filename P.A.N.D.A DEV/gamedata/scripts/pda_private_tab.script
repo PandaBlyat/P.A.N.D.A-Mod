@@ -223,6 +223,31 @@ function get_relative_time(timestamp_str, current_game_time)
     end
 end
 
+local function get_contact_display_name(is_player, fallback_sender)
+    if is_player and db and db.actor and db.actor.character_name then
+        return db.actor:character_name() or "Player"
+    end
+    return fallback_sender or "Unknown"
+end
+
+local function get_timestamp_hhmm(timestamp_value)
+    if type(timestamp_value) == "table" then
+        return string.format("%02d:%02d", tonumber(timestamp_value.hour) or 0, tonumber(timestamp_value.minute) or 0)
+    end
+
+    if type(timestamp_value) == "string" then
+        local h, m = timestamp_value:match("%d+/%d+/%d+%s+(%d+):(%d+)")
+        if h and m then
+            return string.format("%02d:%02d", tonumber(h) or 0, tonumber(m) or 0)
+        end
+    end
+
+    local game_time = game.get_game_time()
+    local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
+    Y, M, D, h, m, s, ms = game_time:get(Y, M, D, h, m, s, ms)
+    return string.format("%02d:%02d", h, m)
+end
+
 function get_npc_data(contact_name)
     for i = 1, 65534 do
         local se_obj = alife_object(i)
@@ -368,7 +393,8 @@ function pda_private_tab:Reset(target_contact_id)
             data.icon or "ui_inGame2_Neutral_1",
             data.message_count,
             data.unread,
-            self.thread_seen[contact_id]
+            self.thread_seen[contact_id],
+            true
         )
         self.npc_list:AddExistingItem(item)
     end
@@ -421,7 +447,9 @@ function pda_private_tab:ShowStats(contact_name)
         return
     end
     
-    if npc_data.obj and npc_data.obj.alive and npc_data.obj:alive() then
+    local is_online_contact = true
+
+    if is_online_contact then
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
         self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
         self.last_seen:SetText("Status: Online")
@@ -448,7 +476,8 @@ function pda_private_tab:ShowStats(contact_name)
     self.stat_relation_value:SetText(relation_text)
     
     local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
-    self.relation_bar:SetProgressPos(normalized_relation)
+    local relation_pct = math.floor(((normalized_relation + 5000) / 10000) * 100)
+    self.relation_bar:SetProgressPos(relation_pct)
     
     self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
     self.stat_rank_value:SetText(npc_data.rank or "Unknown")
@@ -515,7 +544,7 @@ function pda_private_tab:OnSelectNPC()
     end
     self.message_count:SetText(string.format("%d message%s", msg_count, msg_count == 1 and "" or "s"))
     
-    local current_game_time = game.get_game_time()
+    local last_sender = nil
 
     for i = #log, 1, -1 do
         local entry = log[i]
@@ -523,28 +552,36 @@ function pda_private_tab:OnSelectNPC()
             local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
             local bubble_bg = self.xml:InitStatic(template, nil)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
-            
-            local relative_time = get_relative_time(entry.raw_time or entry.timestamp, current_game_time)
-            
+            local display_sender = get_contact_display_name(entry.is_player, entry.sender)
+            local header_time = get_timestamp_hhmm(entry.raw_time or entry.timestamp)
+            local show_sender_header = last_sender ~= display_sender
+
             local display_text = ""
-            if entry.is_player then
-                local status = entry.delivery_state or "Sent"
-                display_text = string.format("%%c[255,170,235,170]You %%c[255,110,110,110][%s] %%c[255,140,210,140](%s)\n%%c[default]%s",
-                    header_time, status, entry.text)
-            else
-                entry.read = true
-                display_text = string.format("%%c[255,255,210,90]%s %%c[255,110,110,110][%s]\n%%c[default]%s",
-                    entry.sender, header_time, entry.text)
+            if show_sender_header then
+                display_text = string.format("%%c[255,190,190,190]%s\n", display_sender)
             end
+
+            local msg_body = entry.text or ""
+            display_text = display_text .. string.format("%%c[default]%s\n%%c[255,120,120,120]%s", msg_body, header_time)
+
+            if not entry.is_player then
+                entry.read = true
+            end
+            last_sender = display_sender
 
             text_wnd:SetText(display_text)
             text_wnd:AdjustHeightToText()
 
             local padding = 18
             local text_h = text_wnd:GetHeight()
-            local bubble_w = bubble_bg:GetWidth()
+            local bubble_w = 470
 
             bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
+            text_wnd:SetWndSize(vector2():set(bubble_w - 20, text_h))
+
+            local bubble_x = entry.is_player and (706 - bubble_w - 10) or 10
+            bubble_bg:SetWndPos(vector2():set(bubble_x, 0))
+
             self.scrollbar:AddWindow(bubble_bg, true)
             bubble_bg:SetAutoDelete(true)
         end
@@ -584,7 +621,7 @@ end
 
 class "pvt_contact_entry" (CUIListBoxItem)
 
-function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, unread, seen) super()
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, unread, seen, is_online) super()
     self:GetTextItem():SetText("")
     self.contact_id = contact_id
     self.contact_icon = icon
@@ -615,6 +652,13 @@ function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_
     if unread and unread > 0 and not seen then
         self.str_name:SetText(string.format("%s [%d]", contact_id, unread))
         self.str_name:SetTextColor(GetARGB(255, 255, 220, 100))
+    end
+
+    if is_online then
+        self.online_dot = self:AddIconField(1)
+        self.online_dot:InitTexture("ui_inGame2_hint_wnd_main_window")
+        self.online_dot:SetTextureColor(GetARGB(255, 100, 220, 110))
+        self.online_dot:SetWndRect(Frect():set(42, 38, 8, 8))
     end
 end
 

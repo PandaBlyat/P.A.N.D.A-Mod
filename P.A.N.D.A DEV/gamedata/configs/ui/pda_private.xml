@@ -108,7 +108,7 @@
                 <stat_community_label x="328" y="67" width="74" height="16"><text font="letterica16" r="130" g="130" b="130" a="255" align="l" vert_align="c">Community:</text></stat_community_label>
                 <stat_community_value x="404" y="67" width="140" height="16"><text font="letterica16" r="255" g="255" b="255" a="255" align="l" vert_align="c"/></stat_community_value>
 
-                <relation_bar x="328" y="92" width="372" height="8" horz="1" min="-5000" max="5000" pos="0" stretch="1">
+                <relation_bar x="328" y="92" width="372" height="8" horz="1" min="0" max="100" pos="50" stretch="1">
                     <background stretch="1"><texture r="55" g="55" b="55" a="210">ui_inGame2_hint_wnd_main_window</texture></background>
                     <progress x="0" stretch="1"><texture r="120" g="200" b="120">ui_inGame2_hint_wnd_main_window</texture></progress>
                     <min_color r="196" g="18" b="18"/>
