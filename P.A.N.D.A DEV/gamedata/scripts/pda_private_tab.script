@@ -634,6 +634,11 @@ function pda_private_tab:OnSelectNPC()
             local text_wnd   = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
             local ts_wnd     = self.xml:InitTextWnd(template .. ":timestamp", bubble_bg)
 
+            if not text_wnd or not ts_wnd then
+                printf("[PANDA] pda_private_tab: failed to init bubble child windows for template '%s' (text_wnd=%s, ts_wnd=%s)", template, tostring(text_wnd), tostring(ts_wnd))
+                -- skip this entry rather than crashing
+            else
+
             local display_sender = get_contact_display_name(entry.is_player, entry.sender)
             local header_time    = get_timestamp_hhmm(entry.raw_time or entry.timestamp)
             local show_header    = last_sender ~= display_sender
@@ -674,6 +679,7 @@ function pda_private_tab:OnSelectNPC()
                 entry.read = true
             end
             last_sender = display_sender
+            end -- if text_wnd and ts_wnd
         end
     end
 
