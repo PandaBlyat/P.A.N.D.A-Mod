@@ -2,8 +2,11 @@ class "pda_private_tab" (CUIScriptWnd)
 local SINGLETON = nil
 
 function get_ui()
+    -- Only create the singleton; do NOT call Reset() here.
+    -- The Update() cache mechanism handles all refreshes while preserving the current
+    -- contact selection.  Calling Reset() here would wipe the selection every time
+    -- mac_mcm calls this function to show/focus the tab.
     SINGLETON = SINGLETON or pda_private_tab()
-    SINGLETON:Reset()
 
     local pda_menu = ActorMenu.get_pda_menu()
     if pda_menu and pda_menu:GetTabControl() then

@@ -1305,7 +1305,8 @@ function on_player_choice(idx)
 
     CreateTimeEvent("pda_ic", "msg_delivery", 1, function()
         set_last_player_message_state(c.npc_name, "Delivered")
-        if get_ui then get_ui():Reset(c.npc_name) end
+        -- pda_private_tab's Update() cache detects the delivery-state change and
+        -- calls Reset(current_contact) automatically; no manual call needed here.
         return true
     end)
 
@@ -1344,11 +1345,8 @@ function on_player_choice(idx)
             end
         end
 
-        -- Try to update PDA view automatically if they are staring at it waiting for reply
-        if get_ui then
-            get_ui():Reset()
-        end
-
+        -- pda_private_tab's Update() cache detects log-size and CONV-turn changes
+        -- and calls Reset(current_contact) automatically, preserving the user's selection.
         return true
     end)
 
@@ -1403,11 +1401,8 @@ function start_interactive_conv(npc_se, conv_id, prefix, faction, task_id, categ
     -- Add the actual message directly into the custom Private PDA Log
     pda_private_add_message(name, name, sub_placeholders(msg, name, faction), CONV.npc_icon, false)
 
-    -- Force refresh of UI if PDA is actively open so the message pops up immediately
-    if get_ui then
-        get_ui():Reset()
-    end
-
+    -- pda_private_tab's Update() cache detects the new log entry and refreshes
+    -- automatically while preserving the user's current contact selection.
     return true
 end
 
@@ -1554,7 +1549,7 @@ function on_game_start()
             name = "st_pda_private_tab",        -- unlocalized string; define in your XML
             texture = "ui_pda_private_app",    -- texture name (create or reuse)
             tab = "eptPrivate",                  -- must match the button id in pda.xml
-            func = pda_private_tab.get_ui        -- the getter function
+            func = get_ui                        -- global function from pda_private_tab.script
         })
     else
         printf("PANDA_IC: MAC not found, private tab not registered.")
