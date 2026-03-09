@@ -156,9 +156,12 @@
                     <bubble_bg x="100" y="0" width="470" height="50" stretch="1">
                         <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
                     </bubble_bg>
-                    <text_box x="110" y="6" width="446" height="20" complex_mode="1">
+                    <text_box x="110" y="6" width="430" height="20" complex_mode="1">
                          <text font="letterica16" r="200" g="255" b="200" a="255"/>
                     </text_box>
+                    <delivery_status x="540" y="28" width="22" height="16" complex_mode="1">
+                         <text font="letterica14" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
+                    </delivery_status>
                 </message_lane_player>
                 
                 <!-- Choice buttons -->

@@ -32,8 +32,24 @@ end
 
 pda_private_log = {} -- Initialize the table
 
+local function get_delivery_time_marker()
+    if time_global then
+        return time_global()
+    end
+
+    return nil
+end
+
+local function normalize_delivery_state(state)
+    if state == "delivered" or state == "read" then
+        return state
+    end
+
+    return "sent"
+end
+
 -- Function to add messages to the log
-function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
+function pda_private_add_message(contact_name, sender_name, text, icon, is_player, delivery_state, delivery_timestamp)
     -- Grab the current game time
     local game_time = game.get_game_time()
     local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
@@ -55,13 +71,29 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
         sender_icon = icon or "ui_inGame2_Neutral_1",
         timestamp = current_time, 
         raw_time = raw_time,  -- NEW: Store raw time for calculations
-        is_player = is_player or false
+        is_player = is_player or false,
+        delivery_state = (is_player and normalize_delivery_state(delivery_state)) or nil,
+        delivery_timestamp = (is_player and (delivery_timestamp or get_delivery_time_marker())) or nil
     })
     
     -- Optional: Limit log to 100 messages to prevent save bloat (increased from 50)
     if #pda_private_log > 100 then
         table.remove(pda_private_log)
     end
+end
+
+function set_last_player_message_state(contact_name, state)
+    local normalized_state = normalize_delivery_state(state)
+    for i = 1, #pda_private_log do
+        local entry = pda_private_log[i]
+        if entry and entry.is_player and entry.contact_name == contact_name then
+            entry.delivery_state = normalized_state
+            entry.delivery_timestamp = get_delivery_time_marker()
+            return true
+        end
+    end
+
+    return false
 end
 
 -- ============================================================
@@ -1232,7 +1264,7 @@ function on_player_choice(idx)
     local ch = CONV.choices[idx]
 
     -- Add player choice to log, NO global tip
-    pda_private_add_message(CONV.npc_name, db.actor:character_name(), ch.text, db.actor:character_icon(), true)
+    pda_private_add_message(CONV.npc_name, db.actor:character_name(), ch.text, db.actor:character_icon(), true, "sent")
     
     -- This right here is what protects you from button-mashing abuse!
     local c = CONV
@@ -1259,6 +1291,8 @@ function on_player_choice(idx)
     local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
 
     CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
+        set_last_player_message_state(c.npc_name, "delivered")
+
         if ch.reply and ch.reply ~= "" then
             -- Generic global alert for NPC reply (unless private tab is already open)
             if is_private_tab_visible and is_private_tab_visible() then
@@ -1270,6 +1304,7 @@ function on_player_choice(idx)
             end
             -- Add actual reply to log
             pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
+            set_last_player_message_state(c.npc_name, "read")
         end
 
         if should_apply_outcome then
@@ -1484,7 +1519,18 @@ end
 function load_state(m)
     if m.pda_ic_cooldowns then conv_last_played = m.pda_ic_cooldowns end
     if m.pda_ic_npc_cooldowns then npc_last_used = m.pda_ic_npc_cooldowns end
-    if m.pda_private_log then pda_private_log = m.pda_private_log end -- LOAD FROM FILE
+    if m.pda_private_log then
+        pda_private_log = m.pda_private_log -- LOAD FROM FILE
+        for i = 1, #pda_private_log do
+            local entry = pda_private_log[i]
+            if entry and entry.is_player then
+                entry.delivery_state = normalize_delivery_state(entry.delivery_state)
+                if entry.delivery_timestamp == nil then
+                    entry.delivery_timestamp = get_delivery_time_marker()
+                end
+            end
+        end
+    end
 end
 
 -- ============================================================
