@@ -133,6 +133,7 @@ function pda_private_tab:InitControls()
     self.composer_send_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_send_btn", self.composer_container)
 
     self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
     self:Register(self.composer_quick_1_btn, "composer_quick_1_btn")
     self:Register(self.composer_quick_2_btn, "composer_quick_2_btn")
     self:Register(self.composer_send_btn, "composer_send_btn")
@@ -149,6 +150,8 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("composer_quick_1_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick1Clicked, self)
     self:AddCallback("composer_quick_2_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick2Clicked, self)
     self:AddCallback("composer_send_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
+    self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
+    self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
 end
 
 function pda_private_tab:Update()
@@ -200,6 +203,7 @@ function pda_private_tab:OnChoiceClicked(idx)
     self.choice_buttons_visible = false
     self:RefreshChoiceButtons()
     self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
     self:UpdateReplyTriggerVisual()
     self.pending_choice_idx = idx
 end
@@ -209,18 +213,129 @@ function pda_private_tab:OnChoiceIgnore()
     self.choice_buttons_visible = false
     self:RefreshChoiceButtons()
     self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
     self:UpdateReplyTriggerVisual()
     pda_interactive_conv.CONV = nil
 end
 
 function pda_private_tab:OnComposerQuick1Clicked()
+    self:ToggleQuickMenu()
+end
+
+function pda_private_tab:OnComposerQuick2Clicked()
+    if self:HasDialogueChoices() then
+        self.reply_trigger_btn_hint_until = 0
+        self.choice_buttons_visible = not self.choice_buttons_visible
+        self.quick_menu_open = false
+        self:OnSelectNPC()
+
+        if self.scrollbar.ScrollToEnd then
+            self.scrollbar:ScrollToEnd()
+        end
+        return
+    end
+
     self.reply_trigger_btn_hint_until = time_global() + 900
     self:UpdateReplyTriggerVisual()
 end
 
-function pda_private_tab:OnComposerQuick2Clicked()
-    self.reply_trigger_btn_hint_until = time_global() + 900
-    self:UpdateReplyTriggerVisual()
+function pda_private_tab:HideQuickMenuButtons()
+    if self.quick_btn_block_contact then
+        self.quick_btn_block_contact:Show(false)
+    end
+
+    if self.quick_btn_unblock_contact then
+        self.quick_btn_unblock_contact:Show(false)
+    end
+end
+
+function pda_private_tab:EnsureQuickMenuButtons()
+    if self.quick_btn_block_contact and self.quick_btn_unblock_contact then
+        return
+    end
+
+    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_block_contact:SetWndPos(vector2():set(16, 533))
+    local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
+    if block_text then
+        block_text:SetText("Block Contact")
+    end
+    self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
+
+    self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, 533))
+    local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
+    if unblock_text then
+        unblock_text:SetText("Unblock Contact")
+    end
+    self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
+
+    self.quick_btn_block_contact:SetAutoDelete(true)
+    self.quick_btn_unblock_contact:SetAutoDelete(true)
+
+    self:HideQuickMenuButtons()
+end
+
+function pda_private_tab:GetSelectedContactName()
+    local item = self.npc_list and self.npc_list:GetSelectedItem() or nil
+    if not item or item.contact_id == "System" then
+        return nil
+    end
+
+    return item.contact_id
+end
+
+function pda_private_tab:ToggleQuickMenu()
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then
+        self.quick_menu_open = false
+        self:HideQuickMenuButtons()
+        self.reply_trigger_btn_hint_until = time_global() + 900
+        self:UpdateReplyTriggerVisual()
+        return
+    end
+
+    self:EnsureQuickMenuButtons()
+
+    self.quick_menu_open = not self.quick_menu_open
+    local is_blocked = pda_interactive_conv.is_contact_blocked and pda_interactive_conv.is_contact_blocked(contact_name)
+
+    self.quick_btn_block_contact:Show(self.quick_menu_open and not is_blocked)
+    self.quick_btn_unblock_contact:Show(self.quick_menu_open and is_blocked)
+
+    if self.quick_menu_open then
+        self.choice_buttons_visible = false
+        self:RefreshChoiceButtons()
+    end
+end
+
+function pda_private_tab:OnQuickBlockContactClicked()
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then
+        return
+    end
+
+    if pda_interactive_conv.block_contact then
+        pda_interactive_conv.block_contact(contact_name)
+    end
+
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
+    self:Reset()
+end
+
+function pda_private_tab:OnQuickUnblockContactClicked()
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then
+        return
+    end
+
+    if pda_interactive_conv.unblock_contact then
+        pda_interactive_conv.unblock_contact(contact_name)
+    end
+
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
 end
 
 function pda_private_tab:UpdateReplyTriggerVisual()
@@ -241,6 +356,9 @@ function pda_private_tab:HasDialogueChoices()
 end
 
 function pda_private_tab:OnReplyTriggerClicked()
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
+
     if self:HasDialogueChoices() then
         self.reply_trigger_btn_hint_until = 0
         self.choice_buttons_visible = true
@@ -417,6 +535,7 @@ function pda_private_tab:Reset(target_contact_id)
     self.header_name:SetText("")
     self.message_count:SetText("")
     self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
     self:UpdateReplyTriggerVisual()
 
     self:HideStats()
@@ -566,12 +685,16 @@ end
 function pda_private_tab:OnSelectNPC()
     local item = self.npc_list:GetSelectedItem()
     if not item or item.contact_id == "System" then 
+        self.quick_menu_open = false
+        self:HideQuickMenuButtons()
         self:HideStats()
         return 
     end
 
     self.empty_state:Show(false)
     self.scrollbar:Clear()
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
 
     for i = 1, #self.choice_btns do
         local choice = self.choice_btns[i]
@@ -590,6 +713,7 @@ function pda_private_tab:OnSelectNPC()
     end
     
     self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
     self:UpdateReplyTriggerVisual()
 
     self.header_name:SetText(item.contact_id)

@@ -31,6 +31,7 @@ function set_pda_private_tab_open(state)
 end
 
 pda_private_log = {} -- Initialize the table
+pda_private_blocked_contacts = {}
 
 local function get_delivery_time_marker()
     if time_global then
@@ -50,6 +51,10 @@ end
 
 -- Function to add messages to the log
 function pda_private_add_message(contact_name, sender_name, text, icon, is_player, delivery_state, delivery_timestamp)
+    if contact_name and pda_private_blocked_contacts[contact_name] then
+        return false
+    end
+
     -- Grab the current game time
     local game_time = game.get_game_time()
     local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
@@ -80,6 +85,53 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
     if #pda_private_log > 100 then
         table.remove(pda_private_log)
     end
+end
+
+function delete_contact_thread(contact_name)
+    if not contact_name then
+        return 0
+    end
+
+    local removed = 0
+    local i = #pda_private_log
+    while i >= 1 do
+        local entry = pda_private_log[i]
+        if entry and entry.contact_name == contact_name then
+            table.remove(pda_private_log, i)
+            removed = removed + 1
+        end
+        i = i - 1
+    end
+
+    return removed
+end
+
+function is_contact_blocked(contact_name)
+    return contact_name ~= nil and pda_private_blocked_contacts[contact_name] == true
+end
+
+function block_contact(contact_name)
+    if not contact_name then
+        return false, 0
+    end
+
+    pda_private_blocked_contacts[contact_name] = true
+    local removed = delete_contact_thread(contact_name)
+
+    if CONV and CONV.npc_name == contact_name then
+        CONV = nil
+    end
+
+    return true, removed
+end
+
+function unblock_contact(contact_name)
+    if not contact_name then
+        return false
+    end
+
+    pda_private_blocked_contacts[contact_name] = nil
+    return true
 end
 
 function set_last_player_message_state(contact_name, state)
@@ -1514,6 +1566,7 @@ function save_state(m)
     m.pda_ic_cooldowns = conv_last_played
     m.pda_ic_npc_cooldowns = npc_last_used
     m.pda_private_log = pda_private_log -- SAVE TO FILE
+    m.pda_private_blocked_contacts = pda_private_blocked_contacts
 end
 
 function load_state(m)
@@ -1530,6 +1583,10 @@ function load_state(m)
                 end
             end
         end
+    end
+
+    if m.pda_private_blocked_contacts then
+        pda_private_blocked_contacts = m.pda_private_blocked_contacts
     end
 end
 
