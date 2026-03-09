@@ -573,23 +573,33 @@ function pda_private_tab:OnSelectNPC()
 
     self.header_name:SetText(item.contact_id)
     
-    -- Portrait (prefer contact list icon, then live NPC icon, then neutral fallback)
-    local portrait_icon = "ui_inGame2_Neutral_1"
-    
-    if self.cached_npc_data[item.contact_id] and self.cached_npc_data[item.contact_id].icon then
+    -- Portrait priority: list icon -> cached NPC icon -> newest non-player sender icon -> neutral fallback
+    local function valid_texture_name(tex)
+        return type(tex) == "string" and tex ~= ""
+    end
+
+    local portrait_icon = nil
+
+    if valid_texture_name(item.contact_icon) then
+        portrait_icon = item.contact_icon
+    elseif self.cached_npc_data[item.contact_id] and valid_texture_name(self.cached_npc_data[item.contact_id].icon) then
         portrait_icon = self.cached_npc_data[item.contact_id].icon
     else
-        -- Fallback: Scan chat history logs for this specific NPC to grab their sender_icon
         local log = pda_interactive_conv.pda_private_log or {}
         for i = #log, 1, -1 do
             local entry = log[i]
-            if (entry.contact_name or "Unknown") == item.contact_id and entry.sender_icon then
+            if (entry.contact_name or "Unknown") == item.contact_id and not entry.is_player and valid_texture_name(entry.sender_icon) then
                 portrait_icon = entry.sender_icon
                 break
             end
         end
     end
-    
+
+    portrait_icon = portrait_icon or "ui_inGame2_Neutral_1"
+    if not valid_texture_name(portrait_icon) then
+        portrait_icon = "ui_inGame2_Neutral_1"
+    end
+
     self.image:InitTexture(portrait_icon)
     self.image:SetStretchTexture(true) 
     self.image_container:Show(true)
