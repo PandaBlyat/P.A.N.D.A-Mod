@@ -152,10 +152,22 @@
                     <text font="letterica16" r="120" g="120" b="120" a="255" align="c" vert_align="c">Attitude</text>
                 </relation_bar_label>
                 
-                <!-- Scrollbar for messages (starts below expanded header at y=130) -->
-                <scrollbar x="0" y="130" width="720" height="478" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="10" always_show_scroll="1">
+                <!-- Scrollbar for messages (leaves space for reply trigger at bottom) -->
+                <scrollbar x="0" y="130" width="720" height="432" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="10" always_show_scroll="1">
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
+
+                <!-- Bottom-anchored reply trigger styled like muted input -->
+                <reply_trigger_btn x="10" y="568" width="700" height="30" stretch="1" can_focus="1">
+                    <texture_e r="55" g="55" b="55" a="230">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_t r="45" g="45" b="45" a="230">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="90" g="90" b="90" a="240">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <text font="letterica16" align="l" vert_align="c" x="12" y="0" complex_mode="1">
+                        <text_color r="135" g="135" b="135" a="255"/>
+                        <text_color_h r="180" g="180" b="180" a="255"/>
+                        <text_color_t r="110" g="110" b="110" a="255"/>
+                    </text>
+                </reply_trigger_btn>
                 
                 <!-- Message rows: reusable lanes for NPC (left) and player (right). -->
                 <message_lane_npc x="0" y="0" width="700" height="50" stretch="1">
