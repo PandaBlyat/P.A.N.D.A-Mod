@@ -68,9 +68,6 @@
                     <image x="0" y="0" width="64" height="64" stretch="1">
                         <texture>ui_inGame2_Neutral_1</texture>
                     </image>
-                    <image_frame x="0" y="0" width="64" height="64" stretch="1">
-                        <texture>ui_inGame2_PDA_Frame</texture>
-                    </image_frame>
                 </image_container>
                 
                 <!-- Status indicator dot -->

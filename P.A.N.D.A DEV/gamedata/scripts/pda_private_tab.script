@@ -106,7 +106,6 @@ function pda_private_tab:InitControls()
     self.xml:InitStatic("private_pda:info:description:header_bg", self.desc_box)
     self.image_container = self.xml:InitStatic("private_pda:info:description:image_container", self.desc_box)
     self.image = self.xml:InitStatic("private_pda:info:description:image_container:image", self.image_container)
-    self.image_frame = self.xml:InitStatic("private_pda:info:description:image_container:image_frame", self.image_container)
     
     self.status_indicator = self.xml:InitStatic("private_pda:info:description:status_indicator", self.desc_box)
     

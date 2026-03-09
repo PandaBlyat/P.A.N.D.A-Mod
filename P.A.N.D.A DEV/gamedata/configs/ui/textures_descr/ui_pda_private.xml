@@ -1,8 +1,36 @@
 <w>
+
+    <!-- PDA Private App Icons -->
     <file name="ui\ui_pda_private_app">
         <texture id="ui_pda_private_app_e" x="0"   y="0"   width="256" height="256" />
         <texture id="ui_pda_private_app_h" x="256" y="0"   width="256" height="256" />
         <texture id="ui_pda_private_app_t" x="0"   y="256" width="256" height="256" />
-        <texture id="ui_pda_private_app_d" x="0" y="256" width="256" height="256" />
+        <texture id="ui_pda_private_app_d" x="0"   y="256" width="256" height="256" />
     </file>
+
+    <!-- Faction Patch Atlas -->
+    <file name="ui\ui_panda_faction_patches">
+
+        <!-- Row 1 -->
+        <texture id="patch_loners"      x="0"   y="0"   width="64" height="64" />
+        <texture id="patch_bandits"     x="64"  y="0"   width="64" height="64" />
+        <texture id="patch_clear_sky"   x="128" y="0"   width="64" height="64" />
+
+        <!-- Row 2 -->
+        <texture id="patch_duty"        x="0"   y="64"  width="64" height="64" />
+        <texture id="patch_freedom"     x="64"  y="64"  width="64" height="64" />
+        <texture id="patch_mercenaries" x="128" y="64"  width="64" height="64" />
+
+        <!-- Row 3 -->
+        <texture id="patch_military"    x="0"   y="128" width="64" height="64" />
+        <texture id="patch_ecologists"  x="64"  y="128" width="64" height="64" />
+        <texture id="patch_monolith"    x="128" y="128" width="64" height="64" />
+
+        <!-- Row 4 -->
+        <texture id="patch_sin"         x="0"   y="192" width="64" height="64" />
+        <texture id="patch_renegades"   x="64"  y="192" width="64" height="64" />
+        <texture id="patch_isg"         x="128" y="192" width="64" height="64" />
+
+    </file>
+
 </w>
