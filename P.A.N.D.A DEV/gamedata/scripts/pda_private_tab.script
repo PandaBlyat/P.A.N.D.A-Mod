@@ -60,16 +60,22 @@ local function apply_colored_text(text_wnd, raw_text, fallback_color)
 end
 
 local function set_button_texture_tint(btn, color)
-    if not btn or not btn.SetTextureColor then
+    if not btn then
         return
     end
 
-    btn:SetTextureColor(color)
+    if btn.SetTextureColor then
+        btn:SetTextureColor(color)
+    elseif btn.SetColor then
+        btn:SetColor(color)
+    end
 
     if btn.GetStatic then
         local bg = btn:GetStatic()
         if bg and bg.SetTextureColor then
             bg:SetTextureColor(color)
+        elseif bg and bg.SetColor then
+            bg:SetColor(color)
         end
     end
 end
@@ -94,6 +100,33 @@ local function is_button_hovered(btn)
         end)
         if ok then
             return hovered and true or false
+        end
+    end
+
+    if btn.cursor_over_window then
+        local ok, hovered = pcall(function()
+            return btn:cursor_over_window()
+        end)
+        if ok then
+            return hovered and true or false
+        end
+    end
+
+    if btn.GetButtonState then
+        local ok, state = pcall(function()
+            return btn:GetButtonState()
+        end)
+        if ok then
+            return state == 1 or state == 2
+        end
+    end
+
+    if btn.GetCheck then
+        local ok, checked = pcall(function()
+            return btn:GetCheck()
+        end)
+        if ok and checked then
+            return true
         end
     end
 
