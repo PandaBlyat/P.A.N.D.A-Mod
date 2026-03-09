@@ -127,9 +127,6 @@ function pda_private_tab:InitControls()
     self.xml:InitTextWnd("private_pda:info:description:stat_community_label", self.desc_box)
     self.stat_community_value = self.xml:InitTextWnd("private_pda:info:description:stat_community_value", self.desc_box)
     
-    self.relation_bar = self.xml:InitProgressBar("private_pda:info:description:relation_bar", self.desc_box)
-    self.xml:InitTextWnd("private_pda:info:description:relation_bar_label", self.desc_box)
-    
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
     self.reply_trigger_btn = self.xml:Init3tButton("private_pda:info:description:reply_trigger_btn", self.desc_box)
     self.reply_trigger_btn:TextControl():SetText("Type a reply...")
@@ -523,9 +520,6 @@ function pda_private_tab:ShowStats(contact_name)
     end
     apply_colored_text(self.stat_relation_value, relation_text, GetARGB(255, 255, 255, 255))
     
-    local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
-    self.relation_bar:SetProgressPos(normalized_relation)
-    
     self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
     self.stat_rank_value:SetText(npc_data.rank or "Unknown")
     self.stat_community_value:SetText(get_community_name(npc_data.community))
@@ -571,13 +565,16 @@ function pda_private_tab:OnSelectNPC()
 
     self.header_name:SetText(item.contact_id)
     
-    -- Portrait
-    if item.contact_icon and item.contact_icon ~= "" then
-        self.image:InitTexture(item.contact_icon)
-        self.image_container:Show(true)
-    else
-        self.image_container:Show(false)
+    -- Portrait (prefer contact list icon, then live NPC icon, then neutral fallback)
+    local portrait_icon = item.contact_icon
+    if (not portrait_icon or portrait_icon == "") and self.cached_npc_data[item.contact_id] then
+        portrait_icon = self.cached_npc_data[item.contact_id].icon
     end
+    if not portrait_icon or portrait_icon == "" then
+        portrait_icon = "ui_inGame2_Neutral_1"
+    end
+    self.image:InitTexture(portrait_icon)
+    self.image_container:Show(true)
     
     local log = pda_interactive_conv.pda_private_log or {}
     local msg_count = 0
