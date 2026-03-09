@@ -153,14 +153,14 @@
 
                 <message_lane_player x="0" y="0" width="400" height="50" stretch="1">
                     <!-- Moved left significantly (x="160" instead of "222") -->
-                    <bubble_bg x="100" y="0" width="470" height="50" stretch="1">
+                    <bubble_bg x="80" y="0" width="440" height="50" stretch="1">
                         <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
                     </bubble_bg>
                     <text_box x="110" y="6" width="430" height="20" complex_mode="1">
                          <text font="letterica16" r="200" g="255" b="200" a="255"/>
                     </text_box>
                     <delivery_status x="540" y="28" width="22" height="16" complex_mode="1">
-                         <text font="letterica14" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
+                         <text font="letterica16" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
                     </delivery_status>
                 </message_lane_player>
                 
