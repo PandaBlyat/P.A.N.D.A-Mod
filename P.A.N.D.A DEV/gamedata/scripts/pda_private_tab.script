@@ -157,6 +157,26 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
     self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
     self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
+	self:AddCallback("composer_quick_1_btn", "mouse_enter", function(btn)
+        btn:SetTextureColor(GetARGB(255, 255, 200, 0))  -- gold tint
+    end, self)
+    self:AddCallback("composer_quick_1_btn", "mouse_leave", function(btn)
+        btn:SetTextureColor(GetARGB(255, 255, 255, 255)) -- revert to white
+    end, self)
+
+    self:AddCallback("composer_quick_2_btn", "mouse_enter", function(btn)
+        btn:SetTextureColor(GetARGB(255, 100, 255, 100)) -- green tint
+    end, self)
+    self:AddCallback("composer_quick_2_btn", "mouse_leave", function(btn)
+        btn:SetTextureColor(GetARGB(255, 255, 255, 255))
+    end, self)
+
+    self:AddCallback("composer_send_btn", "mouse_enter", function(btn)
+        btn:SetTextureColor(GetARGB(255, 255, 100, 100)) -- red tint
+    end, self)
+    self:AddCallback("composer_send_btn", "mouse_leave", function(btn)
+        btn:SetTextureColor(GetARGB(255, 255, 255, 255))
+    end, self)
 end
 
 function pda_private_tab:Update()
@@ -1049,23 +1069,32 @@ function pda_private_tab:OnSelectNPC()
             self.scrollbar:AddWindow(spacer, true)
         end
 
-        for i = 1, active_conv.num_choices do
-            local ch = active_conv.choices[i]
-            
-            -- Attach directly to desc_box to avoid X-Ray engine crash!
-            local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-            self:Register(btn, "choice_btn_" .. i)
+		for i = 1, active_conv.num_choices do
+			local ch = active_conv.choices[i]
+			
+			-- Attach directly to desc_box to avoid X-Ray engine crash!
+			local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+			local btn_name = "choice_btn_" .. i
+			self:Register(btn, btn_name)
 
-            btn:SetWndSize(vector2():set(chip_w, chip_h))
-            
-            -- Stack perfectly above the input composer
-            local row = active_conv.num_choices - i
-            local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
-            
-            btn:SetWndPos(vector2():set(left_x, y))
+			btn:SetWndSize(vector2():set(chip_w, chip_h))
+			
+			-- Stack perfectly above the input composer
+			local row = active_conv.num_choices - i
+			local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
+			
+			btn:SetWndPos(vector2():set(left_x, y))
 
-            table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
-        end
+			-- Add hover highlighting using proper window-level callbacks
+			self:AddCallback(btn_name, "mouse_enter", function(btn_obj)
+				btn_obj:SetTextureColor(GetARGB(255, 70, 130, 180))  -- steel blue
+			end, self)
+			self:AddCallback(btn_name, "mouse_leave", function(btn_obj)
+				btn_obj:SetTextureColor(GetARGB(255, 255, 255, 255)) -- revert to white
+			end, self)
+
+			table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
+		end
 
         self:RefreshChoiceButtons()
     else
