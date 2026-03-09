@@ -87,6 +87,7 @@ function pda_private_tab:__init()
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
     self.choice_buttons_visible = false
+    self.typing_anim_phase = -1
 end
 
 function pda_private_tab:InitControls()
@@ -184,6 +185,35 @@ function pda_private_tab:Update()
         self:Reset(current_contact)
     end
 
+    local selected_item = self.npc_list and self.npc_list:GetSelectedItem() or nil
+    if selected_item and selected_item.contact_id and selected_item.contact_id ~= "System" then
+        local typing_active = false
+        local selected_contact = selected_item.contact_id
+        local log = pda_interactive_conv.pda_private_log or {}
+
+        for i = #log, 1, -1 do
+            local entry = log[i]
+            if (entry.contact_name or "Unknown") == selected_contact then
+                if entry.is_typing then
+                    typing_active = true
+                end
+                break
+            end
+        end
+
+        if typing_active then
+            local phase = math.floor((time_global() / 350) % 3)
+            if phase ~= self.typing_anim_phase then
+                self.typing_anim_phase = phase
+                self:OnSelectNPC()
+            end
+        else
+            self.typing_anim_phase = -1
+        end
+    else
+        self.typing_anim_phase = -1
+    end
+
     self:UpdateReplyTriggerVisual()
     
     if set_pda_private_tab_open then
@@ -249,7 +279,10 @@ function pda_private_tab:EnsureQuickMenuButtons()
     end
 
     self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-    self.quick_btn_block_contact:SetWndPos(vector2():set(16, 533))
+    local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
+    local menu_y = composer_y - 62
+
+    self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
     if block_text then
         block_text:SetText("Block Contact")
@@ -257,7 +290,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
 
     self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-    self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, 533))
+    self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
     local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
     if unblock_text then
         unblock_text:SetText("Unblock Contact")
@@ -265,7 +298,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
 
     self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-    self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, 563))
+    self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
     local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
     if ignore_text then
         ignore_text:SetText("Ignore Conversation")
@@ -817,12 +850,12 @@ function pda_private_tab:OnSelectNPC()
         end
 
         if state == "read" then
-            return "%%c[255,100,220,255]Read ✓✓", GetARGB(255, 100, 220, 255)
+            return "%c[255,100,220,255]Read ✓✓", GetARGB(255, 100, 220, 255)
         elseif state == "delivered" then
-            return "%%c[255,190,190,190]Delivered ✓✓", GetARGB(255, 190, 190, 190)
+            return "%c[255,190,190,190]Delivered ✓✓", GetARGB(255, 190, 190, 190)
         end
 
-        return "%%c[255,150,150,150]Sent ✓", GetARGB(255, 150, 150, 150)
+        return "%c[255,150,150,150]Sent ✓", GetARGB(255, 150, 150, 150)
     end
 
     local function estimate_bubble_width(text)
@@ -839,8 +872,8 @@ function pda_private_tab:OnSelectNPC()
             longest = #compact
         end
 
-        local estimated = 86 + (longest * 6)
-        return math.max(180, math.min(430, estimated))
+        local estimated = 76 + (longest * 6)
+        return math.max(120, math.min(500, estimated))
     end
 
     local row_idx = 0
@@ -866,7 +899,7 @@ function pda_private_tab:OnSelectNPC()
             else
                 local npc_body = entry.text or ""
                 if entry.is_typing then
-                    local phase = (time_global() % 3) + 1
+                    local phase = math.floor((time_global() / 350) % 3) + 1
                     npc_body = "Typing" .. string.rep(".", phase)
                 end
 
@@ -895,17 +928,22 @@ function pda_private_tab:OnSelectNPC()
 
             text_wnd:AdjustHeightToText()
 
+            local text_h = text_wnd:GetHeight()
+            local status_h = 0
             if status_wnd then
                 local status_text, status_color = get_delivery_indicator(entry)
                 apply_colored_text(status_wnd, status_text, status_color)
                 status_wnd:AdjustHeightToText()
+                status_h = status_wnd:GetHeight()
+
+                local status_x = status_wnd:GetWndPos().x
+                local status_y = text_wnd:GetWndPos().y + text_h + 2
+                status_wnd:SetWndPos(vector2():set(status_x, status_y))
             end
 
             style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
 
-            local padding = is_player_lane and 14 or 16
-            local text_h = text_wnd:GetHeight()
-            local lane_h = text_h + padding
+            local lane_h = text_h + status_h + 16
             
             lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
             lane_root:SetWndSize(vector2():set(lane_root:GetWidth(), lane_h))
@@ -920,9 +958,9 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 26
         local chip_gap = 4
-        local chips_per_row = 3
+        local chips_per_row = 2
         local left_x = 16
-        local chip_w = 220
+        local chip_w = 340
 
         for i = 1, active_conv.num_choices do
             local ch = active_conv.choices[i]
