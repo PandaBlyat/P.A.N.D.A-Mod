@@ -1,6 +1,64 @@
 class "pda_private_tab" (CUIScriptWnd)
 local SINGLETON = nil
 
+local function clamp_color_channel(value)
+    value = tonumber(value) or 0
+    return math.max(0, math.min(255, value))
+end
+
+local function parse_color_token(token)
+    if not token or token == "default" then
+        return nil
+    end
+
+    local a, r, g, b = token:match("^(%d+),(%d+),(%d+),(%d+)$")
+    if a then
+        return GetARGB(
+            clamp_color_channel(a),
+            clamp_color_channel(r),
+            clamp_color_channel(g),
+            clamp_color_channel(b)
+        )
+    end
+
+    r, g, b = token:match("^(%d+),(%d+),(%d+)$")
+    if r then
+        return GetARGB(255, clamp_color_channel(r), clamp_color_channel(g), clamp_color_channel(b))
+    end
+
+    return nil
+end
+
+local function apply_colored_text(text_wnd, raw_text, fallback_color)
+    local default_color = fallback_color or GetARGB(255, 255, 255, 255)
+    local source = tostring(raw_text or "")
+
+    local ok, clean_text, parsed_color = pcall(function()
+        local active_color = default_color
+        local without_tokens = source:gsub("%%c%[([^%]]+)%]", function(token)
+            local token_color = parse_color_token(token)
+            if token_color then
+                active_color = token_color
+            elseif token == "default" then
+                active_color = default_color
+            end
+            return ""
+        end)
+
+        return without_tokens, active_color
+    end)
+
+    if not ok then
+        clean_text = source:gsub("%%c%[[^%]]+%]", "")
+        parsed_color = default_color
+    end
+
+    text_wnd:SetText(clean_text)
+    if text_wnd.SetTextColor then
+        text_wnd:SetTextColor(parsed_color)
+    end
+end
+
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
@@ -315,11 +373,11 @@ function pda_private_tab:Reset(target_contact_id)
 end
 
 function pda_private_tab:HideStats()
-    self.stat_relation_value:SetText("")
+    apply_colored_text(self.stat_relation_value, "", GetARGB(255, 255, 255, 255))
     self.stat_goodwill_value:SetText("")
     self.stat_rank_value:SetText("")
     self.stat_community_value:SetText("")
-    self.faction_badge:SetText("")
+    apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
     self.last_seen:SetText("")
     
     self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
@@ -352,7 +410,7 @@ function pda_private_tab:ShowStats(contact_name)
     -- Faction badge with colour
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
-    self.faction_badge:SetText(faction_text)
+    apply_colored_text(self.faction_badge, faction_text, GetARGB(255, 150, 150, 150))
     
     -- Relation text with colour
     local relation_text
@@ -363,7 +421,7 @@ function pda_private_tab:ShowStats(contact_name)
     else
         relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation)
     end
-    self.stat_relation_value:SetText(relation_text)
+    apply_colored_text(self.stat_relation_value, relation_text, GetARGB(255, 255, 255, 255))
     
     local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
     self.relation_bar:SetProgressPos(normalized_relation)
