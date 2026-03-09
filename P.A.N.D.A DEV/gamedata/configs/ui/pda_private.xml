@@ -151,7 +151,7 @@
                     </text_box>
                 </message_lane_npc>
 
-                <message_lane_player x="0" y="0" width="500" height="50" stretch="1">
+                <message_lane_player x="0" y="0" width="400" height="50" stretch="1">
                     <!-- Moved left significantly (x="160" instead of "222") -->
                     <bubble_bg x="100" y="0" width="470" height="50" stretch="1">
                         <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
@@ -162,7 +162,7 @@
                 </message_lane_player>
                 
                 <!-- Choice buttons -->
-                <choice_btn x="110" y="0" width="470" height="30" stretch="1" can_focus="1">
+                <choice_btn x="110" y="0" width="400" height="30" stretch="1" can_focus="1">
                     <texture_e>ui_inGame2_hint_wnd_main_window</texture_e>
                     <texture_t>ui_inGame2_hint_wnd_main_window</texture_t>
                     <texture_h>ui_inGame2_hint_wnd_main_window</texture_h>
