@@ -54,7 +54,7 @@
                 </empty_state>
 
                 <!-- EXPANDED HEADER with integrated stats (120px tall) -->
-                <header_bg x="0" y="0" width="400" height="120" stretch="1">
+                <header_bg x="0" y="0" width="460" height="120" stretch="1">
                     <texture r="40" g="40" b="40" a="220">ui_inGame2_hint_wnd_main_window</texture>
                 </header_bg>
                 
@@ -134,9 +134,9 @@
                     </composer_bg>
 
                     <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="200" g="50" b="50" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="220" g="30" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
+						<texture_e>ui_inGame2_pda_smallbutton</texture_e>
+						<texture_h r="255" g="0" b="0" a="255">ui_inGame2_pda_smallbutton</texture_h> 
+						<texture_t r="220" g="30" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -146,9 +146,9 @@
                     </composer_quick_1_btn>
 
                     <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="50" g="180" b="50" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="30" g="220" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
+						<texture_e>ui_inGame2_pda_smallbutton</texture_e>
+						<texture_h r="0" g="255" b="0" a="255">ui_inGame2_pda_smallbutton</texture_h>  
+						<texture_t r="30" g="220" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -157,10 +157,10 @@
                         </text_color>
                     </composer_quick_2_btn>
 
-                    <composer_input_shell x="70" y="4" width="588" height="26" stretch="1">
+                    <composer_input_shell x="70" y="4" width="100" height="26" stretch="1">
                         <texture r="20" g="22" b="25" a="230">ui_inGame2_hint_wnd_main_window</texture>
                     </composer_input_shell>
-                    <composer_input_field x="82" y="4" width="560" height="26">
+                    <composer_input_field x="82" y="4" width="100" height="26">
                         <text font="letterica16" r="120" g="132" b="145" a="255" align="l" vert_align="c">Choose a reply...</text>
                     </composer_input_field>
 
@@ -202,9 +202,9 @@
                 
                 <!-- Compact choice chip template (instantiated from script) -->
                 <choice_chip_btn x="0" y="0" width="220" height="26" stretch="1" can_focus="1">
-                    <texture_e r="43" g="52" b="60" a="235">ui_inGame2_hint_wnd_main_window</texture_e>
-                    <texture_h r="40" g="160" b="40" a="245">ui_inGame2_hint_wnd_main_window</texture_h>
-                    <texture_t r="30" g="200" b="30" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+				<texture_e r="43" g="52" b="60" a="235">ui_inGame2_hint_wnd_main_window</texture_e>
+				<texture_h r="0" g="255" b="0" a="255">ui_inGame2_hint_wnd_main_window</texture_h>  
+				<texture_t r="30" g="200" b="30" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>

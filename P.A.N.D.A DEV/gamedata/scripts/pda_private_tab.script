@@ -917,15 +917,15 @@ function pda_private_tab:OnSelectNPC()
 			for i = 1, #line do
 				local char = line:sub(i, i)
 				if char:match("%u") then
-					width = width + 5.5      -- uppercase
+					width = width + 3.5      -- uppercase
 				elseif char:match("%l") then
-					width = width + 4.5      -- lowercase
+					width = width + 2.5      -- lowercase
 				elseif char:match("%d") then
-					width = width + 4.5      -- digits
+					width = width + 2.5      -- digits
 				elseif char == " " then
-					width = width + 3.0      -- space
+					width = width + 1.0      -- space
 				else
-					width = width + 4.0      -- punctuation, symbols
+					width = width + 2.0      -- punctuation, symbols
 				end
 			end
 			if width > max_w then
@@ -933,12 +933,12 @@ function pda_private_tab:OnSelectNPC()
 			end
 		end
 
-		if max_w == 0 then max_w = 80 end
+		if max_w == 0 then max_w = 150 end
 
 		-- Padding: left 14, right 14 = total 28
 		local padding_x = 28
 		local estimated = padding_x + max_w
-		return math.floor(math.max(80, math.min(395, estimated)))
+		return math.floor(math.max(150, math.min(395, estimated)))
 	end
 
     local row_idx = 0
@@ -991,16 +991,16 @@ function pda_private_tab:OnSelectNPC()
 				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
 				text_wnd:SetWndPos(vector2():set(bubble_x + 14, 6))
-				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), text_wnd:GetHeight()))
 
 				-- Status positioning happens AFTER text_h is calculated below
 				if status_wnd then
 					status_wnd:SetWndPos(vector2():set(bubble_x + 14, 28))
-					status_wnd:SetWndSize(vector2():set(math.max(90, bubble_w - 28), status_wnd:GetHeight()))
+					status_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), status_wnd:GetHeight()))
 				end
 			else
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), text_wnd:GetHeight()))
 			end
             text_wnd:AdjustHeightToText()
 
