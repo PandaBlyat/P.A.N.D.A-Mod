@@ -851,36 +851,37 @@ function pda_private_tab:OnSelectNPC()
         return "%c[255,150,150,150]Sent", GetARGB(255, 150, 150, 150)
     end
 
-    local function estimate_bubble_width(text)
-        local raw_text = tostring(text or "")
-        -- Remove color tags
-        local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
-        -- Properly process multiline literal returns
-        local split_text = compact:gsub("\\n", "\n")
-        
-        local max_w = 0
-        for line in split_text:gmatch("[^\n]+") do
-            line = line:match("^%s*(.-)%s*$") or line
-            local width = 0
-            for i = 1, #line do
-                local char = line:sub(i, i)
-                if char:match("%u") then width = width + 7.5
-                elseif char:match("%l") then width = width + 6.0
-                elseif char:match("%d") then width = width + 6.5
-                elseif char == " " then width = width + 4.5
-                else width = width + 5.5 end
-            end
-            if width > max_w then
-                max_w = width
-            end
-        end
+    function estimate_bubble_width(text)
+		local raw_text = tostring(text or "")
+		-- Remove color tags
+		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
+		-- Properly process multiline literal returns
+		local split_text = compact:gsub("\\n", "\n")
+		
+		local max_w = 0
+		for line in split_text:gmatch("[^\n]+") do
+			line = line:match("^%s*(.-)%s*$") or line
+			local width = 0
+			for i = 1, #line do
+				local char = line:sub(i, i)
+				if char:match("%u") then width = width + 7.5
+				elseif char:match("%l") then width = width + 6.0
+				elseif char:match("%d") then width = width + 6.5
+				elseif char == " " then width = width + 4.5
+				else width = width + 5.5 end
+			end
+			if width > max_w then
+				max_w = width
+			end
+		end
 
-        if max_w == 0 then max_w = 100 end
-        
-        local padding_x = 34
-        local estimated = padding_x + max_w
-        return math.floor(math.max(120, math.min(500, estimated)))
-    end
+		if max_w == 0 then max_w = 100 end
+		
+		local padding_x = 34
+		local estimated = padding_x + max_w
+		-- Changed max from 500 to 450 to ensure better fit with right alignment
+		return math.floor(math.max(120, math.min(420, estimated)))
+	end
 
     local row_idx = 0
     for i = #log, 1, -1 do
@@ -923,20 +924,25 @@ function pda_private_tab:OnSelectNPC()
             local bubble_w = estimate_bubble_width(display_text)
 
             if is_player_lane then
-                local bubble_x = 680 - bubble_w
-                lane_bg:SetWndPos(vector2():set(bubble_x, 0))
-                lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-                text_wnd:SetWndPos(vector2():set(bubble_x + 12, 6))
-                text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 24), text_wnd:GetHeight()))
-                if status_wnd then
-                    status_wnd:SetWndPos(vector2():set(bubble_x + 12, 28))
-                    status_wnd:SetWndSize(vector2():set(math.max(90, bubble_w - 24), status_wnd:GetHeight()))
-                end
-            else
-                lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-                text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 24), text_wnd:GetHeight()))
-            end
-
+			-- Account for scrollbar width (~15px) and add safety margin
+				local chat_panel_width = 695  -- Reduced from 720
+				local right_padding = 15      -- Increased from 10
+				local bubble_x = chat_panel_width - bubble_w - right_padding
+				
+				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
+				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+				text_wnd:SetWndPos(vector2():set(bubble_x + 12, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 24), text_wnd:GetHeight()))
+				
+				-- Status positioning happens AFTER text_h is calculated below
+				if status_wnd then
+					status_wnd:SetWndPos(vector2():set(bubble_x + 12, 28))
+					status_wnd:SetWndSize(vector2():set(math.max(90, bubble_w - 24), status_wnd:GetHeight()))
+				end
+			else
+				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+				text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 24), text_wnd:GetHeight()))
+			end
             text_wnd:AdjustHeightToText()
 
             local text_h = text_wnd:GetHeight()
@@ -957,7 +963,8 @@ function pda_private_tab:OnSelectNPC()
             local lane_h = text_h + status_h + 16
             
             lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
-            lane_root:SetWndSize(vector2():set(lane_root:GetWidth(), lane_h))
+            -- Force the root container to the full scrollbar width (110) so children don't get clipped
+            lane_root:SetWndSize(vector2():set(720, lane_h)) 
 
             self.scrollbar:AddWindow(lane_root, true)
             lane_root:SetAutoDelete(true)

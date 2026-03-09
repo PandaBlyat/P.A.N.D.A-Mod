@@ -177,8 +177,8 @@
                     </composer_send_btn>
                 </composer_container>
                 
-                <!-- Message rows: reusable lanes -->
-                <message_lane_npc x="0" y="0" width="600" height="50" stretch="1">
+					<!-- Message rows: reusable lanes -->
+                <message_lane_npc x="0" y="0" width="720" height="50" stretch="1">
                     <bubble_bg x="8" y="0" width="470" height="50" stretch="1">
                         <texture r="52" g="52" b="52" a="190">ui_inGame2_hint_wnd_main_window</texture>
                     </bubble_bg>
@@ -187,18 +187,18 @@
                     </text_box>
                 </message_lane_npc>
 
-                <message_lane_player x="0" y="0" width="400" height="50" stretch="1">
-                    <!-- Moved left significantly (x="160" instead of "222") -->
-                    <bubble_bg x="80" y="0" width="440" height="50" stretch="1">
-                        <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
-                    </bubble_bg>
-                    <text_box x="110" y="6" width="430" height="20" complex_mode="1">
-                         <text font="letterica16" r="200" g="255" b="200" a="255"/>
-                    </text_box>
-                    <delivery_status x="540" y="28" width="22" height="16" complex_mode="1">
-                         <text font="letterica16" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
-                    </delivery_status>
-                </message_lane_player>
+                <message_lane_player x="0" y="0" width="720" height="50" stretch="1">
+					<!-- Player bubble - positioned by Lua for right alignment -->
+					<bubble_bg x="250" y="0" width="460" height="50" stretch="1">
+						<texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
+					</bubble_bg>
+					<text_box x="262" y="6" width="436" height="20" complex_mode="1">
+						 <text font="letterica16" r="200" g="255" b="200" a="255"/>
+					</text_box>
+					<delivery_status x="262" y="28" width="436" height="16" complex_mode="1">
+						 <text font="letterica16" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
+					</delivery_status>
+				</message_lane_player>
                 
                 <!-- Compact choice chip template (instantiated from script) -->
                 <choice_chip_btn x="0" y="0" width="220" height="26" stretch="1" can_focus="1">
