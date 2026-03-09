@@ -451,6 +451,11 @@ function pda_private_tab:RefreshChoiceButtons()
 end
 
 function get_relative_time(timestamp_str, current_game_time)
+    if not timestamp_str then
+        return "Unknown"
+    end
+
+    timestamp_str = tostring(timestamp_str)
     local d, m, y, h, min = timestamp_str:match("(%d+)/(%d+)/(%d+)%s+(%d+):(%d+)")
     if not d then return timestamp_str end
     
@@ -894,7 +899,7 @@ function pda_private_tab:OnSelectNPC()
             local display_text = ""
             if is_player_lane then
                 display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    relative_time, entry.text)
+                    tostring(relative_time or "Unknown"), tostring(entry.text or ""))
             else
                 local npc_body = entry.text or ""
                 if entry.is_typing then
@@ -910,7 +915,7 @@ function pda_private_tab:OnSelectNPC()
                 end
 
                 display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    entry.sender, relative_time, npc_body)
+                    tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), tostring(npc_body or ""))
             end
             
             text_wnd:SetText(display_text)
