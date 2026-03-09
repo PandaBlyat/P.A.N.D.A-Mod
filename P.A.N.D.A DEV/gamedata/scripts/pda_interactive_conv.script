@@ -147,6 +147,49 @@ function set_last_player_message_state(contact_name, state)
 
     return false
 end
+function upsert_npc_typing_message(contact_name, sender_name, icon)
+    if not contact_name then
+        return false
+    end
+
+    for i = 1, #pda_private_log do
+        local entry = pda_private_log[i]
+        if entry and entry.contact_name == contact_name and entry.is_typing then
+            entry.sender = sender_name or contact_name
+            entry.sender_icon = icon or entry.sender_icon or FALLBACK_NPC_ICON
+            entry.timestamp = entry.timestamp or ""
+            return true
+        end
+    end
+
+    pda_private_add_message(contact_name, sender_name or contact_name, "Typing...", icon or FALLBACK_NPC_ICON, false)
+    local latest = pda_private_log[1]
+    if latest then
+        latest.is_typing = true
+    end
+
+    return true
+end
+
+function clear_npc_typing_message(contact_name)
+    if not contact_name then
+        return false
+    end
+
+    local removed = false
+    local i = #pda_private_log
+    while i >= 1 do
+        local entry = pda_private_log[i]
+        if entry and entry.contact_name == contact_name and entry.is_typing then
+            table.remove(pda_private_log, i)
+            removed = true
+        end
+        i = i - 1
+    end
+
+    return removed
+end
+
 
 -- ============================================================
 -- PANDA GLOBAL API TABLE & CONFIGURATION
@@ -1342,8 +1385,12 @@ function on_player_choice(idx)
     local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
     local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
 
+    upsert_npc_typing_message(c.npc_name, c.npc_name, c.npc_icon)
+
     CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
         set_last_player_message_state(c.npc_name, "delivered")
+
+        clear_npc_typing_message(c.npc_name)
 
         if ch.reply and ch.reply ~= "" then
             -- Generic global alert for NPC reply (unless private tab is already open)
@@ -1574,14 +1621,18 @@ function load_state(m)
     if m.pda_ic_npc_cooldowns then npc_last_used = m.pda_ic_npc_cooldowns end
     if m.pda_private_log then
         pda_private_log = m.pda_private_log -- LOAD FROM FILE
-        for i = 1, #pda_private_log do
+        local i = #pda_private_log
+        while i >= 1 do
             local entry = pda_private_log[i]
-            if entry and entry.is_player then
+            if entry and entry.is_typing then
+                table.remove(pda_private_log, i)
+            elseif entry and entry.is_player then
                 entry.delivery_state = normalize_delivery_state(entry.delivery_state)
                 if entry.delivery_timestamp == nil then
                     entry.delivery_timestamp = get_delivery_time_marker()
                 end
             end
+            i = i - 1
         end
     end
 

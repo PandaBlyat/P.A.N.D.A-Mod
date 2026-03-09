@@ -146,12 +146,12 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_2", ui_events.BUTTON_CLICKED, self.OnChoice2, self)
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
-    self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnChoiceIgnore, self)
     self:AddCallback("composer_quick_1_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick1Clicked, self)
     self:AddCallback("composer_quick_2_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick2Clicked, self)
     self:AddCallback("composer_send_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
     self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
     self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
+    self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
 end
 
 function pda_private_tab:Update()
@@ -208,16 +208,6 @@ function pda_private_tab:OnChoiceClicked(idx)
     self.pending_choice_idx = idx
 end
 
-function pda_private_tab:OnChoiceIgnore()
-    self.selected_choice_idx = "ignore"
-    self.choice_buttons_visible = false
-    self:RefreshChoiceButtons()
-    self.reply_trigger_btn_hint_until = 0
-    self.quick_menu_open = false
-    self:UpdateReplyTriggerVisual()
-    pda_interactive_conv.CONV = nil
-end
-
 function pda_private_tab:OnComposerQuick1Clicked()
     self:ToggleQuickMenu()
 end
@@ -247,10 +237,14 @@ function pda_private_tab:HideQuickMenuButtons()
     if self.quick_btn_unblock_contact then
         self.quick_btn_unblock_contact:Show(false)
     end
+
+    if self.quick_btn_ignore_conv then
+        self.quick_btn_ignore_conv:Show(false)
+    end
 end
 
 function pda_private_tab:EnsureQuickMenuButtons()
-    if self.quick_btn_block_contact and self.quick_btn_unblock_contact then
+    if self.quick_btn_block_contact and self.quick_btn_unblock_contact and self.quick_btn_ignore_conv then
         return
     end
 
@@ -270,8 +264,17 @@ function pda_private_tab:EnsureQuickMenuButtons()
     end
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
 
+    self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, 563))
+    local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
+    if ignore_text then
+        ignore_text:SetText("Ignore Conversation")
+    end
+    self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
+
     self.quick_btn_block_contact:SetAutoDelete(true)
     self.quick_btn_unblock_contact:SetAutoDelete(true)
+    self.quick_btn_ignore_conv:SetAutoDelete(true)
 
     self:HideQuickMenuButtons()
 end
@@ -299,14 +302,36 @@ function pda_private_tab:ToggleQuickMenu()
 
     self.quick_menu_open = not self.quick_menu_open
     local is_blocked = pda_interactive_conv.is_contact_blocked and pda_interactive_conv.is_contact_blocked(contact_name)
+    local has_active_conv = pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name == contact_name and self:HasDialogueChoices()
 
     self.quick_btn_block_contact:Show(self.quick_menu_open and not is_blocked)
     self.quick_btn_unblock_contact:Show(self.quick_menu_open and is_blocked)
+    self.quick_btn_ignore_conv:Show(self.quick_menu_open and has_active_conv)
 
     if self.quick_menu_open then
         self.choice_buttons_visible = false
         self:RefreshChoiceButtons()
     end
+end
+
+function pda_private_tab:OnQuickIgnoreConversationClicked()
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then
+        return
+    end
+
+    local active_conv = pda_interactive_conv.CONV
+    if active_conv and active_conv.npc_name == contact_name then
+        pda_interactive_conv.CONV = nil
+    end
+
+    self.selected_choice_idx = nil
+    self.choice_buttons_visible = false
+    self.quick_menu_open = false
+    self.reply_trigger_btn_hint_until = 0
+    self:HideQuickMenuButtons()
+    self:RefreshChoiceButtons()
+    self:UpdateReplyTriggerVisual()
 end
 
 function pda_private_tab:OnQuickBlockContactClicked()
@@ -792,12 +817,30 @@ function pda_private_tab:OnSelectNPC()
         end
 
         if state == "read" then
-            return "%%c[255,100,220,255]✓✓", GetARGB(255, 100, 220, 255)
+            return "%%c[255,100,220,255]Read ✓✓", GetARGB(255, 100, 220, 255)
         elseif state == "delivered" then
-            return "%%c[255,190,190,190]✓✓", GetARGB(255, 190, 190, 190)
+            return "%%c[255,190,190,190]Delivered ✓✓", GetARGB(255, 190, 190, 190)
         end
 
-        return "%%c[255,150,150,150]✓", GetARGB(255, 150, 150, 150)
+        return "%%c[255,150,150,150]Sent ✓", GetARGB(255, 150, 150, 150)
+    end
+
+    local function estimate_bubble_width(text)
+        local raw_text = tostring(text or "")
+        local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
+        local longest = 0
+        for line in compact:gmatch("[^\n]+") do
+            if #line > longest then
+                longest = #line
+            end
+        end
+
+        if longest == 0 then
+            longest = #compact
+        end
+
+        local estimated = 86 + (longest * 6)
+        return math.max(180, math.min(430, estimated))
     end
 
     local row_idx = 0
@@ -821,12 +864,35 @@ function pda_private_tab:OnSelectNPC()
                 display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     relative_time, entry.text)
             else
+                local npc_body = entry.text or ""
+                if entry.is_typing then
+                    local phase = (time_global() % 3) + 1
+                    npc_body = "Typing" .. string.rep(".", phase)
+                end
+
                 -- NPC message (gold sender, grey timestamp)
                 display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    entry.sender, relative_time, entry.text)
+                    entry.sender, relative_time, npc_body)
             end
             
             text_wnd:SetText(display_text)
+            local bubble_w = estimate_bubble_width(display_text)
+
+            if is_player_lane then
+                local bubble_x = 518 - bubble_w
+                lane_bg:SetWndPos(vector2():set(bubble_x, 0))
+                lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+                text_wnd:SetWndPos(vector2():set(bubble_x + 10, 6))
+                text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 20), text_wnd:GetHeight()))
+                if status_wnd then
+                    status_wnd:SetWndPos(vector2():set(bubble_x + 10, 28))
+                    status_wnd:SetWndSize(vector2():set(math.max(90, bubble_w - 20), status_wnd:GetHeight()))
+                end
+            else
+                lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+                text_wnd:SetWndSize(vector2():set(math.max(120, bubble_w - 24), text_wnd:GetHeight()))
+            end
+
             text_wnd:AdjustHeightToText()
 
             if status_wnd then
@@ -871,16 +937,6 @@ function pda_private_tab:OnSelectNPC()
 
             table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
         end
-
-        local ignore_idx = active_conv.num_choices + 1
-        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-        self:Register(btn_ignore, "choice_btn_ignore")
-        local row = math.floor((ignore_idx - 1) / chips_per_row)
-        local col = (ignore_idx - 1) % chips_per_row
-        local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 2
-        local x = left_x + (col * (chip_w + chip_gap))
-        btn_ignore:SetWndPos(vector2():set(x, y))
-        table.insert(self.choice_btns, { btn = btn_ignore, idx = "ignore", text = "Ignore" })
 
         self:RefreshChoiceButtons()
     else
