@@ -1,6 +1,37 @@
 class "pda_private_tab" (CUIScriptWnd)
 local SINGLETON = nil
 
+local function should_show_choice_prefixes()
+    if PANDA and PANDA.get_config then
+        return PANDA.get_config("debug_logging") or false
+    end
+    return false
+end
+
+local function format_choice_text(choice_idx, choice_text, is_selected)
+    local text = choice_text or ""
+    if choice_idx ~= "ignore" and should_show_choice_prefixes() then
+        text = string.format("[%d] %s", choice_idx, text)
+    end
+
+    if is_selected then
+        return string.format("%%c[255,255,255,160]● %%c[255,255,255,210]%s", text)
+    end
+
+    return string.format("%%c[255,220,220,220]%s", text)
+end
+
+local function refresh_choice_buttons(tab)
+    for i = 1, #tab.choice_btns do
+        local entry = tab.choice_btns[i]
+        local btn = entry.btn
+        if btn and btn.TextControl then
+            local is_selected = (tab.selected_choice_idx == entry.idx)
+            btn:TextControl():SetText(format_choice_text(entry.idx, entry.text, is_selected))
+        end
+    end
+end
+
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
@@ -25,6 +56,9 @@ function pda_private_tab:__init()
     self.cached_conv_turn = -1
     self.cached_has_conv = false
     self.cached_npc_data = {}
+    self.choice_btns = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
 end
 
 function pda_private_tab:InitControls()
@@ -83,6 +117,15 @@ end
 
 function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
+
+    if self.pending_choice_idx then
+        local idx = self.pending_choice_idx
+        self.pending_choice_idx = nil
+        if pda_interactive_conv.CONV then
+            pda_interactive_conv.on_player_choice(idx)
+        end
+        return
+    end
     
     local log_size = pda_interactive_conv.pda_private_log and #pda_interactive_conv.pda_private_log or 0
     local has_conv = pda_interactive_conv.CONV ~= nil
@@ -113,12 +156,16 @@ function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
 function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 
 function pda_private_tab:OnChoiceClicked(idx)
-    if pda_interactive_conv.CONV then
-        pda_interactive_conv.on_player_choice(idx)
-    end
+    if not pda_interactive_conv.CONV then return end
+
+    self.selected_choice_idx = idx
+    refresh_choice_buttons(self)
+    self.pending_choice_idx = idx
 end
 
 function pda_private_tab:OnChoiceIgnore()
+    self.selected_choice_idx = "ignore"
+    refresh_choice_buttons(self)
     pda_interactive_conv.CONV = nil
 end
 
@@ -400,6 +447,9 @@ function pda_private_tab:OnSelectNPC()
 
     self.empty_state:Show(false)
     self.scrollbar:Clear()
+    self.choice_btns = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
     
     self.header_name:SetText(item.contact_id)
     
@@ -461,10 +511,8 @@ function pda_private_tab:OnSelectNPC()
             local ch = active_conv.choices[i]
             local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
             self:Register(btn, "choice_btn_" .. i)
-            
-            -- Choice button text (gold number, then default colour for text)
-            local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
-            btn:TextControl():SetText(choice_text)
+
+            table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
             
             self.scrollbar:AddWindow(btn, true)
             btn:SetAutoDelete(true)
@@ -472,9 +520,11 @@ function pda_private_tab:OnSelectNPC()
         
         local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
         self:Register(btn_ignore, "choice_btn_ignore")
-        btn_ignore:TextControl():SetText("[ Ignore ]")
+        table.insert(self.choice_btns, { btn = btn_ignore, idx = "ignore", text = "Ignore" })
         self.scrollbar:AddWindow(btn_ignore, true)
         btn_ignore:SetAutoDelete(true)
+
+        refresh_choice_buttons(self)
     end
     
     if self.scrollbar.ScrollToEnd then 
