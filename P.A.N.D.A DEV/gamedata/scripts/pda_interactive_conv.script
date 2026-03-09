@@ -25,50 +25,15 @@ local FALLBACK_NPC_ICON = "ui_inGame2_Neutral_1"
 -- Global used by engine overrides to simulate talking state
 fake_talking_npc_id = nil
 pda_private_tab_open = false
-pda_private_log_revision = 0
 
 function set_pda_private_tab_open(state)
     pda_private_tab_open = state == true
 end
 
 pda_private_log = {} -- Initialize the table
-pda_typing_state = { active=false, contact=nil, dots=0 }
-
-local function get_log_contact_id(entry)
-    if not entry then return nil end
-    return entry.contact_name or entry.contact_id or entry.contact or entry.npc_name or entry.sender
-end
-
-function set_pda_typing_state(contact_name, active)
-    pda_typing_state.active = active == true
-    pda_typing_state.contact = contact_name
-    pda_typing_state.dots = 0
-end
-
-function get_pda_typing_state(contact_name)
-    if not pda_typing_state.active then return false end
-    if not contact_name then return pda_typing_state.active end
-    return pda_typing_state.contact == contact_name
-end
-
-function set_last_player_message_state(contact_name, state)
-    for i = 1, #pda_private_log do
-        local e = pda_private_log[i]
-        if get_log_contact_id(e) == contact_name and e.is_player then
-            e.delivery_state = state
-            pda_private_log_revision = (pda_private_log_revision or 0) + 1
-            return true
-        end
-    end
-    return false
-end
-
 
 -- Function to add messages to the log
 function pda_private_add_message(contact_name, sender_name, text, icon, is_player)
-    pda_private_log = pda_private_log or {}
-    local resolved_contact = contact_name or sender_name or "Unknown"
-
     -- Grab the current game time
     local game_time = game.get_game_time()
     local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
@@ -84,24 +49,19 @@ function pda_private_add_message(contact_name, sender_name, text, icon, is_playe
     }
 
     table.insert(pda_private_log, 1, { -- Insert at index 1 so newest are first
-        contact_name = resolved_contact, -- Canonical thread key
-        contact_id = resolved_contact,   -- Backward/forward compatibility alias
+        contact_name = contact_name,   -- Crucial for grouping threads!
         sender = sender_name,
         text = text,
         sender_icon = icon or "ui_inGame2_Neutral_1",
         timestamp = current_time, 
         raw_time = raw_time,  -- NEW: Store raw time for calculations
-        is_player = is_player or false,
-        delivery_state = is_player and "Sent" or nil,
-        read = (is_player and false) or true
+        is_player = is_player or false
     })
     
     -- Optional: Limit log to 100 messages to prevent save bloat (increased from 50)
     if #pda_private_log > 100 then
         table.remove(pda_private_log)
     end
-
-    pda_private_log_revision = (pda_private_log_revision or 0) + 1
 end
 
 -- ============================================================
@@ -562,17 +522,7 @@ end
 local function sub_placeholders(str, npc_name, npc_faction)
     if not str or str == "" then return str end
     local subs = build_substitution_table(npc_name, npc_faction)
-    if utils_data and utils_data.parse_string_keys then
-        return utils_data.parse_string_keys(str, subs)
-    else
-        -- Simple fallback: replace common placeholders manually
-        str = str:gsub("%$player_name", subs.player_name)
-        str = str:gsub("%$npc_name", subs.npc_name)
-        str = str:gsub("%$player_faction", subs.player_faction)
-        str = str:gsub("%$npc_faction", subs.npc_faction)
-        str = str:gsub("%$current_level", subs.current_level)
-        return str
-    end
+    return utils_data.parse_string_keys(str, subs)
 end
 
 function check_preconditions_generic(precond_key)
@@ -1260,16 +1210,11 @@ function load_choices_for_turn(prefix, faction, conv_id, turn, npc_name)
         local text = game.translate_string(key)
         if text == key then break end 
 
-        local next_turn_raw = tonumber(game.translate_string(p.."_cont_"..i))
-        if next_turn_raw and next_turn_raw <= 1 then
-            next_turn_raw = nil
-        end
-
         choices[i] = {
             text = sub_placeholders(text, npc_name, faction),
             reply = sub_placeholders(game.translate_string(p.."_reply_"..i), npc_name, faction),
             outcome = game.translate_string(p.."_outcome_"..i),
-            next_turn = next_turn_raw
+            next_turn = tonumber(game.translate_string(p.."_cont_"..i)) or nil
         }
         if choices[i].reply == p.."_reply_"..i then choices[i].reply = "" end
         if choices[i].outcome == p.."_outcome_"..i then choices[i].outcome = "none" end
@@ -1312,18 +1257,8 @@ function on_player_choice(idx)
     local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
     local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
     local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
-    local reply_delay = math.random(reply_delay_min, reply_delay_max)
 
-    set_pda_typing_state(c.npc_name, true)
-
-    CreateTimeEvent("pda_ic", "msg_delivery", 1, function()
-        set_last_player_message_state(c.npc_name, "Delivered")
-        -- pda_private_tab's Update() cache detects the delivery-state change and
-        -- calls Reset(current_contact) automatically; no manual call needed here.
-        return true
-    end)
-
-    CreateTimeEvent("pda_ic", "npc_reply", reply_delay, function()
+    CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
         if ch.reply and ch.reply ~= "" then
             -- Generic global alert for NPC reply (unless private tab is already open)
             if is_private_tab_visible and is_private_tab_visible() then
@@ -1333,12 +1268,9 @@ function on_player_choice(idx)
                 -- For now, just log
                 printf("Global alert: New message from %s", c.npc_name)
             end
-            -- Add actual reply to log and mark previous player message as read
+            -- Add actual reply to log
             pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
-            set_last_player_message_state(c.npc_name, "Read")
         end
-
-        set_pda_typing_state(c.npc_name, false)
 
         if should_apply_outcome then
             CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
@@ -1358,8 +1290,11 @@ function on_player_choice(idx)
             end
         end
 
-        -- pda_private_tab's Update() cache detects log-size and CONV-turn changes
-        -- and calls Reset(current_contact) automatically, preserving the user's selection.
+        -- Try to update PDA view automatically if they are staring at it waiting for reply
+        if get_ui then
+            get_ui():Reset()
+        end
+
         return true
     end)
 
@@ -1414,8 +1349,11 @@ function start_interactive_conv(npc_se, conv_id, prefix, faction, task_id, categ
     -- Add the actual message directly into the custom Private PDA Log
     pda_private_add_message(name, name, sub_placeholders(msg, name, faction), CONV.npc_icon, false)
 
-    -- pda_private_tab's Update() cache detects the new log entry and refreshes
-    -- automatically while preserving the user's current contact selection.
+    -- Force refresh of UI if PDA is actively open so the message pops up immediately
+    if get_ui then
+        get_ui():Reset()
+    end
+
     return true
 end
 
@@ -1547,7 +1485,6 @@ function load_state(m)
     if m.pda_ic_cooldowns then conv_last_played = m.pda_ic_cooldowns end
     if m.pda_ic_npc_cooldowns then npc_last_used = m.pda_ic_npc_cooldowns end
     if m.pda_private_log then pda_private_log = m.pda_private_log end -- LOAD FROM FILE
-    pda_private_log_revision = (pda_private_log_revision or 0) + 1
 end
 
 -- ============================================================
@@ -1563,7 +1500,7 @@ function on_game_start()
             name = "st_pda_private_tab",        -- unlocalized string; define in your XML
             texture = "ui_pda_private_app",    -- texture name (create or reuse)
             tab = "eptPrivate",                  -- must match the button id in pda.xml
-            func = pda_private_tab.get_ui                        -- global function from pda_private_tab.script
+            func = pda_private_tab.get_ui        -- the getter function
         })
     else
         printf("PANDA_IC: MAC not found, private tab not registered.")
