@@ -124,9 +124,6 @@ function pda_private_tab:InitControls()
     self.xml:InitTextWnd("private_pda:info:description:stat_rank_label", self.desc_box)
     self.stat_rank_value = self.xml:InitTextWnd("private_pda:info:description:stat_rank_value", self.desc_box)
     
-    self.xml:InitTextWnd("private_pda:info:description:stat_community_label", self.desc_box)
-    self.stat_community_value = self.xml:InitTextWnd("private_pda:info:description:stat_community_value", self.desc_box)
-    
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
     self.reply_trigger_btn = self.xml:Init3tButton("private_pda:info:description:reply_trigger_btn", self.desc_box)
     self.reply_trigger_btn:TextControl():SetText("Type a reply...")
@@ -349,18 +346,31 @@ end
 
 function get_faction_color(community)
     local faction_colors = {
-        stalker = {r=150, g=200, b=150},
-        dolg = {r=200, g=80, b=80},
-        freedom = {r=100, g=200, b=100},
-        csky = {r=100, g=150, b=200},
-        ecolog = {r=200, g=180, b=100},
-        killer = {r=200, g=100, b=100},
-        army = {r=150, g=150, b=100},
-        bandit = {r=180, g=100, b=50},
-        monolith = {r=150, g=100, b=200},
+        -- Loners: golden
+        stalker = {r=255, g=215, b=0},      -- gold (#FFD700)
+        -- Duty: red
+        dolg = {r=255, g=0, b=0},           -- bright red
+        -- Freedom: green
+        freedom = {r=0, g=200, b=0},        -- medium green
+        -- Clear Sky: light blue
+        csky = {r=135, g=206, b=235},       -- sky blue
+        -- Ecologists: yellow
+        ecolog = {r=255, g=255, b=0},       -- pure yellow
+        -- Mercenaries: dark blue
+        killer = {r=0, g=0, b=128},         -- navy blue
+        -- Military: dark green
+        army = {r=0, g=100, b=0},            -- dark green
+        -- Bandits: grey
+        bandit = {r=128, g=128, b=128},      -- medium grey
+        -- Monolith: white
+        monolith = {r=255, g=255, b=255},    -- white
+        -- Zombified (unchanged)
         zombied = {r=100, g=100, b=100},
-        renegade = {r=150, g=100, b=80},
+        -- Renegades (same as bandits: grey)
+        renegade = {r=128, g=128, b=128},
+        -- ISG 
         isg = {r=100, g=150, b=200},
+        -- GREH 
         greh = {r=200, g=150, b=100}
     }
     
@@ -473,7 +483,6 @@ function pda_private_tab:HideStats()
     apply_colored_text(self.stat_relation_value, "", GetARGB(255, 255, 255, 255))
     self.stat_goodwill_value:SetText("")
     self.stat_rank_value:SetText("")
-    self.stat_community_value:SetText("")
     apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
     self.last_seen:SetText("")
     
@@ -522,7 +531,6 @@ function pda_private_tab:ShowStats(contact_name)
     
     self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
     self.stat_rank_value:SetText(npc_data.rank or "Unknown")
-    self.stat_community_value:SetText(get_community_name(npc_data.community))
     
     local log = pda_interactive_conv.pda_private_log or {}
     local latest_time = nil
@@ -566,14 +574,24 @@ function pda_private_tab:OnSelectNPC()
     self.header_name:SetText(item.contact_id)
     
     -- Portrait (prefer contact list icon, then live NPC icon, then neutral fallback)
-    local portrait_icon = item.contact_icon
-    if (not portrait_icon or portrait_icon == "") and self.cached_npc_data[item.contact_id] then
+    local portrait_icon = "ui_inGame2_Neutral_1"
+    
+    if self.cached_npc_data[item.contact_id] and self.cached_npc_data[item.contact_id].icon then
         portrait_icon = self.cached_npc_data[item.contact_id].icon
+    else
+        -- Fallback: Scan chat history logs for this specific NPC to grab their sender_icon
+        local log = pda_interactive_conv.pda_private_log or {}
+        for i = #log, 1, -1 do
+            local entry = log[i]
+            if (entry.contact_name or "Unknown") == item.contact_id and entry.sender_icon then
+                portrait_icon = entry.sender_icon
+                break
+            end
+        end
     end
-    if not portrait_icon or portrait_icon == "" then
-        portrait_icon = "ui_inGame2_Neutral_1"
-    end
+    
     self.image:InitTexture(portrait_icon)
+    self.image:SetStretchTexture(true) 
     self.image_container:Show(true)
     
     local log = pda_interactive_conv.pda_private_log or {}
