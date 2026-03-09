@@ -74,6 +74,32 @@ local function set_button_texture_tint(btn, color)
     end
 end
 
+local function is_button_hovered(btn)
+    if not btn then
+        return false
+    end
+
+    if btn.CursorOverWindow then
+        local ok, hovered = pcall(function()
+            return btn:CursorOverWindow()
+        end)
+        if ok then
+            return hovered and true or false
+        end
+    end
+
+    if btn.IsCursorOverWindow then
+        local ok, hovered = pcall(function()
+            return btn:IsCursorOverWindow()
+        end)
+        if ok then
+            return hovered and true or false
+        end
+    end
+
+    return false
+end
+
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
@@ -172,31 +198,37 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
     self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
     self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
-	self:AddCallback("composer_quick_1_btn", "mouse_enter", function(btn)
-        set_button_texture_tint(btn, GetARGB(255, 200, 60, 60)) -- red hover
-    end, self)
-    self:AddCallback("composer_quick_1_btn", "mouse_leave", function(btn)
-        set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
-    end, self)
+end
 
-    self:AddCallback("composer_quick_2_btn", "mouse_enter", function(btn)
-        set_button_texture_tint(btn, GetARGB(255, 70, 130, 180)) -- blue hover
-    end, self)
-    self:AddCallback("composer_quick_2_btn", "mouse_leave", function(btn)
-        set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
-    end, self)
+function pda_private_tab:UpdateHoverButtonTints()
+    local neutral = GetARGB(255, 255, 255, 255)
+    local hover_blue = GetARGB(255, 70, 130, 180)
+    local hover_red = GetARGB(255, 200, 60, 60)
 
-	self:AddCallback("composer_send_btn", "mouse_enter", function(btn)
-		set_button_texture_tint(btn, GetARGB(255, 70, 130, 180)) -- blue hover
-	end, self)
+    if self.composer_quick_1_btn then
+        set_button_texture_tint(self.composer_quick_1_btn, is_button_hovered(self.composer_quick_1_btn) and hover_red or neutral)
+    end
 
-	self:AddCallback("composer_send_btn", "mouse_leave", function(btn)
-		set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
-	end, self)
+    if self.composer_quick_2_btn then
+        set_button_texture_tint(self.composer_quick_2_btn, is_button_hovered(self.composer_quick_2_btn) and hover_blue or neutral)
+    end
+
+    if self.composer_send_btn then
+        set_button_texture_tint(self.composer_send_btn, is_button_hovered(self.composer_send_btn) and hover_blue or neutral)
+    end
+
+    for i = 1, #self.choice_btns do
+        local btn_data = self.choice_btns[i]
+        local btn = btn_data and btn_data.btn or nil
+        if btn then
+            set_button_texture_tint(btn, is_button_hovered(btn) and hover_blue or neutral)
+        end
+    end
 end
 
 function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
+    self:UpdateHoverButtonTints()
 
     if self.pending_choice_idx then
         local idx = self.pending_choice_idx
@@ -1100,15 +1132,6 @@ function pda_private_tab:OnSelectNPC()
 			local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
 			
 			btn:SetWndPos(vector2():set(left_x, y))
-
-			-- Add hover highlighting using proper window-level callbacks
-			self:AddCallback(btn_name, "mouse_enter", function(btn_obj)
-				set_button_texture_tint(btn_obj, GetARGB(255, 70, 130, 180)) -- blue hover
-			end, self)
-
-			self:AddCallback(btn_name, "mouse_leave", function(btn_obj)
-				set_button_texture_tint(btn_obj, GetARGB(255, 255, 255, 255))
-			end, self)
 
 			table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
 		end
