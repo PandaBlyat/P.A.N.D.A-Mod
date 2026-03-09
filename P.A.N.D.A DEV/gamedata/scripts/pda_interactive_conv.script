@@ -122,6 +122,14 @@ function block_contact(contact_name)
         CONV = nil
     end
 
+    -- Cancel any pending message delivery timers
+    pda_reply_pending = false
+    if RemoveTimeEvent then
+        RemoveTimeEvent("pda_ic", "delivery_ack")
+        RemoveTimeEvent("pda_ic", "npc_typing_start")
+        RemoveTimeEvent("pda_ic", "npc_reply")
+    end
+
     return true, removed
 end
 
@@ -252,6 +260,7 @@ local TASK_ID_TO_CAT = {
 -- UTILITY FUNCTIONS
 -- ============================================================
 CONV = nil
+pda_reply_pending = false  -- True while the multi-stage reply timer chain is active
 local conv_last_played, last_conv_npc_id, _callbacks_registered = {}, nil, false
 local npc_last_used = {}   -- store last used time per NPC
 local last_pda_warning_time = 0 
@@ -1380,55 +1389,64 @@ function on_player_choice(idx)
         end
     end
 
-    local reply_delay_min = PANDA.get_config("npc_reply_delay_min") or 2
-    local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
-    local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
-    local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
+    -- Stage 1: Message is "sent" (already done above)
+    -- Mark reply chain as active so UI doesn't prematurely clear typing
+    pda_reply_pending = true
 
-    upsert_npc_typing_message(c.npc_name, c.npc_name, c.npc_icon)
-
-    CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
+    -- Stage 2: After a short delay, mark as "delivered"
+    local delivered_delay = math.random(1, 2)
+    CreateTimeEvent("pda_ic", "delivery_ack", delivered_delay, function()
         set_last_player_message_state(c.npc_name, "delivered")
 
-        clear_npc_typing_message(c.npc_name)
+        -- Stage 3: After another delay, NPC starts typing
+        local typing_delay = math.random(1, 3)
+        CreateTimeEvent("pda_ic", "npc_typing_start", typing_delay, function()
+            upsert_npc_typing_message(c.npc_name, c.npc_name, c.npc_icon)
 
-        if ch.reply and ch.reply ~= "" then
-            -- Generic global alert for NPC reply (unless private tab is already open)
-            if is_private_tab_visible and is_private_tab_visible() then
-                -- Tab is open and visible → do NOT send global alert
-            else
-                -- TODO: Implement actual global alert (e.g., dynamic_news_helper.send_tip)
-                -- For now, just log
-                printf("Global alert: New message from %s", c.npc_name)
-            end
-            -- Add actual reply to log
-            pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
-            set_last_player_message_state(c.npc_name, "read")
-        end
+            -- Stage 4: After MCM reply delay, NPC sends reply
+            local reply_delay_min = PANDA.get_config("npc_reply_delay_min") or 2
+            local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
+            CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
+                clear_npc_typing_message(c.npc_name)
 
-        if should_apply_outcome then
-            CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
-                local given = apply_outcome(ch.outcome, c.npc_name, c.faction, c.npc_id, c.task_id)
-                -- Cooldown is already set at conversation end; outcome cooldown is redundant but harmless.
+                if ch.reply and ch.reply ~= "" then
+                    if is_private_tab_visible and is_private_tab_visible() then
+                        -- Tab is open and visible, no global alert
+                    else
+                        printf("Global alert: New message from %s", c.npc_name)
+                    end
+                    pda_private_add_message(c.npc_name, c.npc_name, ch.reply, c.npc_icon, false)
+                    set_last_player_message_state(c.npc_name, "read")
+                end
+
+                if should_apply_outcome then
+                    local outcome_delay_min = PANDA.get_config("outcome_delay_min") or 1
+                    local outcome_delay_max = PANDA.get_config("outcome_delay_max") or 2
+                    CreateTimeEvent("pda_ic", "outcome", math.random(outcome_delay_min, outcome_delay_max), function()
+                        apply_outcome(ch.outcome, c.npc_name, c.faction, c.npc_id, c.task_id)
+                        return true
+                    end)
+                end
+
+                if ch.next_turn then
+                    local next_choices, num = load_choices_for_turn(c.prefix, c.faction, c.conv_id, ch.next_turn, c.npc_name)
+                    if num > 0 then
+                        CONV = c
+                        CONV.turn = ch.next_turn
+                        CONV.choices = next_choices
+                        CONV.num_choices = num
+                    end
+                end
+
+                if get_ui then
+                    get_ui():Reset()
+                end
+
+                pda_reply_pending = false
                 return true
             end)
-        end
-
-        if ch.next_turn then
-            local next_choices, num = load_choices_for_turn(c.prefix, c.faction, c.conv_id, ch.next_turn, c.npc_name)
-            if num > 0 then
-                CONV = c
-                CONV.turn = ch.next_turn
-                CONV.choices = next_choices
-                CONV.num_choices = num
-            end
-        end
-
-        -- Try to update PDA view automatically if they are staring at it waiting for reply
-        if get_ui then
-            get_ui():Reset()
-        end
-
+            return true
+        end)
         return true
     end)
 
