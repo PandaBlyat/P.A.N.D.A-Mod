@@ -238,7 +238,8 @@ function pda_private_tab:OnComposerQuick2Clicked()
         self.reply_trigger_btn_hint_until = 0
         self.choice_buttons_visible = not self.choice_buttons_visible
         self.quick_menu_open = false
-        self:OnSelectNPC()
+        self:HideQuickMenuButtons()
+        self:RefreshChoiceButtons()
 
         if self.scrollbar.ScrollToEnd then
             self.scrollbar:ScrollToEnd()
@@ -411,7 +412,7 @@ function pda_private_tab:OnReplyTriggerClicked()
     if self:HasDialogueChoices() then
         self.reply_trigger_btn_hint_until = 0
         self.choice_buttons_visible = true
-        self:OnSelectNPC()
+        self:RefreshChoiceButtons()
 
         if self.scrollbar.ScrollToEnd then
             self.scrollbar:ScrollToEnd()
