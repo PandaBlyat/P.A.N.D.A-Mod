@@ -560,6 +560,15 @@ function pda_private_tab:OnSelectNPC()
 
     self.empty_state:Show(false)
     self.scrollbar:Clear()
+
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn then
+            choice.btn:Show(false)
+            choice.btn:SetAutoDelete(true)
+        end
+    end
+
     self.choice_btns = {}
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
@@ -684,31 +693,32 @@ function pda_private_tab:OnSelectNPC()
 
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
+        local reply_y = self.reply_trigger_btn and self.reply_trigger_btn:GetWndPos().y or 568
+        local reply_h = self.reply_trigger_btn and self.reply_trigger_btn:GetHeight() or 30
+        local btn_spacing = 34
+
         for i = 1, active_conv.num_choices do
             local ch = active_conv.choices[i]
-            local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+            local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", self.desc_box)
             self:Register(btn, "choice_btn_" .. i)
+            btn:SetWndPos(vector2():set(110, reply_y - ((active_conv.num_choices - i + 1) * btn_spacing)))
 
             table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
-            
-            self.scrollbar:AddWindow(btn, true)
-            btn:SetAutoDelete(true)
         end
-        
-        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
+
+        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", self.desc_box)
         self:Register(btn_ignore, "choice_btn_ignore")
+        btn_ignore:SetWndPos(vector2():set(110, reply_y + reply_h + 6))
         table.insert(self.choice_btns, { btn = btn_ignore, idx = "ignore", text = "Ignore" })
-        self.scrollbar:AddWindow(btn_ignore, true)
-        btn_ignore:SetAutoDelete(true)
 
         self:RefreshChoiceButtons()
     else
         self.choice_buttons_visible = false
         self:RefreshChoiceButtons()
     end
-    
-    if self.scrollbar.ScrollToEnd then 
-        self.scrollbar:ScrollToEnd() 
+
+    if self.scrollbar.ScrollToEnd then
+        self.scrollbar:ScrollToEnd()
     end
     
     self:ShowStats(item.contact_id)
