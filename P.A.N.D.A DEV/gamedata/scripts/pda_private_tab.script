@@ -422,17 +422,47 @@ function pda_private_tab:OnSelectNPC()
     
     local current_game_time = game.get_game_time()
     
+    local function is_player_sender(entry)
+        if entry.is_player then
+            return true
+        end
+
+        if db and db.actor and entry.sender then
+            return entry.sender == db.actor:character_name()
+        end
+
+        return false
+    end
+
+    local function style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+        local odd_row = (row_idx % 2 == 1)
+
+        local lane_color
+        if is_player_lane then
+            lane_color = odd_row and GetARGB(190, 50, 78, 50) or GetARGB(165, 42, 66, 42)
+        else
+            lane_color = odd_row and GetARGB(200, 58, 58, 58) or GetARGB(175, 48, 48, 48)
+        end
+
+        lane_bg:SetTextureColor(lane_color)
+    end
+
+    local row_idx = 0
     for i = #log, 1, -1 do
         local entry = log[i]
         if (entry.contact_name or "Unknown") == item.contact_id then
-            local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
-            local bubble_bg = self.xml:InitStatic(template, nil)
-            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
+            row_idx = row_idx + 1
+
+            local is_player_lane = is_player_sender(entry)
+            local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
+            local lane_root = self.xml:InitStatic(template, nil)
+            local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
+            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
             
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
             
             local display_text = ""
-            if entry.is_player then
+            if is_player_lane then
                 -- Player message (green "You", grey timestamp)
                 display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     relative_time, entry.text)
@@ -445,13 +475,17 @@ function pda_private_tab:OnSelectNPC()
             text_wnd:SetText(display_text)
             text_wnd:AdjustHeightToText()
             
-            local padding = 15
+            style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+
+            local padding = is_player_lane and 14 or 16
             local text_h = text_wnd:GetHeight()
-            local bubble_w = bubble_bg:GetWidth()
+            local lane_h = text_h + padding
             
-            bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
-            self.scrollbar:AddWindow(bubble_bg, true)
-            bubble_bg:SetAutoDelete(true)
+            lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
+            lane_root:SetWndSize(vector2():set(lane_root:GetWidth(), lane_h))
+
+            self.scrollbar:AddWindow(lane_root, true)
+            lane_root:SetAutoDelete(true)
         end
     end
 
