@@ -86,6 +86,7 @@ function pda_private_tab:__init()
     self.choice_btns = {}
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
+    self.choice_buttons_visible = false
 end
 
 function pda_private_tab:InitControls()
@@ -193,13 +194,25 @@ function pda_private_tab:OnChoiceClicked(idx)
     if not pda_interactive_conv.CONV then return end
 
     self.selected_choice_idx = idx
+    self.choice_buttons_visible = false
     self:RefreshChoiceButtons()
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+    if self.reply_trigger_btn then
+        self.reply_trigger_btn:Show(true)
+    end
     self.pending_choice_idx = idx
 end
 
 function pda_private_tab:OnChoiceIgnore()
     self.selected_choice_idx = "ignore"
+    self.choice_buttons_visible = false
     self:RefreshChoiceButtons()
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+    if self.reply_trigger_btn then
+        self.reply_trigger_btn:Show(true)
+    end
     pda_interactive_conv.CONV = nil
 end
 
@@ -224,6 +237,7 @@ end
 function pda_private_tab:OnReplyTriggerClicked()
     if self:HasDialogueChoices() then
         self.reply_trigger_btn_hint_until = 0
+        self.choice_buttons_visible = true
         self:OnSelectNPC()
 
         if self.scrollbar.ScrollToEnd then
@@ -235,6 +249,33 @@ function pda_private_tab:OnReplyTriggerClicked()
 
     self.reply_trigger_btn_hint_until = time_global() + 900
     self:UpdateReplyTriggerVisual()
+end
+
+function pda_private_tab:RefreshChoiceButtons()
+    local has_choices = self:HasDialogueChoices() and #self.choice_btns > 0
+    local should_show_choices = has_choices and self.choice_buttons_visible == true
+
+    if self.reply_trigger_btn then
+        self.reply_trigger_btn:Show(not should_show_choices)
+    end
+
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn then
+            local label = choice.text or ""
+            if choice.idx == self.selected_choice_idx then
+                label = "[Selected] " .. label
+            end
+
+            local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
+            if text_ctrl then
+                text_ctrl:SetText(label)
+            end
+
+            choice.btn:Enable(true)
+            choice.btn:Show(should_show_choices)
+        end
+    end
 end
 
 function get_relative_time(timestamp_str, current_game_time)
@@ -520,6 +561,10 @@ function pda_private_tab:OnSelectNPC()
     self.choice_btns = {}
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
+
+    if not self:HasDialogueChoices() then
+        self.choice_buttons_visible = false
+    end
     
     self.reply_trigger_btn_hint_until = 0
     self:UpdateReplyTriggerVisual()
@@ -631,6 +676,9 @@ function pda_private_tab:OnSelectNPC()
         self.scrollbar:AddWindow(btn_ignore, true)
         btn_ignore:SetAutoDelete(true)
 
+        self:RefreshChoiceButtons()
+    else
+        self.choice_buttons_visible = false
         self:RefreshChoiceButtons()
     end
     
