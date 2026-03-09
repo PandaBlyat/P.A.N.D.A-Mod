@@ -165,18 +165,26 @@ function pda_private_tab:InitCallBacks()
     end, self)
 
     self:AddCallback("composer_quick_2_btn", "mouse_enter", function(btn)
-        btn:SetTextureColor(GetARGB(255, 100, 255, 100)) -- green tint
+        local bg = btn:GetStatic()
+	if bg then bg:SetTextureColor(GetARGB(255,70,130,180)) end
     end, self)
     self:AddCallback("composer_quick_2_btn", "mouse_leave", function(btn)
         btn:SetTextureColor(GetARGB(255, 255, 255, 255))
     end, self)
 
-    self:AddCallback("composer_send_btn", "mouse_enter", function(btn)
-        btn:SetTextureColor(GetARGB(255, 255, 100, 100)) -- red tint
-    end, self)
-    self:AddCallback("composer_send_btn", "mouse_leave", function(btn)
-        btn:SetTextureColor(GetARGB(255, 255, 255, 255))
-    end, self)
+	self:AddCallback("composer_send_btn", "mouse_enter", function(btn)
+		local bg = btn:GetStatic()
+		if bg then
+			bg:SetTextureColor(GetARGB(255,200,60,60)) -- red
+		end
+	end, self)
+
+	self:AddCallback("composer_send_btn", "mouse_leave", function(btn)
+		local bg = btn:GetStatic()
+		if bg then
+			bg:SetTextureColor(GetARGB(255,255,255,255))
+		end
+	end, self)
 end
 
 function pda_private_tab:Update()
@@ -1087,10 +1095,17 @@ function pda_private_tab:OnSelectNPC()
 
 			-- Add hover highlighting using proper window-level callbacks
 			self:AddCallback(btn_name, "mouse_enter", function(btn_obj)
-				btn_obj:SetTextureColor(GetARGB(255, 70, 130, 180))  -- steel blue
+				local bg = btn_obj:GetStatic()
+				if bg then
+					bg:SetTextureColor(GetARGB(255, 70,130,180)) -- blue
+				end
 			end, self)
+
 			self:AddCallback(btn_name, "mouse_leave", function(btn_obj)
-				btn_obj:SetTextureColor(GetARGB(255, 255, 255, 255)) -- revert to white
+				local bg = btn_obj:GetStatic()
+				if bg then
+					bg:SetTextureColor(GetARGB(255,255,255,255))
+				end
 			end, self)
 
 			table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
