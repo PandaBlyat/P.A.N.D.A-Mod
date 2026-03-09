@@ -124,10 +124,18 @@ function pda_private_tab:InitControls()
     self.stat_rank_value = self.xml:InitTextWnd("private_pda:info:description:stat_rank_value", self.desc_box)
     
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
-    self.reply_trigger_btn = self.xml:Init3tButton("private_pda:info:description:reply_trigger_btn", self.desc_box)
-    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+    self.composer_container = self.xml:InitStatic("private_pda:info:description:composer_container", self.desc_box)
+    self.xml:InitStatic("private_pda:info:description:composer_container:composer_bg", self.composer_container)
+    self.xml:InitStatic("private_pda:info:description:composer_container:composer_input_shell", self.composer_container)
+    self.composer_input_field = self.xml:InitTextWnd("private_pda:info:description:composer_container:composer_input_field", self.composer_container)
+    self.composer_quick_1_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_1_btn", self.composer_container)
+    self.composer_quick_2_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_2_btn", self.composer_container)
+    self.composer_send_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_send_btn", self.composer_container)
+
     self.reply_trigger_btn_hint_until = 0
-    self:Register(self.reply_trigger_btn, "reply_trigger_btn")
+    self:Register(self.composer_quick_1_btn, "composer_quick_1_btn")
+    self:Register(self.composer_quick_2_btn, "composer_quick_2_btn")
+    self:Register(self.composer_send_btn, "composer_send_btn")
 end
 
 function pda_private_tab:InitCallBacks()
@@ -138,7 +146,9 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
     self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnChoiceIgnore, self)
-    self:AddCallback("reply_trigger_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
+    self:AddCallback("composer_quick_1_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick1Clicked, self)
+    self:AddCallback("composer_quick_2_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick2Clicked, self)
+    self:AddCallback("composer_send_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
 end
 
 function pda_private_tab:Update()
@@ -191,9 +201,6 @@ function pda_private_tab:OnChoiceClicked(idx)
     self:RefreshChoiceButtons()
     self.reply_trigger_btn_hint_until = 0
     self:UpdateReplyTriggerVisual()
-    if self.reply_trigger_btn then
-        self.reply_trigger_btn:Show(true)
-    end
     self.pending_choice_idx = idx
 end
 
@@ -203,23 +210,29 @@ function pda_private_tab:OnChoiceIgnore()
     self:RefreshChoiceButtons()
     self.reply_trigger_btn_hint_until = 0
     self:UpdateReplyTriggerVisual()
-    if self.reply_trigger_btn then
-        self.reply_trigger_btn:Show(true)
-    end
     pda_interactive_conv.CONV = nil
 end
 
+function pda_private_tab:OnComposerQuick1Clicked()
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
+end
+
+function pda_private_tab:OnComposerQuick2Clicked()
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
+end
 
 function pda_private_tab:UpdateReplyTriggerVisual()
-    if not self.reply_trigger_btn then return end
+    if not self.composer_input_field then return end
 
     local now = time_global()
     if self.reply_trigger_btn_hint_until > now then
-        self.reply_trigger_btn:TextControl():SetText("No reply options now")
+        self.composer_input_field:SetText("No reply options now")
         return
     end
 
-    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+    self.composer_input_field:SetText("Choose a reply...")
 end
 
 function pda_private_tab:HasDialogueChoices()
@@ -248,8 +261,8 @@ function pda_private_tab:RefreshChoiceButtons()
     local has_choices = self:HasDialogueChoices() and #self.choice_btns > 0
     local should_show_choices = has_choices and self.choice_buttons_visible == true
 
-    if self.reply_trigger_btn then
-        self.reply_trigger_btn:Show(not should_show_choices)
+    if self.composer_container then
+        self.composer_container:Show(not should_show_choices)
     end
 
     for i = 1, #self.choice_btns do
@@ -714,22 +727,35 @@ function pda_private_tab:OnSelectNPC()
 
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
-        local reply_y = self.reply_trigger_btn and self.reply_trigger_btn:GetWndPos().y or 568
-        local reply_h = self.reply_trigger_btn and self.reply_trigger_btn:GetHeight() or 30
-        local btn_spacing = 34
+        local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
+        local chip_h = 26
+        local chip_gap = 4
+        local chips_per_row = 3
+        local left_x = 16
+        local chip_w = 220
 
         for i = 1, active_conv.num_choices do
             local ch = active_conv.choices[i]
-            local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", self.desc_box)
+            local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
             self:Register(btn, "choice_btn_" .. i)
-            btn:SetWndPos(vector2():set(110, reply_y - ((active_conv.num_choices - i + 1) * btn_spacing)))
+
+            local row = math.floor((i - 1) / chips_per_row)
+            local col = (i - 1) % chips_per_row
+            local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 2
+            local x = left_x + (col * (chip_w + chip_gap))
+            btn:SetWndPos(vector2():set(x, y))
 
             table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
         end
 
-        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", self.desc_box)
+        local ignore_idx = active_conv.num_choices + 1
+        local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
         self:Register(btn_ignore, "choice_btn_ignore")
-        btn_ignore:SetWndPos(vector2():set(110, reply_y + reply_h + 6))
+        local row = math.floor((ignore_idx - 1) / chips_per_row)
+        local col = (ignore_idx - 1) % chips_per_row
+        local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 2
+        local x = left_x + (col * (chip_w + chip_gap))
+        btn_ignore:SetWndPos(vector2():set(x, y))
         table.insert(self.choice_btns, { btn = btn_ignore, idx = "ignore", text = "Ignore" })
 
         self:RefreshChoiceButtons()

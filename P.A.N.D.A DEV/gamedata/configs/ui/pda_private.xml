@@ -127,19 +127,55 @@
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
 
-                <!-- Bottom-anchored reply trigger -->
-                <reply_trigger_btn x="10" y="568" width="700" height="30" stretch="1" can_focus="1">
-                    <texture_e>ui_inGame2_hint_wnd_main_window</texture_e>
-                    <texture_t>ui_inGame2_hint_wnd_main_window</texture_t>
-                    <texture_h>ui_inGame2_hint_wnd_main_window</texture_h>
-                    <text font="letterica16" align="l" vert_align="c" x="12" y="0" complex_mode="1" />
-                    <!-- Pronounced highlight color -->
-                    <text_color>
-                        <e r="150" g="150" b="150" a="255"/>
-                        <h r="100" g="255" b="100" a="255"/>
-                        <t r="50" g="200" b="50" a="255"/>
-                    </text_color>
-                </reply_trigger_btn>
+                <!-- Bottom composer: quick actions + disabled input look + send/expand -->
+                <composer_container x="10" y="564" width="700" height="34">
+                    <composer_bg x="0" y="0" width="700" height="34" stretch="1">
+                        <texture r="32" g="36" b="40" a="220">ui_inGame2_hint_wnd_main_window</texture>
+                    </composer_bg>
+
+                    <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
+                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
+                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
+                        <text_color>
+                            <e r="210" g="220" b="230" a="255"/>
+                            <h r="255" g="255" b="255" a="255"/>
+                            <t r="30" g="40" b="50" a="255"/>
+                        </text_color>
+                    </composer_quick_1_btn>
+
+                    <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
+                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
+                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
+                        <text_color>
+                            <e r="210" g="220" b="230" a="255"/>
+                            <h r="255" g="255" b="255" a="255"/>
+                            <t r="30" g="40" b="50" a="255"/>
+                        </text_color>
+                    </composer_quick_2_btn>
+
+                    <composer_input_shell x="70" y="4" width="588" height="26" stretch="1">
+                        <texture r="20" g="22" b="25" a="230">ui_inGame2_hint_wnd_main_window</texture>
+                    </composer_input_shell>
+                    <composer_input_field x="82" y="4" width="560" height="26">
+                        <text font="letterica16" r="120" g="132" b="145" a="255" align="l" vert_align="c">Choose a reply...</text>
+                    </composer_input_field>
+
+                    <composer_send_btn x="662" y="2" width="36" height="30" can_focus="1" stretch="1">
+                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
+                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <text font="letterica18" align="c" vert_align="c" x="0" y="0">&gt;</text>
+                        <text_color>
+                            <e r="210" g="220" b="230" a="255"/>
+                            <h r="255" g="255" b="255" a="255"/>
+                            <t r="30" g="40" b="50" a="255"/>
+                        </text_color>
+                    </composer_send_btn>
+                </composer_container>
                 
                 <!-- Message rows: reusable lanes -->
                 <message_lane_npc x="0" y="0" width="600" height="50" stretch="1">
@@ -164,19 +200,18 @@
                     </delivery_status>
                 </message_lane_player>
                 
-                <!-- Choice buttons -->
-                <choice_btn x="110" y="0" width="400" height="30" stretch="1" can_focus="1">
-                    <texture_e>ui_inGame2_hint_wnd_main_window</texture_e>
-                    <texture_t>ui_inGame2_hint_wnd_main_window</texture_t>
-                    <texture_h>ui_inGame2_hint_wnd_main_window</texture_h>
-                    <text font="letterica16" align="l" vert_align="c" x="15" y="0" complex_mode="1" />
-                    <!-- Pronounced highlight color -->
+                <!-- Compact choice chip template (instantiated from script) -->
+                <choice_chip_btn x="0" y="0" width="220" height="26" stretch="1" can_focus="1">
+                    <texture_e r="43" g="52" b="60" a="235">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <texture_h r="70" g="94" b="114" a="245">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <texture_t r="80" g="170" b="220" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
-                        <e r="220" g="220" b="220" a="255"/>
-                        <h r="100" g="255" b="100" a="255"/>
-                        <t r="50" g="200" b="50" a="255"/>
+                        <e r="225" g="232" b="238" a="255"/>
+                        <h r="255" g="255" b="255" a="255"/>
+                        <t r="20" g="30" b="38" a="255"/>
                     </text_color>
-                </choice_btn>
+                </choice_chip_btn>
             </description>
         </info>
     </private_pda>
