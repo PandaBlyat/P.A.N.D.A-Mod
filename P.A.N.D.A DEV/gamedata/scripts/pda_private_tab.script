@@ -25,6 +25,9 @@ function pda_private_tab:__init()
     self.cached_conv_turn = -1
     self.cached_has_conv = false
     self.cached_npc_data = {}
+    self.choice_btns = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
 end
 
 function pda_private_tab:InitControls()
@@ -83,6 +86,15 @@ end
 
 function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
+
+    if self.pending_choice_idx then
+        local idx = self.pending_choice_idx
+        self.pending_choice_idx = nil
+        if pda_interactive_conv.CONV then
+            pda_interactive_conv.on_player_choice(idx)
+        end
+        return
+    end
     
     local log_size = pda_interactive_conv.pda_private_log and #pda_interactive_conv.pda_private_log or 0
     local has_conv = pda_interactive_conv.CONV ~= nil
@@ -113,13 +125,48 @@ function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
 function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 
 function pda_private_tab:OnChoiceClicked(idx)
-    if pda_interactive_conv.CONV then
-        pda_interactive_conv.on_player_choice(idx)
-    end
+    if not pda_interactive_conv.CONV then return end
+
+    self.selected_choice_idx = idx
+    self:RefreshChoiceButtons()
+    self.pending_choice_idx = idx
 end
 
 function pda_private_tab:OnChoiceIgnore()
+    self.selected_choice_idx = "ignore"
+    self:RefreshChoiceButtons()
     pda_interactive_conv.CONV = nil
+end
+
+function pda_private_tab:ShouldShowChoicePrefixes()
+    if PANDA and PANDA.get_config then
+        return PANDA.get_config("debug_logging") or false
+    end
+    return false
+end
+
+function pda_private_tab:FormatChoiceText(choice_idx, choice_text, is_selected)
+    local text = choice_text or ""
+    if self:ShouldShowChoicePrefixes() then
+        text = string.format("[%d] %s", choice_idx, text)
+    end
+
+    if is_selected then
+        return string.format("%%c[255,255,255,160]● %%c[255,255,255,210]%s", text)
+    end
+
+    return string.format("%%c[255,220,220,220]%s", text)
+end
+
+function pda_private_tab:RefreshChoiceButtons()
+    for i = 1, #self.choice_btns do
+        local entry = self.choice_btns[i]
+        local btn = entry.btn
+        if btn and btn.TextControl then
+            local is_selected = (self.selected_choice_idx == entry.idx)
+            btn:TextControl():SetText(self:FormatChoiceText(entry.idx, entry.text, is_selected))
+        end
+    end
 end
 
 function get_relative_time(timestamp_str, current_game_time)
@@ -400,6 +447,9 @@ function pda_private_tab:OnSelectNPC()
 
     self.empty_state:Show(false)
     self.scrollbar:Clear()
+    self.choice_btns = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
     
     self.header_name:SetText(item.contact_id)
     
@@ -461,10 +511,8 @@ function pda_private_tab:OnSelectNPC()
             local ch = active_conv.choices[i]
             local btn = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
             self:Register(btn, "choice_btn_" .. i)
-            
-            -- Choice button text (gold number, then default colour for text)
-            local choice_text = string.format("%%c[255,255,200,50][%d]%%c[default] %s", i, ch.text)
-            btn:TextControl():SetText(choice_text)
+
+            table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
             
             self.scrollbar:AddWindow(btn, true)
             btn:SetAutoDelete(true)
@@ -472,9 +520,11 @@ function pda_private_tab:OnSelectNPC()
         
         local btn_ignore = self.xml:Init3tButton("private_pda:info:description:choice_btn", nil)
         self:Register(btn_ignore, "choice_btn_ignore")
-        btn_ignore:TextControl():SetText("[ Ignore ]")
+        table.insert(self.choice_btns, { btn = btn_ignore, idx = "ignore", text = "Ignore" })
         self.scrollbar:AddWindow(btn_ignore, true)
         btn_ignore:SetAutoDelete(true)
+
+        self:RefreshChoiceButtons()
     end
     
     if self.scrollbar.ScrollToEnd then 
