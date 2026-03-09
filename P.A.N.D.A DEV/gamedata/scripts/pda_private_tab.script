@@ -82,6 +82,8 @@ function pda_private_tab:__init()
     self.cached_log_size = -1
     self.cached_conv_turn = -1
     self.cached_has_conv = false
+    self.cached_delivery_state = ""
+    self.cached_has_typing = false
     self.cached_npc_data = {}
     self.choice_btns = {}
     self.selected_choice_idx = nil
@@ -169,21 +171,44 @@ function pda_private_tab:Update()
         return
     end
     
-    local log_size = pda_interactive_conv.pda_private_log and #pda_interactive_conv.pda_private_log or 0
+    local raw_log = pda_interactive_conv.pda_private_log or {}
+    local log_size = #raw_log
     local has_conv = pda_interactive_conv.CONV ~= nil
     local conv_turn = has_conv and pda_interactive_conv.CONV.turn or 0
-    
-    if self.cached_log_size ~= log_size or self.cached_conv_turn ~= conv_turn or self.cached_has_conv ~= has_conv then
+
+    -- Also track delivery_state and typing so those in-place mutations trigger a rebuild
+    local last_delivery_state = ""
+    local has_typing = false
+    for i = 1, log_size do
+        local e = raw_log[i]
+        if e then
+            if e.is_player and last_delivery_state == "" then
+                last_delivery_state = e.delivery_state or "sent"
+            end
+            if e.is_typing then
+                has_typing = true
+            end
+        end
+        if last_delivery_state ~= "" and has_typing then break end
+    end
+
+    if self.cached_log_size ~= log_size
+       or self.cached_conv_turn ~= conv_turn
+       or self.cached_has_conv ~= has_conv
+       or self.cached_delivery_state ~= last_delivery_state
+       or self.cached_has_typing ~= has_typing then
         self.cached_log_size = log_size
         self.cached_conv_turn = conv_turn
         self.cached_has_conv = has_conv
-        
+        self.cached_delivery_state = last_delivery_state
+        self.cached_has_typing = has_typing
+
         local current_contact = nil
         local item = self.npc_list:GetSelectedItem()
         if item and item.contact_id ~= "System" then
             current_contact = item.contact_id
         end
-        
+
         self:Reset(current_contact)
     end
 
@@ -892,15 +917,15 @@ function pda_private_tab:OnSelectNPC()
 			for i = 1, #line do
 				local char = line:sub(i, i)
 				if char:match("%u") then
-					width = width + 7.5      -- uppercase
+					width = width + 5.5      -- uppercase
 				elseif char:match("%l") then
-					width = width + 6.0      -- lowercase
+					width = width + 4.5      -- lowercase
 				elseif char:match("%d") then
-					width = width + 6.0      -- digits
+					width = width + 4.5      -- digits
 				elseif char == " " then
-					width = width + 4.0      -- space
+					width = width + 3.0      -- space
 				else
-					width = width + 5.5      -- punctuation, symbols
+					width = width + 4.0      -- punctuation, symbols
 				end
 			end
 			if width > max_w then
@@ -908,12 +933,12 @@ function pda_private_tab:OnSelectNPC()
 			end
 		end
 
-		if max_w == 0 then max_w = 100 end
+		if max_w == 0 then max_w = 80 end
 
 		-- Padding: left 14, right 14 = total 28
 		local padding_x = 28
 		local estimated = padding_x + max_w
-		return math.floor(math.max(100, math.min(395, estimated)))
+		return math.floor(math.max(80, math.min(395, estimated)))
 	end
 
     local row_idx = 0
