@@ -135,25 +135,25 @@
 
                     <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
                         <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <texture_h r="200" g="50" b="50" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="220" g="30" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
                             <h r="255" g="255" b="255" a="255"/>
-                            <t r="30" g="40" b="50" a="255"/>
+                            <t r="255" g="255" b="255" a="255"/>
                         </text_color>
                     </composer_quick_1_btn>
 
                     <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
                         <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <texture_h r="50" g="180" b="50" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="30" g="220" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
                             <h r="255" g="255" b="255" a="255"/>
-                            <t r="30" g="40" b="50" a="255"/>
+                            <t r="255" g="255" b="255" a="255"/>
                         </text_color>
                     </composer_quick_2_btn>
 
@@ -166,13 +166,13 @@
 
                     <composer_send_btn x="662" y="2" width="36" height="30" can_focus="1" stretch="1">
                         <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="90" g="130" b="170" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="60" g="190" b="255" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <texture_h r="50" g="180" b="50" a="255">ui_inGame2_pda_smallbutton</texture_h>
+                        <texture_t r="30" g="220" b="30" a="255">ui_inGame2_pda_smallbutton</texture_t>
                         <text font="letterica18" align="c" vert_align="c" x="0" y="0">&gt;</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
                             <h r="255" g="255" b="255" a="255"/>
-                            <t r="30" g="40" b="50" a="255"/>
+                            <t r="255" g="255" b="255" a="255"/>
                         </text_color>
                     </composer_send_btn>
                 </composer_container>
@@ -203,13 +203,13 @@
                 <!-- Compact choice chip template (instantiated from script) -->
                 <choice_chip_btn x="0" y="0" width="220" height="26" stretch="1" can_focus="1">
                     <texture_e r="43" g="52" b="60" a="235">ui_inGame2_hint_wnd_main_window</texture_e>
-                    <texture_h r="70" g="94" b="114" a="245">ui_inGame2_hint_wnd_main_window</texture_h>
-                    <texture_t r="80" g="170" b="220" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <texture_h r="40" g="160" b="40" a="245">ui_inGame2_hint_wnd_main_window</texture_h>
+                    <texture_t r="30" g="200" b="30" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>
                         <h r="255" g="255" b="255" a="255"/>
-                        <t r="20" g="30" b="38" a="255"/>
+                        <t r="255" g="255" b="255" a="255"/>
                     </text_color>
                 </choice_chip_btn>
             </description>
