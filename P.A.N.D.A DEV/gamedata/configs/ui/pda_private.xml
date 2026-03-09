@@ -162,7 +162,7 @@
                 </message_lane_player>
                 
                 <!-- Choice buttons -->
-                <choice_btn x="160" y="0" width="300" height="30" stretch="1" can_focus="1">
+                <choice_btn x="110" y="0" width="470" height="30" stretch="1" can_focus="1">
                     <texture_e>ui_inGame2_hint_wnd_main_window</texture_e>
                     <texture_t>ui_inGame2_hint_wnd_main_window</texture_t>
                     <texture_h>ui_inGame2_hint_wnd_main_window</texture_h>
