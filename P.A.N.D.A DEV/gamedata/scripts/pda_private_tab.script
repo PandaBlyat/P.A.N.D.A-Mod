@@ -1,34 +1,61 @@
 class "pda_private_tab" (CUIScriptWnd)
 local SINGLETON = nil
 
-local function should_show_choice_prefixes()
-    if PANDA and PANDA.get_config then
-        return PANDA.get_config("debug_logging") or false
-    end
-    return false
+local function clamp_color_channel(value)
+    value = tonumber(value) or 0
+    return math.max(0, math.min(255, value))
 end
 
-local function format_choice_text(choice_idx, choice_text, is_selected)
-    local text = choice_text or ""
-    if choice_idx ~= "ignore" and should_show_choice_prefixes() then
-        text = string.format("[%d] %s", choice_idx, text)
+local function parse_color_token(token)
+    if not token or token == "default" then
+        return nil
     end
 
-    if is_selected then
-        return string.format("%%c[255,255,255,160]● %%c[255,255,255,210]%s", text)
+    local a, r, g, b = token:match("^(%d+),(%d+),(%d+),(%d+)$")
+    if a then
+        return GetARGB(
+            clamp_color_channel(a),
+            clamp_color_channel(r),
+            clamp_color_channel(g),
+            clamp_color_channel(b)
+        )
     end
 
-    return string.format("%%c[255,220,220,220]%s", text)
+    r, g, b = token:match("^(%d+),(%d+),(%d+)$")
+    if r then
+        return GetARGB(255, clamp_color_channel(r), clamp_color_channel(g), clamp_color_channel(b))
+    end
+
+    return nil
 end
 
-local function refresh_choice_buttons(tab)
-    for i = 1, #tab.choice_btns do
-        local entry = tab.choice_btns[i]
-        local btn = entry.btn
-        if btn and btn.TextControl then
-            local is_selected = (tab.selected_choice_idx == entry.idx)
-            btn:TextControl():SetText(format_choice_text(entry.idx, entry.text, is_selected))
-        end
+local function apply_colored_text(text_wnd, raw_text, fallback_color)
+    local default_color = fallback_color or GetARGB(255, 255, 255, 255)
+    local source = tostring(raw_text or "")
+
+    local ok, clean_text, parsed_color = pcall(function()
+        local active_color = default_color
+        local without_tokens = source:gsub("%%c%[([^%]]+)%]", function(token)
+            local token_color = parse_color_token(token)
+            if token_color then
+                active_color = token_color
+            elseif token == "default" then
+                active_color = default_color
+            end
+            return ""
+        end)
+
+        return without_tokens, active_color
+    end)
+
+    if not ok then
+        clean_text = source:gsub("%%c%[[^%]]+%]", "")
+        parsed_color = default_color
+    end
+
+    text_wnd:SetText(clean_text)
+    if text_wnd.SetTextColor then
+        text_wnd:SetTextColor(parsed_color)
     end
 end
 
@@ -103,6 +130,10 @@ function pda_private_tab:InitControls()
     self.xml:InitTextWnd("private_pda:info:description:relation_bar_label", self.desc_box)
     
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
+    self.reply_trigger_btn = self.xml:Init3tButton("private_pda:info:description:reply_trigger_btn", self.desc_box)
+    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+    self.reply_trigger_btn_hint_until = 0
+    self:Register(self.reply_trigger_btn, "reply_trigger_btn")
 end
 
 function pda_private_tab:InitCallBacks()
@@ -113,6 +144,7 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
     self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnChoiceIgnore, self)
+    self:AddCallback("reply_trigger_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
 end
 
 function pda_private_tab:Update()
@@ -144,6 +176,8 @@ function pda_private_tab:Update()
         
         self:Reset(current_contact)
     end
+
+    self:UpdateReplyTriggerVisual()
     
     if set_pda_private_tab_open then
         set_pda_private_tab_open(self:IsShown())
@@ -159,14 +193,48 @@ function pda_private_tab:OnChoiceClicked(idx)
     if not pda_interactive_conv.CONV then return end
 
     self.selected_choice_idx = idx
-    refresh_choice_buttons(self)
+    self:RefreshChoiceButtons()
     self.pending_choice_idx = idx
 end
 
 function pda_private_tab:OnChoiceIgnore()
     self.selected_choice_idx = "ignore"
-    refresh_choice_buttons(self)
+    self:RefreshChoiceButtons()
     pda_interactive_conv.CONV = nil
+end
+
+
+function pda_private_tab:UpdateReplyTriggerVisual()
+    if not self.reply_trigger_btn then return end
+
+    local now = time_global()
+    if self.reply_trigger_btn_hint_until > now then
+        self.reply_trigger_btn:TextControl():SetText("No reply options now")
+        return
+    end
+
+    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+end
+
+function pda_private_tab:HasDialogueChoices()
+    local active_conv = pda_interactive_conv.CONV
+    return active_conv ~= nil and active_conv.num_choices ~= nil and active_conv.num_choices > 0
+end
+
+function pda_private_tab:OnReplyTriggerClicked()
+    if self:HasDialogueChoices() then
+        self.reply_trigger_btn_hint_until = 0
+        self:OnSelectNPC()
+
+        if self.scrollbar.ScrollToEnd then
+            self.scrollbar:ScrollToEnd()
+        end
+
+        return
+    end
+
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
 end
 
 function get_relative_time(timestamp_str, current_game_time)
@@ -288,7 +356,9 @@ function pda_private_tab:Reset(target_contact_id)
     self.image_container:Show(false)
     self.header_name:SetText("")
     self.message_count:SetText("")
-    
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+
     self:HideStats()
     
     local log = pda_interactive_conv.pda_private_log or {}
@@ -362,11 +432,11 @@ function pda_private_tab:Reset(target_contact_id)
 end
 
 function pda_private_tab:HideStats()
-    self.stat_relation_value:SetText("")
+    apply_colored_text(self.stat_relation_value, "", GetARGB(255, 255, 255, 255))
     self.stat_goodwill_value:SetText("")
     self.stat_rank_value:SetText("")
     self.stat_community_value:SetText("")
-    self.faction_badge:SetText("")
+    apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
     self.last_seen:SetText("")
     
     self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
@@ -399,7 +469,7 @@ function pda_private_tab:ShowStats(contact_name)
     -- Faction badge with colour
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
-    self.faction_badge:SetText(faction_text)
+    apply_colored_text(self.faction_badge, faction_text, GetARGB(255, 150, 150, 150))
     
     -- Relation text with colour
     local relation_text
@@ -410,7 +480,7 @@ function pda_private_tab:ShowStats(contact_name)
     else
         relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation)
     end
-    self.stat_relation_value:SetText(relation_text)
+    apply_colored_text(self.stat_relation_value, relation_text, GetARGB(255, 255, 255, 255))
     
     local normalized_relation = math.max(-5000, math.min(5000, npc_data.relation))
     self.relation_bar:SetProgressPos(normalized_relation)
@@ -451,6 +521,9 @@ function pda_private_tab:OnSelectNPC()
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
     
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+
     self.header_name:SetText(item.contact_id)
     
     -- Portrait
@@ -472,17 +545,47 @@ function pda_private_tab:OnSelectNPC()
     
     local current_game_time = game.get_game_time()
     
+    local function is_player_sender(entry)
+        if entry.is_player then
+            return true
+        end
+
+        if db and db.actor and entry.sender then
+            return entry.sender == db.actor:character_name()
+        end
+
+        return false
+    end
+
+    local function style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+        local odd_row = (row_idx % 2 == 1)
+
+        local lane_color
+        if is_player_lane then
+            lane_color = odd_row and GetARGB(190, 50, 78, 50) or GetARGB(165, 42, 66, 42)
+        else
+            lane_color = odd_row and GetARGB(200, 58, 58, 58) or GetARGB(175, 48, 48, 48)
+        end
+
+        lane_bg:SetTextureColor(lane_color)
+    end
+
+    local row_idx = 0
     for i = #log, 1, -1 do
         local entry = log[i]
         if (entry.contact_name or "Unknown") == item.contact_id then
-            local template = entry.is_player and "private_pda:info:description:bubble_player" or "private_pda:info:description:bubble_npc"
-            local bubble_bg = self.xml:InitStatic(template, nil)
-            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", bubble_bg)
+            row_idx = row_idx + 1
+
+            local is_player_lane = is_player_sender(entry)
+            local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
+            local lane_root = self.xml:InitStatic(template, nil)
+            local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
+            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
             
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
             
             local display_text = ""
-            if entry.is_player then
+            if is_player_lane then
                 -- Player message (green "You", grey timestamp)
                 display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     relative_time, entry.text)
@@ -495,13 +598,17 @@ function pda_private_tab:OnSelectNPC()
             text_wnd:SetText(display_text)
             text_wnd:AdjustHeightToText()
             
-            local padding = 15
+            style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+
+            local padding = is_player_lane and 14 or 16
             local text_h = text_wnd:GetHeight()
-            local bubble_w = bubble_bg:GetWidth()
+            local lane_h = text_h + padding
             
-            bubble_bg:SetWndSize(vector2():set(bubble_w, text_h + padding))
-            self.scrollbar:AddWindow(bubble_bg, true)
-            bubble_bg:SetAutoDelete(true)
+            lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
+            lane_root:SetWndSize(vector2():set(lane_root:GetWidth(), lane_h))
+
+            self.scrollbar:AddWindow(lane_root, true)
+            lane_root:SetAutoDelete(true)
         end
     end
 
@@ -524,7 +631,7 @@ function pda_private_tab:OnSelectNPC()
         self.scrollbar:AddWindow(btn_ignore, true)
         btn_ignore:SetAutoDelete(true)
 
-        refresh_choice_buttons(self)
+        self:RefreshChoiceButtons()
     end
     
     if self.scrollbar.ScrollToEnd then 
