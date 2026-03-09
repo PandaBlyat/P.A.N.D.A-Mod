@@ -69,6 +69,10 @@ function pda_private_tab:InitControls()
     self.xml:InitTextWnd("private_pda:info:description:relation_bar_label", self.desc_box)
     
     self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
+    self.reply_trigger_btn = self.xml:Init3tButton("private_pda:info:description:reply_trigger_btn", self.desc_box)
+    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+    self.reply_trigger_btn_hint_until = 0
+    self:Register(self.reply_trigger_btn, "reply_trigger_btn")
 end
 
 function pda_private_tab:InitCallBacks()
@@ -79,6 +83,7 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
     self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
     self:AddCallback("choice_btn_ignore", ui_events.BUTTON_CLICKED, self.OnChoiceIgnore, self)
+    self:AddCallback("reply_trigger_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
 end
 
 function pda_private_tab:Update()
@@ -101,6 +106,8 @@ function pda_private_tab:Update()
         
         self:Reset(current_contact)
     end
+
+    self:UpdateReplyTriggerVisual()
     
     if set_pda_private_tab_open then
         set_pda_private_tab_open(self:IsShown())
@@ -120,6 +127,40 @@ end
 
 function pda_private_tab:OnChoiceIgnore()
     pda_interactive_conv.CONV = nil
+end
+
+
+function pda_private_tab:UpdateReplyTriggerVisual()
+    if not self.reply_trigger_btn then return end
+
+    local now = time_global()
+    if self.reply_trigger_btn_hint_until > now then
+        self.reply_trigger_btn:TextControl():SetText("No reply options now")
+        return
+    end
+
+    self.reply_trigger_btn:TextControl():SetText("Type a reply...")
+end
+
+function pda_private_tab:HasDialogueChoices()
+    local active_conv = pda_interactive_conv.CONV
+    return active_conv ~= nil and active_conv.num_choices ~= nil and active_conv.num_choices > 0
+end
+
+function pda_private_tab:OnReplyTriggerClicked()
+    if self:HasDialogueChoices() then
+        self.reply_trigger_btn_hint_until = 0
+        self:OnSelectNPC()
+
+        if self.scrollbar.ScrollToEnd then
+            self.scrollbar:ScrollToEnd()
+        end
+
+        return
+    end
+
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
 end
 
 function get_relative_time(timestamp_str, current_game_time)
@@ -241,7 +282,9 @@ function pda_private_tab:Reset(target_contact_id)
     self.image_container:Show(false)
     self.header_name:SetText("")
     self.message_count:SetText("")
-    
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+
     self:HideStats()
     
     local log = pda_interactive_conv.pda_private_log or {}
@@ -401,6 +444,9 @@ function pda_private_tab:OnSelectNPC()
     self.empty_state:Show(false)
     self.scrollbar:Clear()
     
+    self.reply_trigger_btn_hint_until = 0
+    self:UpdateReplyTriggerVisual()
+
     self.header_name:SetText(item.contact_id)
     
     -- Portrait
