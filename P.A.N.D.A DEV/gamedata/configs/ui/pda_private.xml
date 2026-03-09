@@ -188,19 +188,19 @@
                     </text_box>
                 </message_lane_player>
                 
-                <!-- FIX #6: Choice buttons with stronger hover contrast -->
+                <!-- Choice buttons tuned as quick-reply chips -->
                 <choice_btn x="10" y="0" width="700" height="38" stretch="1">
-                    <!-- Enabled state -->
-                    <texture_e r="60" g="60" b="60" a="255">ui_inGame2_hint_wnd_main_window</texture_e>
-                    <!-- Touched/Pressed state -->
-                    <texture_t r="50" g="50" b="50" a="255">ui_inGame2_hint_wnd_main_window</texture_t>
-                    <!-- Highlighted/Hover state - much brighter for visibility -->
-                    <texture_h r="120" g="120" b="80" a="255">ui_inGame2_hint_wnd_main_window</texture_h>
-                    
+                    <!-- Idle: keep background subtle -->
+                    <texture_e r="70" g="70" b="70" a="170">ui_inGame2_hint_wnd_main_window</texture_e>
+                    <!-- Pressed: immediate darker confirmation -->
+                    <texture_t r="95" g="95" b="95" a="220">ui_inGame2_hint_wnd_main_window</texture_t>
+                    <!-- Hover: brighter tint + gentle alpha lift -->
+                    <texture_h r="120" g="120" b="80" a="205">ui_inGame2_hint_wnd_main_window</texture_h>
+
                     <text font="letterica16" align="l" vert_align="c" x="15" y="0" complex_mode="1">
-                        <text_color r="255" g="200" b="50" a="255"/>
-                        <text_color_h r="255" g="255" b="100" a="255"/>
-                        <text_color_t r="150" g="150" b="150" a="255"/>
+                        <text_color r="220" g="220" b="220" a="255"/>
+                        <text_color_h r="255" g="255" b="170" a="255"/>
+                        <text_color_t r="255" g="255" b="200" a="255"/>
                     </text>
                 </choice_btn>
             </description>
