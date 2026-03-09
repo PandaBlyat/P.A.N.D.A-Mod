@@ -59,6 +59,21 @@ local function apply_colored_text(text_wnd, raw_text, fallback_color)
     end
 end
 
+local function set_button_texture_tint(btn, color)
+    if not btn or not btn.SetTextureColor then
+        return
+    end
+
+    btn:SetTextureColor(color)
+
+    if btn.GetStatic then
+        local bg = btn:GetStatic()
+        if bg and bg.SetTextureColor then
+            bg:SetTextureColor(color)
+        end
+    end
+end
+
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
@@ -157,6 +172,27 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
     self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
     self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
+	self:AddCallback("composer_quick_1_btn", "mouse_enter", function(btn)
+        set_button_texture_tint(btn, GetARGB(255, 200, 60, 60)) -- red hover
+    end, self)
+    self:AddCallback("composer_quick_1_btn", "mouse_leave", function(btn)
+        set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
+    end, self)
+
+    self:AddCallback("composer_quick_2_btn", "mouse_enter", function(btn)
+        set_button_texture_tint(btn, GetARGB(255, 70, 130, 180)) -- blue hover
+    end, self)
+    self:AddCallback("composer_quick_2_btn", "mouse_leave", function(btn)
+        set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
+    end, self)
+
+	self:AddCallback("composer_send_btn", "mouse_enter", function(btn)
+		set_button_texture_tint(btn, GetARGB(255, 70, 130, 180)) -- blue hover
+	end, self)
+
+	self:AddCallback("composer_send_btn", "mouse_leave", function(btn)
+		set_button_texture_tint(btn, GetARGB(255, 255, 255, 255))
+	end, self)
 end
 
 function pda_private_tab:Update()
@@ -1065,6 +1101,14 @@ function pda_private_tab:OnSelectNPC()
 			
 			btn:SetWndPos(vector2():set(left_x, y))
 
+			-- Add hover highlighting using proper window-level callbacks
+			self:AddCallback(btn_name, "mouse_enter", function(btn_obj)
+				set_button_texture_tint(btn_obj, GetARGB(255, 70, 130, 180)) -- blue hover
+			end, self)
+
+			self:AddCallback(btn_name, "mouse_leave", function(btn_obj)
+				set_button_texture_tint(btn_obj, GetARGB(255, 255, 255, 255))
+			end, self)
 
 			table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
 		end
