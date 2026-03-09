@@ -157,20 +157,24 @@
                     <texture>ui_inGame2_scroll_background</texture>
                 </scrollbar>
                 
-                <!-- FIX #2: Message bubbles with proper word wrapping -->
-                <bubble_npc x="10" y="0" width="700" height="50" stretch="1">
-                    <texture r="50" g="50" b="50" a="200">ui_inGame2_hint_wnd_main_window</texture>
-                    <text_box x="10" y="5" width="680" height="20" complex_mode="1">
+                <!-- Message rows: reusable lanes for NPC (left) and player (right). -->
+                <message_lane_npc x="0" y="0" width="700" height="50" stretch="1">
+                    <bubble_bg x="8" y="0" width="470" height="50" stretch="1">
+                        <texture r="52" g="52" b="52" a="190">ui_inGame2_hint_wnd_main_window</texture>
+                    </bubble_bg>
+                    <text_box x="20" y="6" width="446" height="20" complex_mode="1">
                          <text font="letterica16" r="220" g="220" b="220" a="255"/>
                     </text_box>
-                </bubble_npc>
+                </message_lane_npc>
 
-                <bubble_player x="10" y="0" width="700" height="50" stretch="1">
-                    <texture r="40" g="70" b="40" a="200">ui_inGame2_hint_wnd_main_window</texture>
-                    <text_box x="10" y="5" width="680" height="20" complex_mode="1">
+                <message_lane_player x="0" y="0" width="700" height="50" stretch="1">
+                    <bubble_bg x="222" y="0" width="470" height="50" stretch="1">
+                        <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
+                    </bubble_bg>
+                    <text_box x="234" y="6" width="446" height="20" complex_mode="1">
                          <text font="letterica16" r="200" g="255" b="200" a="255"/>
                     </text_box>
-                </bubble_player>
+                </message_lane_player>
                 
                 <!-- FIX #6: Choice buttons with stronger hover contrast -->
                 <choice_btn x="10" y="0" width="700" height="38" stretch="1">
