@@ -648,6 +648,21 @@ function pda_private_tab:OnSelectNPC()
         lane_bg:SetTextureColor(lane_color)
     end
 
+    local function get_delivery_indicator(entry)
+        local state = entry and entry.delivery_state or "sent"
+        if state ~= "delivered" and state ~= "read" then
+            state = "sent"
+        end
+
+        if state == "read" then
+            return "%%c[255,100,220,255]✓✓", GetARGB(255, 100, 220, 255)
+        elseif state == "delivered" then
+            return "%%c[255,190,190,190]✓✓", GetARGB(255, 190, 190, 190)
+        end
+
+        return "%%c[255,150,150,150]✓", GetARGB(255, 150, 150, 150)
+    end
+
     local row_idx = 0
     for i = #log, 1, -1 do
         local entry = log[i]
@@ -659,9 +674,10 @@ function pda_private_tab:OnSelectNPC()
             local lane_root = self.xml:InitStatic(template, nil)
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
-            
+            local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
+
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
-            
+
             local display_text = ""
             if is_player_lane then
                 -- Player message (green "You", grey timestamp)
@@ -675,7 +691,13 @@ function pda_private_tab:OnSelectNPC()
             
             text_wnd:SetText(display_text)
             text_wnd:AdjustHeightToText()
-            
+
+            if status_wnd then
+                local status_text, status_color = get_delivery_indicator(entry)
+                apply_colored_text(status_wnd, status_text, status_color)
+                status_wnd:AdjustHeightToText()
+            end
+
             style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
 
             local padding = is_player_lane and 14 or 16
