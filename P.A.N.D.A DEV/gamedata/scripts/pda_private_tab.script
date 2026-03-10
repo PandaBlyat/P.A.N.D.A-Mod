@@ -157,6 +157,7 @@ function pda_private_tab:__init()
     self.current_presence_contact = nil
     self.presence_offline_delay_min_ms = 3000
     self.presence_offline_delay_max_ms = 10000
+    self.button_flash_until = {}
 end
 
 function pda_private_tab:InitControls()
@@ -232,23 +233,46 @@ function pda_private_tab:InitCallBacks()
     self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
 end
 
+function pda_private_tab:TriggerButtonFlash(key, duration_ms)
+    if not key then return end
+    self.button_flash_until = self.button_flash_until or {}
+    self.button_flash_until[key] = self:GetRealtimeMs() + (duration_ms or 120)
+end
+
+function pda_private_tab:IsButtonFlashActive(key)
+    if not key then return false end
+    local active_until = self.button_flash_until and self.button_flash_until[key] or nil
+    return active_until ~= nil and self:GetRealtimeMs() <= active_until
+end
+
 function pda_private_tab:UpdateHoverButtonTints()
     local neutral_small = GetARGB(255, 180, 180, 180)
     local hover_red_small = GetARGB(255, 255, 25, 25)
     local hover_blue_small = GetARGB(255, 30, 120, 255)
+    local flash_small = GetARGB(255, 255, 255, 255)
 
     local neutral_chip = GetARGB(220, 60, 65, 70)
     local hover_blue_chip = GetARGB(255, 20, 90, 220)
+    local flash_blue_chip = GetARGB(255, 85, 165, 255)
 
     -- Composer quick buttons (keep existing logic)
     if self.composer_quick_1_btn and self.composer_quick_1_bg then
-        self.composer_quick_1_bg:SetTextureColor(is_button_hovered(self.composer_quick_1_btn) and hover_red_small or neutral_small)
+        local hovered = is_button_hovered(self.composer_quick_1_btn)
+        local tint = self:IsButtonFlashActive("composer_quick_1") and flash_small or (hovered and hover_red_small or neutral_small)
+        self.composer_quick_1_btn:SetTextureColor(tint)
+        self.composer_quick_1_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
     end
     if self.composer_quick_2_btn and self.composer_quick_2_bg then
-        self.composer_quick_2_bg:SetTextureColor(is_button_hovered(self.composer_quick_2_btn) and hover_blue_small or neutral_small)
+        local hovered = is_button_hovered(self.composer_quick_2_btn)
+        local tint = self:IsButtonFlashActive("composer_quick_2") and flash_small or (hovered and hover_blue_small or neutral_small)
+        self.composer_quick_2_btn:SetTextureColor(tint)
+        self.composer_quick_2_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
     end
     if self.composer_send_btn and self.composer_send_bg then
-        self.composer_send_bg:SetTextureColor(is_button_hovered(self.composer_send_btn) and hover_blue_small or neutral_small)
+        local hovered = is_button_hovered(self.composer_send_btn)
+        local tint = self:IsButtonFlashActive("composer_send") and flash_small or (hovered and hover_blue_small or neutral_small)
+        self.composer_send_btn:SetTextureColor(tint)
+        self.composer_send_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
     end
 
     -- Player choice chips (working reference)
@@ -257,7 +281,9 @@ function pda_private_tab:UpdateHoverButtonTints()
         local btn = btn_data and btn_data.btn or nil
         local bg = btn_data and btn_data.bg or nil
         if btn and bg then
-            local chip_color = is_button_hovered(btn) and hover_blue_chip or neutral_chip
+            local hovered = is_button_hovered(btn)
+            local flash_key = "choice_" .. tostring(i)
+            local chip_color = self:IsButtonFlashActive(flash_key) and flash_blue_chip or (hovered and hover_blue_chip or neutral_chip)
             btn:SetTextureColor(chip_color)
             bg:SetTextureColor(GetARGB(0, 0, 0, 0))
         end
@@ -266,13 +292,15 @@ function pda_private_tab:UpdateHoverButtonTints()
     -- Colours for quick menu buttons
     local hover_red_chip = GetARGB(255, 255, 0, 0)
     local hover_orange_chip = GetARGB(255, 255, 140, 0)
+    local flash_red_chip = GetARGB(255, 255, 90, 90)
+    local flash_orange_chip = GetARGB(255, 255, 195, 85)
 
     -- Block Contact
 	local block_hovered = self.quick_btn_block_contact and is_button_hovered(self.quick_btn_block_contact)
 	if self.quick_btn_block_contact and self.quick_btn_block_bg then
-		local block_color = block_hovered and hover_red_chip or neutral_chip
-		self.quick_btn_block_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local block_color = self:IsButtonFlashActive("quick_block") and flash_red_chip or (block_hovered and hover_red_chip or neutral_chip)
 		self.quick_btn_block_contact:SetTextureColor(block_color)
+		self.quick_btn_block_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
 		if block_text and block_text.SetTextColor then
 			block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
@@ -282,9 +310,9 @@ function pda_private_tab:UpdateHoverButtonTints()
 	-- Unblock Contact
 	local unblock_hovered = self.quick_btn_unblock_contact and is_button_hovered(self.quick_btn_unblock_contact)
 	if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
-		local unblock_color = unblock_hovered and hover_blue_chip or neutral_chip
-		self.quick_btn_unblock_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local unblock_color = self:IsButtonFlashActive("quick_unblock") and flash_blue_chip or (unblock_hovered and hover_blue_chip or neutral_chip)
 		self.quick_btn_unblock_contact:SetTextureColor(unblock_color)
+		self.quick_btn_unblock_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
 		if unblock_text and unblock_text.SetTextColor then
 			unblock_text:SetTextColor(unblock_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
@@ -294,14 +322,15 @@ function pda_private_tab:UpdateHoverButtonTints()
 	-- Ignore Conversation
 	local ignore_hovered = self.quick_btn_ignore_conv and is_button_hovered(self.quick_btn_ignore_conv)
 	if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
-		local ignore_color = ignore_hovered and hover_orange_chip or neutral_chip
-		self.quick_btn_ignore_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local ignore_color = self:IsButtonFlashActive("quick_ignore") and flash_orange_chip or (ignore_hovered and hover_orange_chip or neutral_chip)
 		self.quick_btn_ignore_conv:SetTextureColor(ignore_color)
+		self.quick_btn_ignore_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
 		if ignore_text and ignore_text.SetTextColor then
 			ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
 		end
 	end
+
 end
 
 function pda_private_tab:RefreshPresenceIndicators()
@@ -473,6 +502,7 @@ function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
 function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 
 function pda_private_tab:OnChoiceClicked(idx)
+    self:TriggerButtonFlash("choice_" .. tostring(idx), 140)
     if not pda_interactive_conv.CONV then return end
     if self.choice_typewriter then return end
 
@@ -546,10 +576,12 @@ function pda_private_tab:UpdateChoiceTypewriter()
 end
 
 function pda_private_tab:OnComposerQuick1Clicked()
+    self:TriggerButtonFlash("composer_quick_1", 140)
     self:ToggleQuickMenu()
 end
 
 function pda_private_tab:OnComposerQuick2Clicked()
+    self:TriggerButtonFlash("composer_quick_2", 140)
     if self:HasDialogueChoices() then
         self.reply_trigger_btn_hint_until = 0
         self.choice_buttons_visible = not self.choice_buttons_visible
@@ -596,7 +628,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
 
     -- Colors
     local neutral_chip = GetARGB(220, 60, 65, 70)   -- default button colour
-    local transparent = GetARGB(0, 0, 0, 0)         -- background is invisible
+    local transparent = GetARGB(0, 0, 0, 0)
 
     -- Block Contact
     local block_label = "Block Contact"
@@ -604,12 +636,12 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_block_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
     self.quick_btn_block_bg:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_bg:SetWndSize(vector2():set(block_w, 26))
-    self.quick_btn_block_bg:SetTextureColor(transparent)   -- background invisible
+    self.quick_btn_block_bg:SetTextureColor(transparent)
 
     self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
-    self.quick_btn_block_contact:SetTextureColor(neutral_chip)   -- button gets the neutral colour
+    self.quick_btn_block_contact:SetTextureColor(neutral_chip)
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
     if block_text then block_text:SetText(block_label) end
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
@@ -695,6 +727,7 @@ function pda_private_tab:ToggleQuickMenu()
 end
 
 function pda_private_tab:OnQuickIgnoreConversationClicked()
+    self:TriggerButtonFlash("quick_ignore", 160)
     local contact_name = self:GetSelectedContactName()
     if not contact_name then return end
 
@@ -726,6 +759,7 @@ function pda_private_tab:OnQuickIgnoreConversationClicked()
 end
 
 function pda_private_tab:OnQuickBlockContactClicked()
+    self:TriggerButtonFlash("quick_block", 160)
     local contact_name = self:GetSelectedContactName()
     if not contact_name then return end
     if pda_interactive_conv.block_contact then pda_interactive_conv.block_contact(contact_name) end
@@ -736,6 +770,7 @@ function pda_private_tab:OnQuickBlockContactClicked()
 end
 
 function pda_private_tab:OnQuickUnblockContactClicked()
+    self:TriggerButtonFlash("quick_unblock", 160)
     local contact_name = self:GetSelectedContactName()
     if not contact_name then return end
     if pda_interactive_conv.unblock_contact then pda_interactive_conv.unblock_contact(contact_name) end
@@ -762,6 +797,7 @@ function pda_private_tab:HasDialogueChoices()
 end
 
 function pda_private_tab:OnReplyTriggerClicked()
+    self:TriggerButtonFlash("composer_send", 140)
     self.quick_menu_open = false
     self:HideQuickMenuButtons()
 
@@ -790,7 +826,8 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         self:Register(btn, btn_name)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
-        if btn.SetTextureColor then btn:SetTextureColor(GetARGB(0, 0, 0, 0)) end
+        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(0, 0, 0, 0)) end
+        if btn.SetTextureColor then btn:SetTextureColor(GetARGB(220, 60, 65, 70)) end
         bg:Show(false)
         btn:Show(false)
 
