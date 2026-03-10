@@ -1,0 +1,1553 @@
+class "pda_private_tab" (CUIScriptWnd)
+local SINGLETON = nil
+
+local function clamp_color_channel(value)
+    value = tonumber(value) or 0
+    return math.max(0, math.min(255, value))
+end
+
+local function parse_color_token(token)
+    if not token or token == "default" then
+        return nil
+    end
+
+    local a, r, g, b = token:match("^(%d+),(%d+),(%d+),(%d+)$")
+    if a then
+        return GetARGB(
+            clamp_color_channel(a),
+            clamp_color_channel(r),
+            clamp_color_channel(g),
+            clamp_color_channel(b)
+        )
+    end
+
+    r, g, b = token:match("^(%d+),(%d+),(%d+)$")
+    if r then
+        return GetARGB(255, clamp_color_channel(r), clamp_color_channel(g), clamp_color_channel(b))
+    end
+
+    return nil
+end
+
+local function apply_colored_text(text_wnd, raw_text, fallback_color)
+    local default_color = fallback_color or GetARGB(255, 255, 255, 255)
+    local source = tostring(raw_text or "")
+
+    local ok, clean_text, parsed_color = pcall(function()
+        local active_color = default_color
+        local without_tokens = source:gsub("%%c%[([^%]]+)%]", function(token)
+            local token_color = parse_color_token(token)
+            if token_color then
+                active_color = token_color
+            elseif token == "default" then
+                active_color = default_color
+            end
+            return ""
+        end)
+
+        return without_tokens, active_color
+    end)
+
+    if not ok then
+        clean_text = source:gsub("%%c%[[^%]]+%]", "")
+        parsed_color = default_color
+    end
+
+    text_wnd:SetText(clean_text)
+    if text_wnd.SetTextColor then
+        text_wnd:SetTextColor(parsed_color)
+    end
+end
+
+local function apply_button_quad_style(btn)
+    if not btn then return end
+
+    if btn.InitTexture then
+        btn:InitTexture("ui_panda_box")
+    end
+    if btn.SetStretchTexture then
+        btn:SetStretchTexture(true)
+    end
+    if btn.SetTextureColor then
+        btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+end
+
+local function apply_button_hitbox_style(btn)
+    if not btn then return end
+
+    if btn.SetTextureColor then
+        btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+end
+
+local function is_button_hovered(btn)
+    if not btn then
+        return false
+    end
+
+    if btn.IsCursorOverWindow then
+        local ok, hovered = pcall(function() return btn:IsCursorOverWindow() end)
+        if ok then return hovered and true or false end
+    end
+
+    if btn.CursorOverWindow then
+        local ok, hovered = pcall(function() return btn:CursorOverWindow() end)
+        if ok then return hovered and true or false end
+    end
+
+    if btn.cursor_over_window then
+        local ok, hovered = pcall(function() return btn:cursor_over_window() end)
+        if ok then return hovered and true or false end
+    end
+
+    if btn.GetButtonState then
+        local ok, state = pcall(function() return btn:GetButtonState() end)
+        if ok then return state == 1 or state == 2 end
+    end
+
+    if btn.GetCheck then
+        local ok, checked = pcall(function() return btn:GetCheck() end)
+        if ok and checked then return true end
+    end
+
+    return false
+end
+
+local function estimate_chip_width(text, min_w, max_w, padding_x)
+    local raw_text = tostring(text or "")
+    local clean = raw_text:gsub("%%c%[[^%]]+%]", "")
+    clean = clean:gsub("\\n", "\n")
+
+    local widest = 0
+    for line in (clean .. "\n"):gmatch("(.-)\n") do
+        local width = 0
+        for i = 1, #line do
+            local char = line:sub(i, i)
+            if char:match("%u")                      then width = width + 5.2
+            elseif char == "m" or char == "w"        then width = width + 6.0
+            elseif char == "i" or char == "l" or char == "t" then width = width + 3.0
+            elseif char:match("%l")                  then width = width + 4.5
+            elseif char:match("%d")                  then width = width + 4.5
+            elseif char == " "                       then width = width + 2.8
+            else                                          width = width + 4.5 end
+        end
+        if width > widest then widest = width end
+    end
+
+    if widest == 0 then widest = min_w - padding_x end
+    local desired = widest + padding_x
+    return math.max(min_w, math.min(max_w, desired))
+end
+
+local function wrap_plain_text(text, max_chars)
+    local source = tostring(text or "")
+    local line_limit = math.max(16, tonumber(max_chars) or 48)
+    local wrapped_lines = {}
+
+    for raw_line in (source:gsub("\\n", "\n") .. "\n"):gmatch("(.-)\n") do
+        if raw_line == "" then
+            table.insert(wrapped_lines, "")
+        else
+            local current_line = ""
+            for word in raw_line:gmatch("%S+") do
+                local candidate = (current_line == "") and word or (current_line .. " " .. word)
+                if #candidate > line_limit and current_line ~= "" then
+                    table.insert(wrapped_lines, current_line)
+                    current_line = word
+                else
+                    current_line = candidate
+                end
+            end
+            if current_line ~= "" then
+                table.insert(wrapped_lines, current_line)
+            end
+        end
+    end
+
+    if #wrapped_lines == 0 then
+        return ""
+    end
+
+    -- Anomaly's SetText treats the two-character sequence \n (backslash + n)
+    -- as a line break, NOT the actual newline/LF character.
+    return table.concat(wrapped_lines, "\\n")
+end
+
+function get_ui()
+    SINGLETON = SINGLETON or pda_private_tab()
+    SINGLETON:Reset()
+    
+    local pda_menu = ActorMenu.get_pda_menu()
+    if pda_menu and pda_menu:GetTabControl() then
+        pda_menu:GetTabControl():Show(true)
+    end
+    
+    return SINGLETON
+end
+
+function pda_private_tab:__init()
+    super()
+    self.xml = CScriptXmlInit()
+    self.xml:ParseFile("pda_private.xml")
+    
+    self:InitControls()
+    self:InitCallBacks()
+    
+    self.cached_log_size = -1
+    self.cached_conv_turn = -1
+    self.cached_has_conv = false
+    self.cached_delivery_state = ""
+    self.cached_has_typing = false
+    self.cached_npc_data = {}
+    self.choice_btns = {}
+    self.scroll_dynamic_windows = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
+    self.choice_buttons_visible = false
+    self.typing_anim_phase = -1
+	self.typing_text_wnd = nil
+    self.typing_entry_data = nil
+    self.choice_typewriter = nil
+    self.contact_presence_until = {}
+    self.current_presence_contact = nil
+    self.presence_offline_delay_min_ms = 3000
+    self.presence_offline_delay_max_ms = 10000
+    self.button_flash_until = {}
+end
+
+function pda_private_tab:InitControls()
+    self:SetWndRect(Frect():set(0,0,1024,768))
+
+    self.form = self.xml:InitStatic("private_pda", self)
+    self.dialog = self.xml:InitStatic("private_pda:info", self.form)
+    
+    self.xml:InitStatic("private_pda:info:list_bg", self.dialog)
+    self.xml:InitTextWnd("private_pda:info:list_header", self.dialog)
+    self.npc_list = self.xml:InitListBox("private_pda:info:message_list", self.dialog)
+    self:Register(self.npc_list, "npc_list")
+    
+    self.desc_box = self.xml:InitStatic("private_pda:info:description", self.dialog)
+    self.empty_state = self.xml:InitTextWnd("private_pda:info:description:empty_state", self.desc_box)
+    
+    self.xml:InitStatic("private_pda:info:description:header_bg", self.desc_box)
+    self.image_container = self.xml:InitStatic("private_pda:info:description:image_container", self.desc_box)
+    self.image = self.xml:InitStatic("private_pda:info:description:image_container:image", self.image_container)
+    
+    self.status_indicator = self.xml:InitStatic("private_pda:info:description:status_indicator", self.desc_box)
+    
+    self.header_name = self.xml:InitTextWnd("private_pda:info:description:chat_header_name", self.desc_box)
+    self.faction_patch_icon = self.xml:InitStatic("private_pda:info:description:faction_patch_icon", self.desc_box)
+    self.faction_badge = self.xml:InitTextWnd("private_pda:info:description:faction_badge", self.desc_box)
+    self.message_count = self.xml:InitTextWnd("private_pda:info:description:message_count", self.desc_box)
+    self.last_seen = self.xml:InitTextWnd("private_pda:info:description:last_seen", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_relation_label", self.desc_box)
+    self.stat_relation_value = self.xml:InitTextWnd("private_pda:info:description:stat_relation_value", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_label", self.desc_box)
+    self.stat_goodwill_value = self.xml:InitTextWnd("private_pda:info:description:stat_goodwill_value", self.desc_box)
+    
+    self.xml:InitTextWnd("private_pda:info:description:stat_rank_label", self.desc_box)
+    self.stat_rank_value = self.xml:InitTextWnd("private_pda:info:description:stat_rank_value", self.desc_box)
+    
+    self.scrollbar = self.xml:InitScrollView("private_pda:info:description:scrollbar", self.desc_box)
+    self.composer_container = self.xml:InitStatic("private_pda:info:description:composer_container", self.desc_box)
+    self.xml:InitStatic("private_pda:info:description:composer_container:composer_bg", self.composer_container)
+    self.xml:InitStatic("private_pda:info:description:composer_container:composer_input_shell", self.composer_container)
+    self.composer_input_field = self.xml:InitTextWnd("private_pda:info:description:composer_container:composer_input_field", self.composer_container)
+    
+    -- Composer background objects separately managed now
+    self.composer_quick_1_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_quick_1_bg", self.composer_container)
+    self.composer_quick_1_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_1_btn", self.composer_container)
+    
+    self.composer_quick_2_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_quick_2_bg", self.composer_container)
+    self.composer_quick_2_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_2_btn", self.composer_container)
+    
+    self.composer_send_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_send_bg", self.composer_container)
+    self.composer_send_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_send_btn", self.composer_container)
+
+    -- Force all interactive quads to use ui_panda_box so no default/vanilla
+    -- button frame art is drawn over our custom button backgrounds.
+    apply_button_quad_style(self.composer_quick_1_btn)
+    apply_button_quad_style(self.composer_quick_2_btn)
+    apply_button_quad_style(self.composer_send_btn)
+
+    self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
+    self:Register(self.composer_quick_1_btn, "composer_quick_1_btn")
+    self:Register(self.composer_quick_2_btn, "composer_quick_2_btn")
+    self:Register(self.composer_send_btn, "composer_send_btn")
+end
+
+function pda_private_tab:InitCallBacks()
+    self:AddCallback("npc_list", ui_events.LIST_ITEM_CLICKED, self.OnSelectNPC, self)
+    
+    self:AddCallback("choice_btn_1", ui_events.BUTTON_CLICKED, self.OnChoice1, self)
+    self:AddCallback("choice_btn_2", ui_events.BUTTON_CLICKED, self.OnChoice2, self)
+    self:AddCallback("choice_btn_3", ui_events.BUTTON_CLICKED, self.OnChoice3, self)
+    self:AddCallback("choice_btn_4", ui_events.BUTTON_CLICKED, self.OnChoice4, self)
+    self:AddCallback("composer_quick_1_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick1Clicked, self)
+    self:AddCallback("composer_quick_2_btn", ui_events.BUTTON_CLICKED, self.OnComposerQuick2Clicked, self)
+    self:AddCallback("composer_send_btn", ui_events.BUTTON_CLICKED, self.OnReplyTriggerClicked, self)
+    self:AddCallback("quick_btn_block_contact", ui_events.BUTTON_CLICKED, self.OnQuickBlockContactClicked, self)
+    self:AddCallback("quick_btn_unblock_contact", ui_events.BUTTON_CLICKED, self.OnQuickUnblockContactClicked, self)
+    self:AddCallback("quick_btn_ignore_conv", ui_events.BUTTON_CLICKED, self.OnQuickIgnoreConversationClicked, self)
+end
+
+function pda_private_tab:TriggerButtonFlash(key, duration_ms)
+    if not key then return end
+    self.button_flash_until = self.button_flash_until or {}
+    self.button_flash_until[key] = self:GetRealtimeMs() + (duration_ms or 120)
+end
+
+function pda_private_tab:IsButtonFlashActive(key)
+    if not key then return false end
+    local active_until = self.button_flash_until and self.button_flash_until[key] or nil
+    return active_until ~= nil and self:GetRealtimeMs() <= active_until
+end
+
+function pda_private_tab:UpdateHoverButtonTints()
+    local neutral_small = GetARGB(255, 180, 180, 180)
+    local hover_red_small = GetARGB(255, 255, 25, 25)
+    local hover_blue_small = GetARGB(255, 30, 120, 255)
+    local flash_small = GetARGB(255, 255, 255, 255)
+
+    local neutral_chip = GetARGB(235, 18, 30, 85)      -- dark blue
+    local hover_blue_chip = GetARGB(255, 40, 110, 255)  -- bright blue
+    local flash_blue_chip = GetARGB(255, 90, 170, 255)  -- flash bright blue
+
+    -- Composer quick buttons (keep existing logic)
+    if self.composer_quick_1_btn and self.composer_quick_1_bg then
+        local hovered = is_button_hovered(self.composer_quick_1_btn)
+        local tint = self:IsButtonFlashActive("composer_quick_1") and flash_small or (hovered and hover_red_small or neutral_small)
+        self.composer_quick_1_bg:SetTextureColor(tint)
+        self.composer_quick_1_btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+    if self.composer_quick_2_btn and self.composer_quick_2_bg then
+        local hovered = is_button_hovered(self.composer_quick_2_btn)
+        local tint = self:IsButtonFlashActive("composer_quick_2") and flash_small or (hovered and hover_blue_small or neutral_small)
+        self.composer_quick_2_bg:SetTextureColor(tint)
+        self.composer_quick_2_btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+    if self.composer_send_btn and self.composer_send_bg then
+        local hovered = is_button_hovered(self.composer_send_btn)
+        local tint = self:IsButtonFlashActive("composer_send") and flash_small or (hovered and hover_blue_small or neutral_small)
+        self.composer_send_bg:SetTextureColor(tint)
+        self.composer_send_btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+
+    -- Player choice chips (working reference)
+    for i = 1, #self.choice_btns do
+        local btn_data = self.choice_btns[i]
+        local btn = btn_data and btn_data.btn or nil
+        local bg = btn_data and btn_data.bg or nil
+        if btn and bg then
+            local hovered = is_button_hovered(btn)
+            local flash_key = "choice_" .. tostring(i)
+            local chip_color = self:IsButtonFlashActive(flash_key) and flash_blue_chip or (hovered and hover_blue_chip or neutral_chip)
+            bg:SetTextureColor(chip_color)
+            btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+        end
+    end
+
+    -- Colours for quick menu buttons
+    local hover_red_chip = GetARGB(255, 255, 0, 0)
+    local hover_orange_chip = GetARGB(255, 255, 140, 0)
+    local flash_red_chip = GetARGB(255, 255, 90, 90)
+    local flash_orange_chip = GetARGB(255, 255, 195, 85)
+
+    -- Block Contact
+	local block_hovered = self.quick_btn_block_contact and is_button_hovered(self.quick_btn_block_contact)
+	if self.quick_btn_block_contact and self.quick_btn_block_bg then
+		local block_color = self:IsButtonFlashActive("quick_block") and flash_red_chip or (block_hovered and hover_red_chip or neutral_chip)
+		self.quick_btn_block_bg:SetTextureColor(block_color)
+		self.quick_btn_block_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
+		if block_text and block_text.SetTextColor then
+			block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 255, 120, 120))
+		end
+	end
+
+	-- Unblock Contact
+	local unblock_hovered = self.quick_btn_unblock_contact and is_button_hovered(self.quick_btn_unblock_contact)
+	if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
+		local unblock_color = self:IsButtonFlashActive("quick_unblock") and flash_blue_chip or (unblock_hovered and hover_blue_chip or neutral_chip)
+		self.quick_btn_unblock_bg:SetTextureColor(unblock_color)
+		self.quick_btn_unblock_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
+		if unblock_text and unblock_text.SetTextColor then
+			unblock_text:SetTextColor(unblock_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 150, 205, 255))
+		end
+	end
+
+	-- Ignore Conversation
+	local ignore_hovered = self.quick_btn_ignore_conv and is_button_hovered(self.quick_btn_ignore_conv)
+	if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
+		local ignore_color = self:IsButtonFlashActive("quick_ignore") and flash_orange_chip or (ignore_hovered and hover_orange_chip or neutral_chip)
+		self.quick_btn_ignore_bg:SetTextureColor(ignore_color)
+		self.quick_btn_ignore_conv:SetTextureColor(GetARGB(0, 0, 0, 0))
+		local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
+		if ignore_text and ignore_text.SetTextColor then
+			ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 255, 190, 90))
+		end
+	end
+
+end
+
+function pda_private_tab:RefreshPresenceIndicators()
+    if not self.npc_list then return end
+
+    local selected_item = self.npc_list:GetSelectedItem()
+    local selected_contact = selected_item and selected_item.contact_id or nil
+
+    for i = 0, self.npc_list:GetSize() - 1 do
+        local list_item = self.npc_list:GetItemByIndex(i)
+        if list_item and list_item.contact_id and list_item.contact_id ~= "System" and list_item.online_icon then
+            local is_online = self:IsContactConversationOnline(list_item.contact_id)
+            list_item.online_icon:InitTexture(is_online and "ui_panda_on_icon" or "ui_panda_off_icon")
+            list_item.online_icon:SetTextureColor(GetARGB(255, 255, 255, 255))
+        end
+    end
+
+    if selected_contact and selected_contact ~= "System" then
+        local is_online = self:IsContactConversationOnline(selected_contact)
+        self.status_indicator:InitTexture(is_online and "ui_panda_on_icon" or "ui_panda_off_icon")
+        self.status_indicator:SetTextureColor(GetARGB(255, 255, 255, 255))
+    end
+end
+
+function pda_private_tab:UpdateConversationPresenceState()
+    local now_ms = time_global() or 0
+    local active_contact = nil
+    if pda_interactive_conv and pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name then
+        active_contact = pda_interactive_conv.CONV.npc_name
+    end
+
+    local previous_contact = self.current_presence_contact
+    if active_contact then
+        self.contact_presence_until[active_contact] = now_ms
+    elseif previous_contact and previous_contact ~= active_contact then
+        local min_delay = self.presence_offline_delay_min_ms or 3000
+        local max_delay = self.presence_offline_delay_max_ms or 10000
+        local delay_ms = math.random(min_delay, max_delay)
+        self.contact_presence_until[previous_contact] = now_ms + delay_ms
+    end
+
+    self.current_presence_contact = active_contact
+end
+
+function pda_private_tab:IsContactConversationOnline(contact_name)
+    if not contact_name or contact_name == "" then return false end
+
+    if pda_interactive_conv and pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name == contact_name then
+        return true
+    end
+
+    local now_ms = time_global() or 0
+    local until_ms = self.contact_presence_until and self.contact_presence_until[contact_name] or nil
+    return until_ms ~= nil and now_ms <= until_ms
+end
+
+function pda_private_tab:Update()
+    if not self:IsShown() then
+        self.typing_text_wnd = nil
+        self.typing_entry_data = nil
+        self.choice_typewriter = nil
+
+        if set_pda_private_tab_open then
+            set_pda_private_tab_open(false)
+        end
+
+        return
+    end
+
+    CUIScriptWnd.Update(self)
+    self:UpdateConversationPresenceState()
+    self:RefreshPresenceIndicators()
+    self:UpdateHoverButtonTints()
+
+    if self.choice_typewriter then
+        self:UpdateChoiceTypewriter()
+    end
+
+    if self.pending_choice_idx then
+        local idx = self.pending_choice_idx
+        self.pending_choice_idx = nil
+        if pda_interactive_conv.CONV then
+            pda_interactive_conv.on_player_choice(idx)
+        end
+        return
+    end
+    
+    local raw_log = pda_interactive_conv.pda_private_log or {}
+    local log_size = #raw_log
+    local has_conv = pda_interactive_conv.CONV ~= nil
+    local conv_turn = has_conv and pda_interactive_conv.CONV.turn or 0
+
+    local last_delivery_state = ""
+    local has_typing = false
+    for i = 1, log_size do
+        local e = raw_log[i]
+        if e then
+            if e.is_player and last_delivery_state == "" then
+                last_delivery_state = e.delivery_state or "sent"
+            end
+            if e.is_typing then
+                has_typing = true
+            end
+        end
+        if last_delivery_state ~= "" and has_typing then break end
+    end
+
+    if self.cached_log_size ~= log_size
+       or self.cached_conv_turn ~= conv_turn
+       or self.cached_has_conv ~= has_conv
+       or self.cached_delivery_state ~= last_delivery_state
+       or self.cached_has_typing ~= has_typing then
+        self.cached_log_size = log_size
+        self.cached_conv_turn = conv_turn
+        self.cached_has_conv = has_conv
+        self.cached_delivery_state = last_delivery_state
+        self.cached_has_typing = has_typing
+
+        local current_contact = nil
+        local item = self.npc_list:GetSelectedItem()
+        if item and item.contact_id ~= "System" then
+            current_contact = item.contact_id
+        end
+
+        self:Reset(current_contact)
+    end
+
+    if self.typing_text_wnd and self.typing_entry_data then
+        local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
+        local phase = math.floor((current_time / 350) % 4)
+        
+        if phase ~= self.typing_anim_phase then
+            self.typing_anim_phase = phase
+            local relative_time = get_relative_time(self.typing_entry_data.timestamp, game.get_game_time())
+            local dots = string.rep(".", phase)
+            local display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]Typing%s",
+                self.typing_entry_data.sender, relative_time, dots)
+            
+            self.typing_text_wnd:SetText(display_text)
+        end
+    else
+        self.typing_anim_phase = -1
+    end
+
+    if not pda_interactive_conv.CONV and not pda_interactive_conv.pda_reply_pending then
+        local log = pda_interactive_conv.pda_private_log or {}
+        for i = 1, #log do
+            local entry = log[i]
+            if entry and entry.is_typing then
+                pda_interactive_conv.clear_npc_typing_message(entry.contact_name)
+                self.typing_text_wnd = nil
+                self.typing_entry_data = nil
+                self.choice_typewriter = nil
+                break
+            end
+        end
+    end
+
+    self:UpdateReplyTriggerVisual()
+    
+    if set_pda_private_tab_open then
+        set_pda_private_tab_open(self:IsShown())
+    end
+end
+
+function pda_private_tab:OnChoice1() self:OnChoiceClicked(1) end
+function pda_private_tab:OnChoice2() self:OnChoiceClicked(2) end
+function pda_private_tab:OnChoice3() self:OnChoiceClicked(3) end
+function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
+
+function pda_private_tab:OnChoiceClicked(idx)
+    self:TriggerButtonFlash("choice_" .. tostring(idx), 140)
+    if not pda_interactive_conv.CONV then return end
+    if self.choice_typewriter then return end
+
+    local choice = pda_interactive_conv.CONV.choices and pda_interactive_conv.CONV.choices[idx] or nil
+    if not choice then return end
+
+    self.selected_choice_idx = idx
+    self.choice_buttons_visible = false
+    self:RefreshChoiceButtons()
+    self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
+    self:UpdateReplyTriggerVisual()
+    self:BeginChoiceTypewriter(idx, choice.text or "")
+end
+
+function pda_private_tab:GetRealtimeMs()
+    if type(time_real_ms) == "function" then
+        return time_real_ms()
+    end
+    return math.floor((os.clock() or 0) * 1000)
+end
+
+function pda_private_tab:BeginChoiceTypewriter(idx, text)
+    local now = self:GetRealtimeMs()
+    local clean = tostring(text or ""):gsub("%%c%[[^%]]+%]", "")
+    clean = clean:gsub("\\n", "\n")
+
+    self.choice_typewriter = {
+        idx = idx,
+        full_text = clean,
+        chars = 0,
+        next_tick = now,
+        done_at = nil,
+    }
+
+    if self.composer_input_field then
+        self.composer_input_field:SetText("")
+    end
+end
+
+function pda_private_tab:UpdateChoiceTypewriter()
+    local tw = self.choice_typewriter
+    if not tw then return end
+
+    local now = self:GetRealtimeMs()
+
+    if tw.done_at then
+        if now >= tw.done_at then
+            self.choice_typewriter = nil
+            self.pending_choice_idx = tw.idx
+            self:UpdateReplyTriggerVisual()
+        end
+        return
+    end
+
+    if now < tw.next_tick then return end
+
+    local full_len = string.len(tw.full_text)
+    tw.chars = math.min(full_len, tw.chars + 1)
+    local typed = string.sub(tw.full_text, 1, tw.chars)
+    if self.composer_input_field then
+        self.composer_input_field:SetText(typed)
+    end
+
+    if tw.chars >= full_len then
+        tw.done_at = now + 140
+        return
+    end
+
+    tw.next_tick = now + 26
+end
+
+function pda_private_tab:OnComposerQuick1Clicked()
+    self:TriggerButtonFlash("composer_quick_1", 140)
+    self:ToggleQuickMenu()
+end
+
+function pda_private_tab:OnComposerQuick2Clicked()
+    self:TriggerButtonFlash("composer_quick_2", 140)
+    if self:HasDialogueChoices() then
+        self.reply_trigger_btn_hint_until = 0
+        self.choice_buttons_visible = not self.choice_buttons_visible
+        self.quick_menu_open = false
+        self:HideQuickMenuButtons()
+        self:RefreshChoiceButtons()
+
+        if self.scrollbar.ScrollToEnd then
+            self.scrollbar:ScrollToEnd()
+        end
+        return
+    end
+
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
+end
+
+function pda_private_tab:HideQuickMenuButtons()
+    if self.quick_btn_block_contact then
+        self.quick_btn_block_contact:Show(false)
+        if self.quick_btn_block_bg then self.quick_btn_block_bg:Show(false) end
+    end
+    if self.quick_btn_unblock_contact then
+        self.quick_btn_unblock_contact:Show(false)
+        if self.quick_btn_unblock_bg then self.quick_btn_unblock_bg:Show(false) end
+    end
+    if self.quick_btn_ignore_conv then
+        self.quick_btn_ignore_conv:Show(false)
+        if self.quick_btn_ignore_bg then self.quick_btn_ignore_bg:Show(false) end
+    end
+end
+
+function pda_private_tab:EnsureQuickMenuButtons()
+    if self.quick_btn_block_contact and self.quick_btn_unblock_contact and self.quick_btn_ignore_conv then
+        return
+    end
+
+    local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
+    local menu_y = composer_y - 62
+    local qchar_w = 6   -- approximate width per character for letterica16
+    local qpad = 20     -- horizontal padding
+    local qmin_w = 90
+    local qmax_w = 400
+
+    -- Colors
+    local neutral_chip = GetARGB(220, 60, 65, 70)   -- default button colour
+
+    -- Block Contact
+    local block_label = "Block Contact"
+    local block_w = math.max(qmin_w, math.min(qmax_w, string.len(block_label) * qchar_w + qpad))
+    self.quick_btn_block_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_block_bg:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_block_bg:SetWndSize(vector2():set(block_w, 26))
+    self.quick_btn_block_bg:SetTextureColor(neutral_chip)
+
+    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
+    self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
+    apply_button_quad_style(self.quick_btn_block_contact)
+    local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
+    if block_text then block_text:SetText(block_label) end
+    self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
+
+    -- Unblock Contact
+    local unblock_label = "Unblock Contact"
+    local unblock_w = math.max(qmin_w, math.min(qmax_w, string.len(unblock_label) * qchar_w + qpad))
+    self.quick_btn_unblock_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_unblock_bg:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_unblock_bg:SetWndSize(vector2():set(unblock_w, 26))
+    self.quick_btn_unblock_bg:SetTextureColor(neutral_chip)
+
+    self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
+    self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_unblock_contact:SetWndSize(vector2():set(unblock_w, 26))
+    apply_button_quad_style(self.quick_btn_unblock_contact)
+    local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
+    if unblock_text then unblock_text:SetText(unblock_label) end
+    self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
+
+    -- Ignore Conversation
+    local ignore_label = "Ignore Conversation"
+    local ignore_w = math.max(qmin_w, math.min(qmax_w, string.len(ignore_label) * qchar_w + qpad))
+    self.quick_btn_ignore_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_ignore_bg:SetWndPos(vector2():set(16, menu_y + 30))
+    self.quick_btn_ignore_bg:SetWndSize(vector2():set(ignore_w, 26))
+    self.quick_btn_ignore_bg:SetTextureColor(neutral_chip)
+
+    self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:ignore_chip_btn", self.desc_box)
+    self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
+    self.quick_btn_ignore_conv:SetWndSize(vector2():set(ignore_w, 26))
+    apply_button_quad_style(self.quick_btn_ignore_conv)
+    local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
+    if ignore_text then ignore_text:SetText(ignore_label) end
+    self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
+
+    -- Auto‑delete
+    self.quick_btn_block_bg:SetAutoDelete(true)
+    self.quick_btn_block_contact:SetAutoDelete(true)
+    self.quick_btn_unblock_bg:SetAutoDelete(true)
+    self.quick_btn_unblock_contact:SetAutoDelete(true)
+    self.quick_btn_ignore_bg:SetAutoDelete(true)
+    self.quick_btn_ignore_conv:SetAutoDelete(true)
+
+    self:HideQuickMenuButtons()
+end
+
+function pda_private_tab:GetSelectedContactName()
+    local item = self.npc_list and self.npc_list:GetSelectedItem() or nil
+    if not item or item.contact_id == "System" then return nil end
+    return item.contact_id
+end
+
+function pda_private_tab:ToggleQuickMenu()
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then
+        self.quick_menu_open = false
+        self:HideQuickMenuButtons()
+        self.reply_trigger_btn_hint_until = time_global() + 900
+        self:UpdateReplyTriggerVisual()
+        return
+    end
+
+    self:EnsureQuickMenuButtons()
+
+    self.quick_menu_open = not self.quick_menu_open
+    local is_blocked = pda_interactive_conv.is_contact_blocked and pda_interactive_conv.is_contact_blocked(contact_name)
+    local has_active_conv = pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name == contact_name and self:HasDialogueChoices()
+
+    self.quick_btn_block_contact:Show(self.quick_menu_open and not is_blocked)
+    if self.quick_btn_block_bg then self.quick_btn_block_bg:Show(self.quick_menu_open and not is_blocked) end
+
+    self.quick_btn_unblock_contact:Show(self.quick_menu_open and is_blocked)
+    if self.quick_btn_unblock_bg then self.quick_btn_unblock_bg:Show(self.quick_menu_open and is_blocked) end
+
+    self.quick_btn_ignore_conv:Show(self.quick_menu_open and has_active_conv)
+    if self.quick_btn_ignore_bg then self.quick_btn_ignore_bg:Show(self.quick_menu_open and has_active_conv) end
+
+    if self.quick_menu_open then
+        self.choice_buttons_visible = false
+        self:RefreshChoiceButtons()
+    end
+end
+
+function pda_private_tab:OnQuickIgnoreConversationClicked()
+    self:TriggerButtonFlash("quick_ignore", 160)
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then return end
+
+    local active_conv = pda_interactive_conv.CONV
+    if active_conv and active_conv.npc_name == contact_name then
+        pda_interactive_conv.CONV = nil
+    end
+
+    pda_interactive_conv.pda_reply_pending = false
+    if pda_interactive_conv.clear_npc_typing_message then
+        pda_interactive_conv.clear_npc_typing_message(contact_name)
+    end
+    if RemoveTimeEvent then
+        RemoveTimeEvent("pda_ic", "delivery_ack")
+        RemoveTimeEvent("pda_ic", "npc_typing_start")
+        RemoveTimeEvent("pda_ic", "npc_reply")
+    end
+    self.typing_text_wnd = nil
+    self.typing_entry_data = nil
+    self.choice_typewriter = nil
+
+    self.selected_choice_idx = nil
+    self.choice_buttons_visible = false
+    self.quick_menu_open = false
+    self.reply_trigger_btn_hint_until = 0
+    self:HideQuickMenuButtons()
+    self:RefreshChoiceButtons()
+    self:UpdateReplyTriggerVisual()
+end
+
+function pda_private_tab:OnQuickBlockContactClicked()
+    self:TriggerButtonFlash("quick_block", 160)
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then return end
+    if pda_interactive_conv.block_contact then pda_interactive_conv.block_contact(contact_name) end
+
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
+    self:Reset()
+end
+
+function pda_private_tab:OnQuickUnblockContactClicked()
+    self:TriggerButtonFlash("quick_unblock", 160)
+    local contact_name = self:GetSelectedContactName()
+    if not contact_name then return end
+    if pda_interactive_conv.unblock_contact then pda_interactive_conv.unblock_contact(contact_name) end
+
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
+end
+
+function pda_private_tab:UpdateReplyTriggerVisual()
+    if not self.composer_input_field then return end
+    if self.choice_typewriter then return end
+
+    local now = time_global()
+    if self.reply_trigger_btn_hint_until > now then
+        self.composer_input_field:SetText("No reply options now")
+        return
+    end
+    self.composer_input_field:SetText("Choose a reply...")
+end
+
+function pda_private_tab:HasDialogueChoices()
+    local active_conv = pda_interactive_conv.CONV
+    return active_conv ~= nil and active_conv.num_choices ~= nil and active_conv.num_choices > 0
+end
+
+function pda_private_tab:OnReplyTriggerClicked()
+    self:TriggerButtonFlash("composer_send", 140)
+    self.quick_menu_open = false
+    self:HideQuickMenuButtons()
+
+    if self:HasDialogueChoices() then
+        self.reply_trigger_btn_hint_until = 0
+        self.choice_buttons_visible = true
+        self:RefreshChoiceButtons()
+        if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
+        return
+    end
+
+    self.reply_trigger_btn_hint_until = time_global() + 900
+    self:UpdateReplyTriggerVisual()
+end
+
+
+function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
+    local count = math.min(4, math.max(0, tonumber(required_count) or 0))
+    local button_h = chip_h or 28
+
+    for i = #self.choice_btns + 1, count do
+        local bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+        local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+        local btn_name = "choice_btn_" .. i
+
+        self:Register(btn, btn_name)
+        bg:SetWndSize(vector2():set(120, button_h))
+        btn:SetWndSize(vector2():set(120, button_h))
+        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(235, 18, 30, 85)) end
+        -- Override the 3t-button's texture with our custom atlas at alpha=0 so
+        -- the vanilla button frame art is never drawn over our bg static.
+        apply_button_quad_style(btn)
+        bg:Show(false)
+        btn:Show(false)
+
+        table.insert(self.choice_btns, { bg = bg, btn = btn, idx = nil, text = "" })
+    end
+end
+
+function pda_private_tab:RefreshChoiceButtons()
+    local has_choices = self:HasDialogueChoices()
+    local has_mapped_buttons = false
+
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.idx then
+            has_mapped_buttons = true
+            break
+        end
+    end
+
+    local should_show_choices = has_choices and has_mapped_buttons and self.choice_buttons_visible == true
+
+    -- Use the same wrap logic here as in OnSelectNPC to prevent text clipping
+    local max_chip_w = 400
+    local wrap_chars = math.floor((max_chip_w - 28) / 6.0)
+
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn and choice.bg then
+            local is_active = choice.idx ~= nil
+            local label = choice.text or ""
+            if is_active and choice.idx == self.selected_choice_idx then label = "[Selected] " .. label end
+
+            local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
+            if text_ctrl then
+                text_ctrl:SetText(wrap_plain_text(label, wrap_chars))
+                if text_ctrl.AdjustHeightToText then text_ctrl:AdjustHeightToText() end
+            end
+
+            choice.btn:Enable(is_active)
+            choice.btn:Show(should_show_choices and is_active)
+            choice.bg:Show(should_show_choices and is_active)
+        end
+    end
+end
+
+function get_relative_time(timestamp_str, current_game_time)
+    if not timestamp_str then return "Unknown" end
+    timestamp_str = tostring(timestamp_str)
+    local d, m, y, h, min = timestamp_str:match("(%d+)/(%d+)/(%d+)%s+(%d+):(%d+)")
+    if not d then return timestamp_str end
+    
+    d, m, y, h, min = tonumber(d), tonumber(m), tonumber(y), tonumber(h), tonumber(min)
+    local cY, cM, cD, ch, cmin, cs, cms = 0, 0, 0, 0, 0, 0, 0
+    cY, cM, cD, ch, cmin, cs, cms = current_game_time:get(cY, cM, cD, ch, cmin, cs, cms)
+    
+    local msg_minutes = (d * 24 * 60) + (h * 60) + min
+    local cur_minutes = (cD * 24 * 60) + (ch * 60) + cmin
+    local diff_minutes = cur_minutes - msg_minutes
+    if diff_minutes < 0 then diff_minutes = 0 end
+    
+    if diff_minutes < 1 then return "Just now"
+    elseif diff_minutes < 60 then return string.format("%d minute%s ago", diff_minutes, diff_minutes == 1 and "" or "s")
+    elseif diff_minutes < 1440 then
+        local hours = math.floor(diff_minutes / 60)
+        return string.format("%d hour%s ago", hours, hours == 1 and "" or "s")
+    else
+        local days = math.floor(diff_minutes / 1440)
+        return string.format("%d day%s ago", days, days == 1 and "" or "s")
+    end
+end
+
+function get_npc_data(contact_name)
+    for i = 1, 65534 do
+        local se_obj = alife_object(i)
+        if se_obj then
+            local obj = level.object_by_id(se_obj.id)
+            if obj and IsStalker(obj) then
+                local npc_name = obj:character_name()
+                if npc_name == contact_name then
+                    local community = obj:character_community() or "stalker"
+                    local rank = obj:character_rank() or 0
+                    local rank_name = ranks.get_obj_rank_name(obj) or "Unknown"
+                    local goodwill = obj.general_goodwill and obj:general_goodwill(db.actor) or 0
+                    
+                    local relation = 0
+                    if relation_registry and relation_registry.community_relation then
+                        local player_comm = character_community(db.actor)
+                        relation = relation_registry.community_relation(community, player_comm) or 0
+                    end
+                    local icon = obj:character_icon() or "ui_inGame2_Neutral_1"
+                    return { name = contact_name, community = community, relation = relation, goodwill = goodwill, rank = rank_name, icon = icon, obj = obj, is_alive = true }
+                end
+            end
+        end
+    end
+    return nil
+end
+
+function get_faction_color(community)
+    local faction_colors = {
+        stalker = {r=255, g=215, b=0}, dolg = {r=255, g=0, b=0}, freedom = {r=0, g=200, b=0},
+        csky = {r=135, g=206, b=235}, ecolog = {r=255, g=255, b=0}, killer = {r=0, g=0, b=128},
+        army = {r=0, g=100, b=0}, bandit = {r=128, g=128, b=128}, monolith = {r=255, g=255, b=255},
+        zombied = {r=100, g=100, b=100}, renegade = {r=128, g=128, b=128}, isg = {r=100, g=150, b=200}, greh = {r=200, g=150, b=100}
+    }
+    local color = faction_colors[community] or {r=200, g=200, b=200}
+    return color.r, color.g, color.b
+end
+
+function get_community_name(community)
+    local community_names = {
+        stalker = "Loners", dolg = "Duty", freedom = "Freedom", csky = "Clear Sky",
+        ecolog = "Ecologists", killer = "Mercenaries", army = "Military", bandit = "Bandits",
+        monolith = "Monolith", zombied = "Zombified", renegade = "Renegades", isg = "ISG", greh = "Sin"
+    }
+    return community_names[community] or community
+end
+
+function get_faction_patch_texture(community)
+    local patch_map = {
+        stalker  = "patch_loners",
+        dolg     = "patch_duty",
+        freedom  = "patch_freedom",
+        csky     = "patch_clear_sky",
+        ecolog   = "patch_ecologists",
+        killer   = "patch_mercenaries",
+        army     = "patch_military",
+        bandit   = "patch_bandits",
+        monolith = "patch_monolith",
+        greh     = "patch_sin",
+        renegade = "patch_renegades",
+        isg      = "patch_isg",
+    }
+    return patch_map[community] or nil
+end
+
+function pda_private_tab:Reset(target_contact_id)
+    self.npc_list:RemoveAll()
+    self.scroll_dynamic_windows = {}
+    self.scrollbar:Clear()
+    self.image_container:Show(false)
+    self.header_name:SetText("")
+    self.message_count:SetText("")
+    self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
+    self.typing_text_wnd = nil
+    self.typing_entry_data = nil
+    self.choice_typewriter = nil
+    self:ClearChoiceButtons()
+    self:UpdateReplyTriggerVisual()
+    self:HideStats()
+    
+    local log = pda_interactive_conv.pda_private_log or {}
+    if #log == 0 then
+        local item = pvt_contact_entry("System", "Your inbox is empty.", "", "ui_inGame2_No_Data", 0)
+        self.npc_list:AddExistingItem(item)
+        self.empty_state:SetText("INBOX EMPTY")
+        self.empty_state:Show(true)
+        return
+    end
+
+    local contacts = {}
+    local contact_order = {}
+    local current_game_time = game.get_game_time()
+
+    for i = 1, #log do
+        local entry = log[i]
+        local contact_id = entry.contact_name or "Unknown"
+        
+        if not contacts[contact_id] then
+            contacts[contact_id] = { latest_text = entry.text, timestamp = entry.timestamp, icon = (not entry.is_player) and entry.sender_icon or nil, message_count = 1 }
+            table.insert(contact_order, contact_id)
+        else
+            contacts[contact_id].message_count = contacts[contact_id].message_count + 1
+        end
+        if entry.sender_icon and not entry.is_player then contacts[contact_id].icon = entry.sender_icon end
+    end
+
+    for _, contact_id in ipairs(contact_order) do
+        local data = contacts[contact_id]
+        local clean_text = string.gsub(data.latest_text, "%%c%[%d+,%d+,%d+,%d+%]", "")
+        local relative_time = get_relative_time(data.timestamp, current_game_time)
+        
+        local item = pvt_contact_entry(
+            contact_id,
+            clean_text,
+            relative_time,
+            data.icon or "ui_inGame2_Neutral_1",
+            data.message_count,
+            self:IsContactConversationOnline(contact_id)
+        )
+        self.npc_list:AddExistingItem(item)
+    end
+    
+    if target_contact_id then
+        for i = 0, self.npc_list:GetSize() - 1 do
+            local list_item = self.npc_list:GetItemByIndex(i)
+            if list_item.contact_id == target_contact_id then
+                self.npc_list:SetSelectedIndex(i)
+                self:OnSelectNPC()
+                return
+            end
+        end
+    end
+    
+    if self.npc_list:GetSize() > 0 then
+        self.npc_list:SetSelectedIndex(0)
+        self:OnSelectNPC()
+    else
+        self.empty_state:SetText("SELECT A CONTACT")
+        self.empty_state:Show(true)
+    end
+end
+
+function pda_private_tab:ClearChoiceButtons()
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn then
+            choice.btn:Show(false)
+            choice.btn:Enable(false)
+        end
+        if choice and choice.bg then
+            choice.bg:Show(false)
+        end
+        if choice then
+            choice.idx = nil
+            choice.text = ""
+        end
+    end
+
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
+end
+
+function pda_private_tab:HideStats()
+    apply_colored_text(self.stat_relation_value, "", GetARGB(255, 255, 255, 255))
+    self.stat_goodwill_value:SetText("")
+    self.stat_rank_value:SetText("")
+    apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
+    if self.faction_patch_icon then self.faction_patch_icon:Show(false) end
+    self.last_seen:SetText("")
+    self.status_indicator:InitTexture("ui_panda_off_icon")
+    self.status_indicator:SetTextureColor(GetARGB(180, 255, 255, 255))
+end
+
+function pda_private_tab:ShowStats(contact_name)
+    local npc_data = self.cached_npc_data[contact_name]
+    if not npc_data then
+        npc_data = get_npc_data(contact_name)
+        if npc_data then self.cached_npc_data[contact_name] = npc_data end
+    end
+    
+    if not npc_data then self:HideStats(); return end
+    
+    local is_online = npc_data.is_alive and self:IsContactConversationOnline(contact_name)
+    self.status_indicator:InitTexture(is_online and "ui_panda_on_icon" or "ui_panda_off_icon")
+    self.status_indicator:SetTextureColor(GetARGB(255, 255, 255, 255))
+    
+    local r, g, b = get_faction_color(npc_data.community)
+    local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
+    apply_colored_text(self.faction_badge, faction_text, GetARGB(255, 150, 150, 150))
+
+    if self.faction_patch_icon then
+        local patch_tex = get_faction_patch_texture(npc_data.community)
+        if patch_tex then
+            self.faction_patch_icon:InitTexture(patch_tex)
+            self.faction_patch_icon:SetStretchTexture(true)
+            self.faction_patch_icon:Show(true)
+        else
+            self.faction_patch_icon:Show(false)
+        end
+    end
+    
+    local relation_text
+    if npc_data.relation > 1000 then relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
+    elseif npc_data.relation < -1000 then relation_text = string.format("%%c[255,200,100,100]%d (Hostile)", npc_data.relation)
+    else relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation) end
+    apply_colored_text(self.stat_relation_value, relation_text, GetARGB(255, 255, 255, 255))
+    
+    self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
+    self.stat_rank_value:SetText(npc_data.rank or "Unknown")
+    
+    local log = pda_interactive_conv.pda_private_log or {}
+    local latest_time = nil
+    for i = 1, #log do
+        local entry = log[i]
+        if entry.contact_name == contact_name and not entry.is_player then
+            latest_time = entry.timestamp
+            break
+        end
+    end
+    
+    if latest_time then
+        local current_game_time = game.get_game_time()
+        local relative = get_relative_time(latest_time, current_game_time)
+        self.last_seen:SetText("Last: " .. relative)
+    else
+        self.last_seen:SetText("Last: Unknown")
+    end
+end
+
+function pda_private_tab:OnSelectNPC()
+    local item = self.npc_list:GetSelectedItem()
+    if not item or item.contact_id == "System" then 
+        self.quick_menu_open = false
+        self:HideQuickMenuButtons()
+        self:HideStats()
+        self.typing_text_wnd = nil
+        self.typing_entry_data = nil
+        self.choice_typewriter = nil
+        return 
+    end
+
+    self.empty_state:Show(false)
+    self.scroll_dynamic_windows = {}
+    self.scrollbar:Clear()
+    self.quick_menu_open = false
+    self.typing_text_wnd = nil
+    self.typing_entry_data = nil
+    self.choice_typewriter = nil
+    self:HideQuickMenuButtons()
+
+    self:ClearChoiceButtons()
+
+    if not self:HasDialogueChoices() then self.choice_buttons_visible = false end
+    
+    self.reply_trigger_btn_hint_until = 0
+    self.quick_menu_open = false
+    self:UpdateReplyTriggerVisual()
+
+    self.header_name:SetText(item.contact_id)
+    
+    local function valid_texture_name(tex) return type(tex) == "string" and tex ~= "" end
+    local portrait_icon = nil
+
+    if valid_texture_name(item.contact_icon) then portrait_icon = item.contact_icon
+    elseif self.cached_npc_data[item.contact_id] and valid_texture_name(self.cached_npc_data[item.contact_id].icon) then portrait_icon = self.cached_npc_data[item.contact_id].icon
+    else
+        local log = pda_interactive_conv.pda_private_log or {}
+        for i = #log, 1, -1 do
+            local entry = log[i]
+            if (entry.contact_name or "Unknown") == item.contact_id and not entry.is_player and valid_texture_name(entry.sender_icon) then
+                portrait_icon = entry.sender_icon
+                break
+            end
+        end
+    end
+
+    portrait_icon = portrait_icon or "ui_inGame2_Neutral_1"
+    if not valid_texture_name(portrait_icon) then portrait_icon = "ui_inGame2_Neutral_1" end
+
+    self.image:InitTexture(portrait_icon)
+    self.image:SetStretchTexture(true) 
+    self.image_container:Show(true)
+    
+    local log = pda_interactive_conv.pda_private_log or {}
+    local msg_count = 0
+    for i = 1, #log do
+        if (log[i].contact_name or "Unknown") == item.contact_id then msg_count = msg_count + 1 end
+    end
+    self.message_count:SetText(string.format("%d message%s", msg_count, msg_count == 1 and "" or "s"))
+    
+    local current_game_time = game.get_game_time()
+    
+    local function is_player_sender(entry)
+        if entry.is_player then return true end
+        if db and db.actor and entry.sender then return entry.sender == db.actor:character_name() end
+        return false
+    end
+
+    local function style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+        local odd_row = (row_idx % 2 == 1)
+        local lane_color
+        if is_player_lane then lane_color = odd_row and GetARGB(190, 50, 78, 50) or GetARGB(165, 42, 66, 42)
+        else lane_color = odd_row and GetARGB(200, 58, 58, 58) or GetARGB(175, 48, 48, 48) end
+        lane_bg:SetTextureColor(lane_color)
+    end
+
+    local function get_delivery_indicator(entry)
+        local state = entry and entry.delivery_state or "sent"
+        if state ~= "delivered" and state ~= "read" then state = "sent" end
+        if state == "read" then return "%c[255,100,220,255]Read", GetARGB(255, 100, 220, 255)
+        elseif state == "delivered" then return "%c[255,190,190,190]Delivered", GetARGB(255, 190, 190, 190) end
+        return "%c[255,150,150,150]Sent", GetARGB(255, 150, 150, 150)
+    end
+
+    function estimate_bubble_width(text, min_w, max_w, padding_x)
+		local raw_text = tostring(text or "")
+		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
+		local split_text = compact:gsub("\\n", "\n")
+		local widest_line = 0
+		for line in (split_text .. "\n"):gmatch("(.-)\n") do
+			line = line:match("^%s*(.-)%s*$") or line
+			local width = 0
+			for i = 1, #line do
+				local char = line:sub(i, i)
+				if char:match("%u")                      then width = width + 6.0
+				elseif char == "m" or char == "w"        then width = width + 6.5
+				elseif char == "i" or char == "l" or char == "t" then width = width + 3.0
+				elseif char:match("%l")                  then width = width + 4.8
+				elseif char:match("%d")                  then width = width + 4.8
+				elseif char == " "                       then width = width + 2.8
+				elseif char == "[" or char == "]"        then width = width + 3.5
+				else                                          width = width + 4.5 end
+			end
+			if width > widest_line then widest_line = width end
+		end
+		if widest_line == 0 then widest_line = (tonumber(min_w) or 80) - (tonumber(padding_x) or 20) end
+		return math.floor(math.max(tonumber(min_w) or 80,
+								   math.min(tonumber(max_w) or 460,
+											widest_line + (tonumber(padding_x) or 20))))
+	end
+
+    local row_idx = 0
+    for i = #log, 1, -1 do
+        local entry = log[i]
+        if (entry.contact_name or "Unknown") == item.contact_id then
+            row_idx = row_idx + 1
+            local is_player_lane = is_player_sender(entry)
+            local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
+            local lane_root = CUIStatic()
+            -- Prefer the actual scroll view width, otherwise fall back to composer width.
+            -- This keeps right-aligned bubbles inside the visible chat viewport.
+            local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth())
+                or (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth())
+                or 700
+            lane_root:SetWndSize(vector2():set(chat_panel_width, 50))
+            local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
+            local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
+            local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
+            local relative_time = get_relative_time(entry.timestamp, current_game_time)
+
+            -- [PATCH] Fix Message Lane Width Overflow
+            local body_text_raw = entry.is_typing and "Typing..." or tostring(entry.text or "")
+			local header_sender = is_player_lane and "You" or tostring(entry.sender or "Unknown")
+<<<<<<< HEAD
+=======
+			local width_probe_text = string.format("%s [%s]\\n%s", header_sender, tostring(relative_time or "Unknown"), body_text_for_width)
+			-- Keep bubbles compact and always within the visible lane.
+			local lane_inner_padding = 8
+			local right_scrollbar_gutter = 20
+			local usable_lane_w = math.max(220, chat_panel_width - (lane_inner_padding * 2) - right_scrollbar_gutter)
+			local lane_max_w = math.min(is_player_lane and 320 or 360, usable_lane_w)
+			local lane_min_w = math.min(180, lane_max_w)
+			local bubble_w = estimate_bubble_width(width_probe_text, lane_min_w, lane_max_w, 34)
+			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
+>>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
+
+			local lane_max_w   = is_player_lane and 310 or 350
+			-- Slightly tighter wrap so body lines stay shorter than the bubble cap
+			local wrap_chars   = math.max(20, math.floor((lane_max_w - 28) / 4.8))
+			local wrapped_body = wrap_plain_text(body_text_raw, wrap_chars)
+
+			-- Probe body text ONLY for width – the header is short and handled by min_w
+			local bubble_w = estimate_bubble_width(
+				wrapped_body:gsub("\\n", "\n"),
+				is_player_lane and 150 or 160,   -- min_w: comfortably holds "You [Just now]"
+				lane_max_w,
+				28)
+
+<<<<<<< HEAD
+			local display_text = ""
+			if is_player_lane then
+				display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
+					tostring(relative_time or "Unknown"), wrapped_body)
+			else
+				local npc_body = wrapped_body
+				if entry.is_typing then
+					local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
+					local phase = math.floor((current_time / 350) % 4)
+					npc_body = "Typing" .. string.rep(".", phase)
+					self.typing_text_wnd = text_wnd
+					self.typing_entry_data = { sender = entry.sender, timestamp = entry.timestamp }
+				end
+				display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
+					tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), npc_body)
+			end
+
+			text_wnd:SetText(display_text)
+
+			if is_player_lane then
+				local panel_w   = chat_panel_width  -- already declared above as composer_container width
+				local right_pad = 20                -- small right margin from panel edge
+				local bubble_x  = math.max(8, panel_w - bubble_w - right_pad)
+=======
+            if is_player_lane then
+				local panel_w = lane_root:GetWidth()
+				local left_padding = 8
+				local right_padding = 20
+				local max_bubble_w = math.max(120, panel_w - left_padding - right_padding)
+				bubble_w = math.min(bubble_w, max_bubble_w)
+				local bubble_x = panel_w - bubble_w - right_padding
+				bubble_x = math.max(left_padding, bubble_x)
+>>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
+
+				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
+				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+				text_wnd:SetWndPos(vector2():set(bubble_x + 10, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(80, bubble_w - 20), text_wnd:GetHeight()))
+
+				-- Position status_wnd now so we can use bubble_x/bubble_w below
+				if status_wnd then
+					-- Will be resized/repositioned after AdjustHeightToText; store bubble geometry
+					status_wnd._bubble_x = bubble_x
+					status_wnd._bubble_w = bubble_w
+				end
+			else
+				lane_bg:SetWndPos(vector2():set(8, 0))
+				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+<<<<<<< HEAD
+				text_wnd:SetWndPos(vector2():set(20, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(80, bubble_w - 28), text_wnd:GetHeight()))
+=======
+				text_wnd:SetWndPos(vector2():set(22, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
+>>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
+			end
+
+			text_wnd:AdjustHeightToText()
+			local text_h  = text_wnd:GetHeight()
+			local status_h = 0
+
+			if status_wnd then
+				local status_text, status_color = get_delivery_indicator(entry)
+				apply_colored_text(status_wnd, status_text, status_color)
+				status_wnd:AdjustHeightToText()
+				status_h = status_wnd:GetHeight() + 3
+
+				-- Small fixed-width window right-anchored inside the bubble
+				local bx = status_wnd._bubble_x or 8
+				local bw = status_wnd._bubble_w or bubble_w
+				local status_w = 72   -- enough for "Delivered"
+				local sx = bx + bw - status_w - 6    -- 6px from bubble right edge
+				local sy = text_wnd:GetWndPos().y + text_h + 3
+				status_wnd:SetWndSize(vector2():set(status_w, status_wnd:GetHeight()))
+				status_wnd:SetWndPos(vector2():set(sx, sy))
+			end
+
+			style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+
+			local lane_h = text_h + status_h + 14
+			lane_bg:SetWndSize(vector2():set(bubble_w, lane_h))
+			lane_root:SetWndSize(vector2():set(chat_panel_width, lane_h))
+
+            lane_root:SetAutoDelete(false)
+            self.scrollbar:AddWindow(lane_root, false)
+            table.insert(self.scroll_dynamic_windows, lane_root)
+        end
+    end
+
+    local active_conv = pda_interactive_conv.CONV
+    if active_conv and active_conv.npc_name == item.contact_id then
+        local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
+        local chip_gap = 6
+        local max_chip_w = 400
+        local wrap_chars = math.floor((max_chip_w - 28) / 6.0)
+
+        local usable_choices = math.min(4, active_conv.num_choices)
+        self:EnsureChoiceButtonPool(usable_choices, 28)
+
+        local current_y = composer_y - 10
+        local composer_center_x = 250
+        local min_x = 16
+        local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
+
+        -- [PATCH] Calculate dialogue choices independently & stack from Bottom to Top
+        for i = usable_choices, 1, -1 do
+            local ch = active_conv.choices[i]
+            local choice = self.choice_btns[i]
+
+            if choice and choice.bg and choice.btn then
+                choice.idx = i
+                choice.text = ch.text
+
+                -- Wrap text and estimate precise width specific to THIS button
+                local wrapped_text = wrap_plain_text(ch.text, wrap_chars)
+                local chip_w = estimate_chip_width(wrapped_text:gsub("\\n", "\n"), 80, max_chip_w, 28)
+
+                -- Calculate dynamic height based on text lines
+                local num_lines = 1
+                for _ in wrapped_text:gmatch("\\n") do num_lines = num_lines + 1 end
+                local chip_h = math.max(28, (num_lines * 16) + 12)
+
+                local max_x = chat_panel_width - chip_w - 16
+                local chip_x = math.max(min_x, math.min(max_x, math.floor(composer_center_x - chip_w / 2)))
+
+                current_y = current_y - chip_h
+                local chip_y = current_y
+
+                choice.bg:SetWndPos(vector2():set(chip_x, chip_y))
+                choice.bg:SetWndSize(vector2():set(chip_w, chip_h))
+                choice.btn:SetWndPos(vector2():set(chip_x, chip_y))
+                choice.btn:SetWndSize(vector2():set(chip_w, chip_h))
+
+                current_y = current_y - chip_gap
+            end
+        end
+
+        -- Calculate dynamic spacer height to ensure choices aren't blocked at the bottom of the scroll view
+        if self.choice_buttons_visible then
+            local total_choices_height = (composer_y - 10) - current_y
+            local spacer = CUIStatic()
+            spacer:SetAutoDelete(false)
+            spacer:SetWndSize(vector2():set(10, total_choices_height + 10))
+            self.scrollbar:AddWindow(spacer, false)
+            table.insert(self.scroll_dynamic_windows, spacer)
+        end
+
+        self:RefreshChoiceButtons()
+    else
+        self.choice_buttons_visible = false
+        self:RefreshChoiceButtons()
+    end
+
+    if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
+    self:ShowStats(item.contact_id)
+end
+
+class "pvt_contact_entry" (CUIListBoxItem)
+
+function pvt_contact_entry:__init(contact_id, preview, timestamp, icon, message_count, is_online) super()
+    self:GetTextItem():SetText("")
+    self.contact_id = contact_id
+    self.contact_icon = icon
+
+    self.img_icon = self:AddIconField(1)
+    self.img_icon:InitTexture(icon)
+    self.img_icon:SetStretchTexture(true)
+    self.img_icon:SetWndRect(Frect():set(5, 5, 45, 45))
+
+    self.str_name = self:AddTextField(string.format("%s", contact_id), 1)
+    self.str_name:SetWndRect(Frect():set(58, 5, 136, 18))
+    self.str_name:SetFont(GetFontLetterica18Russian())
+    self.str_name:SetTextColor(GetARGB(255, 255, 200, 50)) 
+    self.str_name:SetEllipsis(true)
+
+    if contact_id ~= "System" then
+        self.online_icon = self:AddIconField(1)
+        self.online_icon:InitTexture(is_online and "ui_panda_on_icon" or "ui_panda_off_icon")
+        self.online_icon:SetStretchTexture(true)
+        self.online_icon:SetTextureColor(GetARGB(255, 255, 255, 255))
+        self.online_icon:SetWndRect(Frect():set(196, 5, 14, 14))
+    end
+    
+    self.str_time = self:AddTextField(timestamp or "", 1)
+    self.str_time:SetWndRect(Frect():set(58, 22, 160, 14))
+    self.str_time:SetFont(GetFontLetterica16Russian())
+    self.str_time:SetTextColor(GetARGB(255, 120, 120, 120))
+    self.str_time:SetEllipsis(true)
+
+    self.str_msg = self:AddTextField(preview, 1)
+    self.str_msg:SetWndRect(Frect():set(58, 36, 160, 14)) 
+    self.str_msg:SetFont(GetFontLetterica16Russian())
+    self.str_msg:SetTextColor(GetARGB(255, 150, 150, 150))
+    self.str_msg:SetEllipsis(true)
+end
+
+function is_private_tab_visible()
+    return SINGLETON and SINGLETON:IsShown()
+end
