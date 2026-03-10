@@ -221,6 +221,7 @@
                     <texture>ui_inGame2_hint_wnd_main_window</texture>
                 </choice_chip_bg>
                 <choice_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture a="0">ui_panda_box</texture>
                     <texture_e a="0">ui_panda_box</texture_e>
                     <texture_h a="0">ui_panda_box</texture_h>
                     <texture_t a="0">ui_panda_box</texture_t>
@@ -233,6 +234,7 @@
                     </text_color>
                 </choice_chip_btn>
                 <block_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture a="0">ui_panda_box</texture>
                     <texture_e a="0">ui_panda_box</texture_e>
                     <texture_h a="0">ui_panda_box</texture_h>
                     <texture_t a="0">ui_panda_box</texture_t>
@@ -245,6 +247,7 @@
                     </text_color>
                 </block_chip_btn>
                 <ignore_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture a="0">ui_panda_box</texture>
                     <texture_e a="0">ui_panda_box</texture_e>
                     <texture_h a="0">ui_panda_box</texture_h>
                     <texture_t a="0">ui_panda_box</texture_t>
