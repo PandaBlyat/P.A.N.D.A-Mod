@@ -203,18 +203,6 @@
                          <text font="letterica16" r="220" g="220" b="220" a="255"/>
                     </text_box>
                 </message_lane_npc>
-
-                <message_lane_player x="0" y="0" width="720" height="50" stretch="1">
-                    <bubble_bg x="250" y="0" width="460" height="50" stretch="1">
-                        <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
-                    </bubble_bg>
-                    <text_box x="262" y="6" width="436" height="20" complex_mode="1">
-                         <text font="letterica16" r="200" g="255" b="200" a="255"/>
-                    </text_box>
-                    <delivery_status x="262" y="28" width="436" height="16" complex_mode="1">
-                         <text font="letterica16" align="r" vert_align="c" r="170" g="170" b="170" a="255"/>
-                    </delivery_status>
-                </message_lane_player>
                 
                 <!-- Background supports dynamic tinting, Button handles pure text/interactions -->
                 <choice_chip_bg x="0" y="0" width="220" height="26" stretch="1">

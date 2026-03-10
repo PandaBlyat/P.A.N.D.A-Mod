@@ -225,11 +225,18 @@ function pda_private_tab:InitControls()
     self.composer_send_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_send_bg", self.composer_container)
     self.composer_send_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_send_btn", self.composer_container)
 
-    -- Force all interactive quads to use ui_panda_box so no default/vanilla
-    -- button frame art is drawn over our custom button backgrounds.
-    apply_button_quad_style(self.composer_quick_1_btn)
-    apply_button_quad_style(self.composer_quick_2_btn)
-    apply_button_quad_style(self.composer_send_btn)
+    -- Keep interactive button quads transparent so the dedicated static background
+    -- (ui_panda_box) is the only visual layer we tint for hover/flash states.
+    local transparent = GetARGB(0, 0, 0, 0)
+    if self.composer_quick_1_btn and self.composer_quick_1_btn.SetTextureColor then
+        self.composer_quick_1_btn:SetTextureColor(transparent)
+    end
+    if self.composer_quick_2_btn and self.composer_quick_2_btn.SetTextureColor then
+        self.composer_quick_2_btn:SetTextureColor(transparent)
+    end
+    if self.composer_send_btn and self.composer_send_btn.SetTextureColor then
+        self.composer_send_btn:SetTextureColor(transparent)
+    end
 
     self.reply_trigger_btn_hint_until = 0
     self.quick_menu_open = false
@@ -1259,7 +1266,7 @@ function pda_private_tab:OnSelectNPC()
         if (entry.contact_name or "Unknown") == item.contact_id then
             row_idx = row_idx + 1
             local is_player_lane = is_player_sender(entry)
-            local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
+            local template = is_player_lane or "private_pda:info:description:message_lane_npc"
             local lane_root = CUIStatic()
             lane_root:SetWndSize(vector2():set(720, 50))
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
