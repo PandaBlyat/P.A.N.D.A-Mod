@@ -143,7 +143,10 @@
                         <texture>ui_panda_box</texture>
                     </composer_quick_1_bg>
                     <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture>ui_panda_box</texture>
+                        <texture_e>ui_panda_box</texture_e>
+                        <texture_h>ui_panda_box</texture_h>
+                        <texture_t>ui_panda_box</texture_t>
+                        <texture_d>ui_panda_box</texture_d>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -156,7 +159,10 @@
                         <texture>ui_panda_box</texture>
                     </composer_quick_2_bg>
                     <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture>ui_panda_box</texture>
+                        <texture_e>ui_panda_box</texture_e>
+                        <texture_h>ui_panda_box</texture_h>
+                        <texture_t>ui_panda_box</texture_t>
+                        <texture_d>ui_panda_box</texture_d>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -176,7 +182,10 @@
                         <texture>ui_panda_box</texture>
                     </composer_send_bg>
                     <composer_send_btn x="662" y="2" width="36" height="30" can_focus="1" stretch="1">
-                        <texture>ui_panda_box</texture>
+                        <texture_e>ui_panda_box</texture_e>
+                        <texture_h>ui_panda_box</texture_h>
+                        <texture_t>ui_panda_box</texture_t>
+                        <texture_d>ui_panda_box</texture_d>
                         <text font="letterica18" align="c" vert_align="c" x="0" y="0">&gt;</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -212,7 +221,10 @@
                     <texture>ui_panda_box</texture>
                 </choice_chip_bg>
                 <choice_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
-                    <texture>ui_panda_box</texture>
+                    <texture_e>ui_panda_box</texture_e>
+                    <texture_h>ui_panda_box</texture_h>
+                    <texture_t>ui_panda_box</texture_t>
+                    <texture_d>ui_panda_box</texture_d>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>
@@ -221,7 +233,10 @@
                     </text_color>
                 </choice_chip_btn>
                 <block_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
-                    <texture>ui_panda_box</texture>
+                    <texture_e>ui_panda_box</texture_e>
+                    <texture_h>ui_panda_box</texture_h>
+                    <texture_t>ui_panda_box</texture_t>
+                    <texture_d>ui_panda_box</texture_d>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>
@@ -230,7 +245,10 @@
                     </text_color>
                 </block_chip_btn>
                 <ignore_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
-                    <texture>ui_panda_box</texture>
+                    <texture_e>ui_panda_box</texture_e>
+                    <texture_h>ui_panda_box</texture_h>
+                    <texture_t>ui_panda_box</texture_t>
+                    <texture_d>ui_panda_box</texture_d>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>
