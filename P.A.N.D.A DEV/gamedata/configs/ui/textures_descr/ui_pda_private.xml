@@ -33,4 +33,13 @@
 
     </file>
 
+    <!-- Conversation Presence Icons (40x40) -->
+    <file name="ui\ui_panda_on_icon">
+        <texture id="ui_panda_on_icon" x="0" y="0" width="40" height="40" />
+    </file>
+
+    <file name="ui\ui_panda_off_icon">
+        <texture id="ui_panda_off_icon" x="0" y="0" width="40" height="40" />
+    </file>
+
 </w>
