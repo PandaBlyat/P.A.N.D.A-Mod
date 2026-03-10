@@ -71,12 +71,12 @@
                 </image_container>
                 
                 <!-- Status indicator dot -->
-                <status_indicator x="30" y="95" width="20" height="20" stretch="1">
+                <status_indicator x="28" y="80" width="20" height="20" stretch="1">
                     <texture>ui_panda_off_icon</texture>
                 </status_indicator>
 
                 <!-- NPC Name -->
-                <chat_header_name x="75" y="8" width="400" height="25">
+                <chat_header_name x="77" y="8" width="400" height="25">
                     <text font="letterica25" r="255" g="200" b="50" a="255" align="l" vert_align="c"/>
                 </chat_header_name>
                 

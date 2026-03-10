@@ -124,13 +124,13 @@ local function estimate_chip_width(text, min_w, max_w, padding_x)
         local width = 0
         for i = 1, #line do
             local char = line:sub(i, i)
-            if char:match("%u") then width = width + 6.0
-            elseif char == "m" or char == "w" then width = width + 7.0
-            elseif char == "i" or char == "l" or char == "t" then width = width + 3.5
-            elseif char:match("%l") then width = width + 5.3
-            elseif char:match("%d") then width = width + 5.3
-            elseif char == " " then width = width + 3.0
-            else width = width + 5.0 end
+            if char:match("%u")                      then width = width + 5.2
+            elseif char == "m" or char == "w"        then width = width + 6.0
+            elseif char == "i" or char == "l" or char == "t" then width = width + 3.0
+            elseif char:match("%l")                  then width = width + 4.5
+            elseif char:match("%d")                  then width = width + 4.5
+            elseif char == " "                       then width = width + 2.8
+            else                                          width = width + 4.5 end
         end
         if width > widest then widest = width end
     end
@@ -912,6 +912,10 @@ function pda_private_tab:RefreshChoiceButtons()
 
     local should_show_choices = has_choices and has_mapped_buttons and self.choice_buttons_visible == true
 
+    -- Use the same wrap logic here as in OnSelectNPC to prevent text clipping
+    local max_chip_w = 400
+    local wrap_chars = math.floor((max_chip_w - 28) / 6.0)
+
     for i = 1, #self.choice_btns do
         local choice = self.choice_btns[i]
         if choice and choice.btn and choice.bg then
@@ -921,7 +925,7 @@ function pda_private_tab:RefreshChoiceButtons()
 
             local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
             if text_ctrl then
-                text_ctrl:SetText(wrap_plain_text(label, 54))
+                text_ctrl:SetText(wrap_plain_text(label, wrap_chars))
                 if text_ctrl.AdjustHeightToText then text_ctrl:AdjustHeightToText() end
             end
 
@@ -1273,33 +1277,31 @@ function pda_private_tab:OnSelectNPC()
         return "%c[255,150,150,150]Sent", GetARGB(255, 150, 150, 150)
     end
 
-	function estimate_bubble_width(text, min_w, max_w, padding_x)
+    function estimate_bubble_width(text, min_w, max_w, padding_x)
 		local raw_text = tostring(text or "")
 		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
 		local split_text = compact:gsub("\\n", "\n")
 		local widest_line = 0
-		for line in split_text:gmatch("[^\n]+") do
+		for line in (split_text .. "\n"):gmatch("(.-)\n") do
 			line = line:match("^%s*(.-)%s*$") or line
 			local width = 0
 			for i = 1, #line do
 				local char = line:sub(i, i)
-				if char:match("%u") then width = width + 8.0
-				elseif char == "m" or char == "w" then width = width + 8.5
-				elseif char == "i" or char == "l" or char == "t" then width = width + 4.5
-				elseif char:match("%l") then width = width + 6.5
-				elseif char:match("%d") then width = width + 6.5
-				elseif char == " " then width = width + 3.5
-				elseif char == "[" or char == "]" then width = width + 4.0
-				else width = width + 6.0 end
+				if char:match("%u")                      then width = width + 6.0
+				elseif char == "m" or char == "w"        then width = width + 6.5
+				elseif char == "i" or char == "l" or char == "t" then width = width + 3.0
+				elseif char:match("%l")                  then width = width + 4.8
+				elseif char:match("%d")                  then width = width + 4.8
+				elseif char == " "                       then width = width + 2.8
+				elseif char == "[" or char == "]"        then width = width + 3.5
+				else                                          width = width + 4.5 end
 			end
 			if width > widest_line then widest_line = width end
 		end
-		if widest_line == 0 then widest_line = tonumber(min_w) or 80 end
-		local local_pad = tonumber(padding_x) or 28
-		local local_min = tonumber(min_w) or 80
-		local local_max = tonumber(max_w) or 460
-		local estimated = local_pad + widest_line
-		return math.floor(math.max(local_min, math.min(local_max, estimated)))
+		if widest_line == 0 then widest_line = (tonumber(min_w) or 80) - (tonumber(padding_x) or 20) end
+		return math.floor(math.max(tonumber(min_w) or 80,
+								   math.min(tonumber(max_w) or 460,
+											widest_line + (tonumber(padding_x) or 20))))
 	end
 
     local row_idx = 0
@@ -1317,77 +1319,89 @@ function pda_private_tab:OnSelectNPC()
             local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
 
-			local body_text_for_width = tostring(entry.text or "")
-			if entry.is_typing then body_text_for_width = "Typing..." end
+            -- [PATCH] Fix Message Lane Width Overflow
+            local body_text_raw = entry.is_typing and "Typing..." or tostring(entry.text or "")
 			local header_sender = is_player_lane and "You" or tostring(entry.sender or "Unknown")
-			local width_probe_text = string.format("%s [%s]\\n%s", header_sender, tostring(relative_time or "Unknown"), body_text_for_width)
-			-- Narrower max widths produce compact WhatsApp-style bubbles.
-			-- Player bubbles are capped shorter so they fit comfortably on the right.
-			local lane_max_w = is_player_lane and 320 or 360
-			local bubble_w = estimate_bubble_width(width_probe_text, 180, lane_max_w, 34)
-			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
 
-            local display_text = ""
-            if is_player_lane then
-                local wrapped_body = wrap_plain_text(entry.text or "", wrap_chars)
-                display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    tostring(relative_time or "Unknown"), wrapped_body)
-            else
-                local npc_body = entry.text or ""
-                if entry.is_typing then
-                    local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
-                    local phase = math.floor((current_time / 350) % 4)
-                    npc_body = "Typing" .. string.rep(".", phase)
-                    self.typing_text_wnd = text_wnd
-                    self.typing_entry_data = { sender = entry.sender, timestamp = entry.timestamp }
-                end
-                local wrapped_body = wrap_plain_text(npc_body, wrap_chars)
-                display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), wrapped_body)
-            end
+			local lane_max_w   = is_player_lane and 310 or 350
+			-- Slightly tighter wrap so body lines stay shorter than the bubble cap
+			local wrap_chars   = math.max(20, math.floor((lane_max_w - 28) / 4.8))
+			local wrapped_body = wrap_plain_text(body_text_raw, wrap_chars)
 
-            text_wnd:SetText(display_text)
+			-- Probe body text ONLY for width – the header is short and handled by min_w
+			local bubble_w = estimate_bubble_width(
+				wrapped_body:gsub("\\n", "\n"),
+				is_player_lane and 150 or 160,   -- min_w: comfortably holds "You [Just now]"
+				lane_max_w,
+				28)
 
-            if is_player_lane then
-				local chat_panel_width = lane_root:GetWidth()
-				-- 48px keeps bubbles clear of the scrollbar (~16px) and pane edge
-				local right_padding = 48
-				local bubble_x = chat_panel_width - bubble_w - right_padding
-				bubble_x = math.max(8, bubble_x)
+			local display_text = ""
+			if is_player_lane then
+				display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
+					tostring(relative_time or "Unknown"), wrapped_body)
+			else
+				local npc_body = wrapped_body
+				if entry.is_typing then
+					local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
+					local phase = math.floor((current_time / 350) % 4)
+					npc_body = "Typing" .. string.rep(".", phase)
+					self.typing_text_wnd = text_wnd
+					self.typing_entry_data = { sender = entry.sender, timestamp = entry.timestamp }
+				end
+				display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
+					tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), npc_body)
+			end
+
+			text_wnd:SetText(display_text)
+
+			if is_player_lane then
+				local panel_w   = chat_panel_width  -- already declared above as composer_container width
+				local right_pad = 20                -- small right margin from panel edge
+				local bubble_x  = math.max(8, panel_w - bubble_w - right_pad)
 
 				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-				text_wnd:SetWndPos(vector2():set(bubble_x + 14, 6))
-				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndPos(vector2():set(bubble_x + 10, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(80, bubble_w - 20), text_wnd:GetHeight()))
 
+				-- Position status_wnd now so we can use bubble_x/bubble_w below
 				if status_wnd then
-					status_wnd:SetWndPos(vector2():set(bubble_x + 14, 28))
-					status_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), status_wnd:GetHeight()))
+					-- Will be resized/repositioned after AdjustHeightToText; store bubble geometry
+					status_wnd._bubble_x = bubble_x
+					status_wnd._bubble_w = bubble_w
 				end
 			else
+				lane_bg:SetWndPos(vector2():set(8, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndPos(vector2():set(20, 6))
+				text_wnd:SetWndSize(vector2():set(math.max(80, bubble_w - 28), text_wnd:GetHeight()))
 			end
-            text_wnd:AdjustHeightToText()
 
-            local text_h = text_wnd:GetHeight()
-            local status_h = 0
-            if status_wnd then
-                local status_text, status_color = get_delivery_indicator(entry)
-                apply_colored_text(status_wnd, status_text, status_color)
-                status_wnd:AdjustHeightToText()
-                status_h = status_wnd:GetHeight()
+			text_wnd:AdjustHeightToText()
+			local text_h  = text_wnd:GetHeight()
+			local status_h = 0
 
-                local status_x = status_wnd:GetWndPos().x
-                local status_y = text_wnd:GetWndPos().y + text_h + 2
-                status_wnd:SetWndPos(vector2():set(status_x, status_y))
-            end
+			if status_wnd then
+				local status_text, status_color = get_delivery_indicator(entry)
+				apply_colored_text(status_wnd, status_text, status_color)
+				status_wnd:AdjustHeightToText()
+				status_h = status_wnd:GetHeight() + 3
 
-            style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+				-- Small fixed-width window right-anchored inside the bubble
+				local bx = status_wnd._bubble_x or 8
+				local bw = status_wnd._bubble_w or bubble_w
+				local status_w = 72   -- enough for "Delivered"
+				local sx = bx + bw - status_w - 6    -- 6px from bubble right edge
+				local sy = text_wnd:GetWndPos().y + text_h + 3
+				status_wnd:SetWndSize(vector2():set(status_w, status_wnd:GetHeight()))
+				status_wnd:SetWndPos(vector2():set(sx, sy))
+			end
 
-            local lane_h = text_h + status_h + 16
-            lane_bg:SetWndSize(vector2():set(bubble_w, lane_h))
-            lane_root:SetWndSize(vector2():set(chat_panel_width, lane_h)) 
+			style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
+
+			local lane_h = text_h + status_h + 14
+			lane_bg:SetWndSize(vector2():set(bubble_w, lane_h))
+			lane_root:SetWndSize(vector2():set(chat_panel_width, lane_h))
 
             lane_root:SetAutoDelete(false)
             self.scrollbar:AddWindow(lane_root, false)
@@ -1398,55 +1412,60 @@ function pda_private_tab:OnSelectNPC()
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
-        local chip_h = 28
         local chip_gap = 6
-
-        local chip_w = 180
-        local usable_choices_pre = math.min(4, active_conv.num_choices)
-        for i = 1, usable_choices_pre do
-            local ch = active_conv.choices and active_conv.choices[i] or nil
-            if ch and ch.text then
-                local w = estimate_chip_width(ch.text, 180, 380, 28)
-                if w > chip_w then chip_w = w end
-            end
-        end
-
-        if self.choice_buttons_visible then
-            local spacer = CUIStatic()
-            spacer:SetAutoDelete(false)
-            spacer:SetWndSize(vector2():set(10, (active_conv.num_choices * (chip_h + chip_gap)) + 10))
-            self.scrollbar:AddWindow(spacer, false)
-            table.insert(self.scroll_dynamic_windows, spacer)
-        end
+        local max_chip_w = 400
+        local wrap_chars = math.floor((max_chip_w - 28) / 6.0)
 
         local usable_choices = math.min(4, active_conv.num_choices)
+        self:EnsureChoiceButtonPool(usable_choices, 28)
 
-        local composer_center_x = 350
-		local centered_x = math.floor(composer_center_x - chip_w / 2)
-		local min_x = 16
-		local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
-		local max_x = chat_panel_width - chip_w - 16
-		local shared_left_x = math.max(min_x, math.min(max_x, centered_x))
+        local current_y = composer_y - 10
+        local composer_center_x = 250
+        local min_x = 16
+        local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
 
-        self:EnsureChoiceButtonPool(usable_choices, chip_h)
-
-		for i = 1, usable_choices do
-			local ch = active_conv.choices[i]
+        -- [PATCH] Calculate dialogue choices independently & stack from Bottom to Top
+        for i = usable_choices, 1, -1 do
+            local ch = active_conv.choices[i]
             local choice = self.choice_btns[i]
+
             if choice and choice.bg and choice.btn then
                 choice.idx = i
                 choice.text = ch.text
 
+                -- Wrap text and estimate precise width specific to THIS button
+                local wrapped_text = wrap_plain_text(ch.text, wrap_chars)
+                local chip_w = estimate_chip_width(wrapped_text:gsub("\\n", "\n"), 80, max_chip_w, 28)
+
+                -- Calculate dynamic height based on text lines
+                local num_lines = 1
+                for _ in wrapped_text:gmatch("\\n") do num_lines = num_lines + 1 end
+                local chip_h = math.max(28, (num_lines * 16) + 12)
+
+                local max_x = chat_panel_width - chip_w - 16
+                local chip_x = math.max(min_x, math.min(max_x, math.floor(composer_center_x - chip_w / 2)))
+
+                current_y = current_y - chip_h
+                local chip_y = current_y
+
+                choice.bg:SetWndPos(vector2():set(chip_x, chip_y))
                 choice.bg:SetWndSize(vector2():set(chip_w, chip_h))
-				choice.btn:SetWndSize(vector2():set(chip_w, chip_h))
+                choice.btn:SetWndPos(vector2():set(chip_x, chip_y))
+                choice.btn:SetWndSize(vector2():set(chip_w, chip_h))
 
-				local row = usable_choices - i
-				local y = (composer_y - 10) - ((row + 1) * (chip_h + chip_gap))
-
-                choice.bg:SetWndPos(vector2():set(shared_left_x, y))
-				choice.btn:SetWndPos(vector2():set(shared_left_x, y))
+                current_y = current_y - chip_gap
             end
-		end
+        end
+
+        -- Calculate dynamic spacer height to ensure choices aren't blocked at the bottom of the scroll view
+        if self.choice_buttons_visible then
+            local total_choices_height = (composer_y - 10) - current_y
+            local spacer = CUIStatic()
+            spacer:SetAutoDelete(false)
+            spacer:SetWndSize(vector2():set(10, total_choices_height + 10))
+            self.scrollbar:AddWindow(spacer, false)
+            table.insert(self.scroll_dynamic_windows, spacer)
+        end
 
         self:RefreshChoiceButtons()
     else
