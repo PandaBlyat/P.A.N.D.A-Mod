@@ -171,10 +171,10 @@
                         </text_color>
                     </composer_quick_2_btn>
 
-                    <composer_input_shell x="70" y="4" width="100" height="26" stretch="1">
+                    <composer_input_shell x="70" y="4" width="586" height="26" stretch="1">
                         <texture r="20" g="22" b="25" a="230">ui_inGame2_hint_wnd_main_window</texture>
                     </composer_input_shell>
-                    <composer_input_field x="82" y="4" width="100" height="26">
+                    <composer_input_field x="82" y="4" width="566" height="26">
                         <text font="letterica16" r="120" g="132" b="145" a="255" align="l" vert_align="c">Choose a reply...</text>
                     </composer_input_field>
 
