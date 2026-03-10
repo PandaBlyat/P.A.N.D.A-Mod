@@ -220,6 +220,24 @@
                         <t r="50" g="140" b="255" a="255"/>
                     </text_color>
                 </choice_chip_btn>
+                <block_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture>ui\ui_null</texture>
+                    <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
+                    <text_color>
+                        <e r="225" g="232" b="238" a="255"/>
+                        <h r="255" g="255" b="255" a="255"/>
+                        <t r="255" g="255" b="255" a="255"/>
+                    </text_color>
+                </block_chip_btn>
+                <ignore_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture>ui\ui_null</texture>
+                    <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
+                    <text_color>
+                        <e r="225" g="232" b="238" a="255"/>
+                        <h r="255" g="255" b="255" a="255"/>
+                        <t r="255" g="255" b="255" a="255"/>
+                    </text_color>
+                </ignore_chip_btn>
             </description>
         </info>
     </private_pda>

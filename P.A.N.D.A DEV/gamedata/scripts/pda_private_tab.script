@@ -99,7 +99,17 @@ local function estimate_chip_width(text, min_w, max_w, padding_x)
 
     local widest = 0
     for line in (clean .. "\n"):gmatch("(.-)\n") do
-        local width = math.floor((#line * 6.2) + 0.5)
+        local width = 0
+        for i = 1, #line do
+            local char = line:sub(i, i)
+            if char:match("%u") then width = width + 8.0
+            elseif char == "m" or char == "w" then width = width + 8.5
+            elseif char == "i" or char == "l" or char == "t" then width = width + 4.5
+            elseif char:match("%l") then width = width + 6.5
+            elseif char:match("%d") then width = width + 6.5
+            elseif char == " " then width = width + 3.5
+            else width = width + 6.0 end
+        end
         if width > widest then widest = width end
     end
 
@@ -501,7 +511,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_block_bg:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_bg:SetWndSize(vector2():set(block_w, 26))
 
-    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
     if self.quick_btn_block_contact.SetTextureColor then self.quick_btn_block_contact:SetTextureColor(GetARGB(0, 0, 0, 0)) end
@@ -515,7 +525,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_unblock_bg:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_unblock_bg:SetWndSize(vector2():set(unblock_w, 26))
 
-    self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
     self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_unblock_contact:SetWndSize(vector2():set(unblock_w, 26))
     if self.quick_btn_unblock_contact.SetTextureColor then self.quick_btn_unblock_contact:SetTextureColor(GetARGB(0, 0, 0, 0)) end
@@ -529,7 +539,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_ignore_bg:SetWndPos(vector2():set(16, menu_y + 30))
     self.quick_btn_ignore_bg:SetWndSize(vector2():set(ignore_w, 26))
 
-    self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+    self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:ignore_chip_btn", self.desc_box)
     self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
     self.quick_btn_ignore_conv:SetWndSize(vector2():set(ignore_w, 26))
     if self.quick_btn_ignore_conv.SetTextureColor then self.quick_btn_ignore_conv:SetTextureColor(GetARGB(0, 0, 0, 0)) end
@@ -1026,18 +1036,21 @@ function pda_private_tab:OnSelectNPC()
 			local width = 0
 			for i = 1, #line do
 				local char = line:sub(i, i)
-				if char:match("%u") then width = width + 3.5
-				elseif char:match("%l") then width = width + 2.5
-				elseif char:match("%d") then width = width + 2.5
-				elseif char == " " then width = width + 1.0
-				else width = width + 2.0 end
+				if char:match("%u") then width = width + 8.0
+				elseif char == "m" or char == "w" then width = width + 8.5
+				elseif char == "i" or char == "l" or char == "t" then width = width + 4.5
+				elseif char:match("%l") then width = width + 6.5
+				elseif char:match("%d") then width = width + 6.5
+				elseif char == " " then width = width + 3.5
+				elseif char == "[" or char == "]" then width = width + 4.0
+				else width = width + 6.0 end
 			end
 			if width > max_w then max_w = width end
 		end
-		if max_w == 0 then max_w = 150 end
+		if max_w == 0 then max_w = 80 end
 		local padding_x = 28
 		local estimated = padding_x + max_w
-		return math.floor(math.max(150, math.min(395, estimated)))
+		return math.floor(math.max(80, math.min(460, estimated)))
 	end
 
     local row_idx = 0
@@ -1074,8 +1087,8 @@ function pda_private_tab:OnSelectNPC()
             local bubble_w = estimate_bubble_width(display_text)
 
             if is_player_lane then
-				local chat_panel_width = 675
-				local right_padding = 150
+				local chat_panel_width = 695
+				local right_padding = 25
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
