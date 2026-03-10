@@ -73,6 +73,14 @@ local function apply_button_quad_style(btn)
     end
 end
 
+local function apply_button_hitbox_style(btn)
+    if not btn then return end
+
+    if btn.SetTextureColor then
+        btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+end
+
 local function is_button_hovered(btn)
     if not btn then
         return false
@@ -846,7 +854,7 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
         if bg.SetTextureColor then bg:SetTextureColor(GetARGB(220, 60, 65, 70)) end
-        apply_button_quad_style(btn)
+        apply_button_hitbox_style(btn)
         bg:Show(false)
         btn:Show(false)
 
@@ -1226,7 +1234,7 @@ function pda_private_tab:OnSelectNPC()
         return "%c[255,150,150,150]Sent", GetARGB(255, 150, 150, 150)
     end
 
-	function estimate_bubble_width(text)
+	function estimate_bubble_width(text, min_w, max_w, padding_x)
 		local raw_text = tostring(text or "")
 		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
 		local split_text = compact:gsub("\\n", "\n")
@@ -1247,10 +1255,12 @@ function pda_private_tab:OnSelectNPC()
 			end
 			if width > max_w then max_w = width end
 		end
-		if max_w == 0 then max_w = 80 end
-		local padding_x = 28
-		local estimated = padding_x + max_w
-		return math.floor(math.max(80, math.min(460, estimated)))
+		if max_w == 0 then max_w = tonumber(min_w) or 80 end
+		local local_pad = tonumber(padding_x) or 28
+		local local_min = tonumber(min_w) or 80
+		local local_max = tonumber(max_w) or 460
+		local estimated = local_pad + max_w
+		return math.floor(math.max(local_min, math.min(local_max, estimated)))
 	end
 
     local row_idx = 0
@@ -1285,26 +1295,28 @@ function pda_private_tab:OnSelectNPC()
             end
             
             text_wnd:SetText(display_text)
-            local bubble_w = estimate_bubble_width(display_text)
+			local body_text_for_width = tostring(entry.text or "")
+			if entry.is_typing then body_text_for_width = "Typing..." end
+			local bubble_w = estimate_bubble_width(body_text_for_width, 130, 460, 30)
 
             if is_player_lane then
 				local chat_panel_width = 695
-				local right_padding = 180
+				local right_padding = 10
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
 				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
 				text_wnd:SetWndPos(vector2():set(bubble_x + 14, 6))
-				text_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
 
 				if status_wnd then
 					status_wnd:SetWndPos(vector2():set(bubble_x + 14, 28))
-					status_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), status_wnd:GetHeight()))
+					status_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), status_wnd:GetHeight()))
 				end
 			else
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
-				text_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), text_wnd:GetHeight()))
+				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
 			end
             text_wnd:AdjustHeightToText()
 
