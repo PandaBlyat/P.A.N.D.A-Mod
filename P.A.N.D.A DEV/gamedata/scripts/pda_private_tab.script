@@ -689,22 +689,54 @@ function pda_private_tab:OnReplyTriggerClicked()
     self:UpdateReplyTriggerVisual()
 end
 
+
+function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
+    local count = math.min(4, math.max(0, tonumber(required_count) or 0))
+    local button_h = chip_h or 28
+
+    for i = #self.choice_btns + 1, count do
+        local bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+        local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
+        local btn_name = "choice_btn_" .. i
+
+        self:Register(btn, btn_name)
+        bg:SetWndSize(vector2():set(120, button_h))
+        btn:SetWndSize(vector2():set(120, button_h))
+        if btn.SetTextureColor then btn:SetTextureColor(GetARGB(0, 0, 0, 0)) end
+        bg:Show(false)
+        btn:Show(false)
+
+        table.insert(self.choice_btns, { bg = bg, btn = btn, idx = nil, text = "" })
+    end
+end
+
 function pda_private_tab:RefreshChoiceButtons()
-    local has_choices = self:HasDialogueChoices() and #self.choice_btns > 0
-    local should_show_choices = has_choices and self.choice_buttons_visible == true
+    local has_choices = self:HasDialogueChoices()
+    local has_mapped_buttons = false
 
     for i = 1, #self.choice_btns do
         local choice = self.choice_btns[i]
-        if choice and choice.btn then
+        if choice and choice.idx then
+            has_mapped_buttons = true
+            break
+        end
+    end
+
+    local should_show_choices = has_choices and has_mapped_buttons and self.choice_buttons_visible == true
+
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn and choice.bg then
+            local is_active = choice.idx ~= nil
             local label = choice.text or ""
-            if choice.idx == self.selected_choice_idx then label = "[Selected] " .. label end
+            if is_active and choice.idx == self.selected_choice_idx then label = "[Selected] " .. label end
 
             local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
             if text_ctrl then text_ctrl:SetText(label) end
 
-            choice.btn:Enable(true)
-            choice.btn:Show(should_show_choices)
-            if choice.bg then choice.bg:Show(should_show_choices) end
+            choice.btn:Enable(is_active)
+            choice.btn:Show(should_show_choices and is_active)
+            choice.bg:Show(should_show_choices and is_active)
         end
     end
 end
@@ -875,15 +907,17 @@ function pda_private_tab:ClearChoiceButtons()
         local choice = self.choice_btns[i]
         if choice and choice.btn then
             choice.btn:Show(false)
-            choice.btn:SetAutoDelete(true)
+            choice.btn:Enable(false)
         end
         if choice and choice.bg then
             choice.bg:Show(false)
-            choice.bg:SetAutoDelete(true)
+        end
+        if choice then
+            choice.idx = nil
+            choice.text = ""
         end
     end
 
-    self.choice_btns = {}
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
 end
@@ -1168,7 +1202,8 @@ function pda_private_tab:OnSelectNPC()
         -- Pre-calculate widths and find the widest chip so all buttons share the same left_x
         local chip_widths = {}
         local max_chip_w = chip_min_w
-        for i = 1, active_conv.num_choices do
+        local usable_choices = math.min(4, active_conv.num_choices)
+        for i = 1, usable_choices do
             local w = estimate_chip_width(active_conv.choices[i].text, chip_min_w, chip_max_w, chip_pad)
             chip_widths[i] = w
             if w > max_chip_w then max_chip_w = w end
@@ -1176,27 +1211,26 @@ function pda_private_tab:OnSelectNPC()
         local composer_center_x = 360  -- desc_box is 720px wide
         local shared_left_x = math.max(8, math.min(720 - max_chip_w - 8, math.floor(composer_center_x - max_chip_w / 2)))
 
-		for i = 1, active_conv.num_choices do
+        self:EnsureChoiceButtonPool(usable_choices, chip_h)
+
+		for i = 1, usable_choices do
 			local ch = active_conv.choices[i]
-
-            local bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
-			local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
-			local btn_name = "choice_btn_" .. i
-			self:Register(btn, btn_name)
-
+            local choice = self.choice_btns[i]
             local chip_w = chip_widths[i]
 
-            bg:SetWndSize(vector2():set(chip_w, chip_h))
-			btn:SetWndSize(vector2():set(chip_w, chip_h))
-            if btn.SetTextureColor then btn:SetTextureColor(GetARGB(0, 0, 0, 0)) end
+            if choice and choice.bg and choice.btn then
+                choice.idx = i
+                choice.text = ch.text
 
-			local row = active_conv.num_choices - i
-			local y = (composer_y - 10) - ((row + 1) * (chip_h + chip_gap))
+                choice.bg:SetWndSize(vector2():set(chip_w, chip_h))
+				choice.btn:SetWndSize(vector2():set(chip_w, chip_h))
 
-            bg:SetWndPos(vector2():set(shared_left_x, y))
-			btn:SetWndPos(vector2():set(shared_left_x, y))
+				local row = usable_choices - i
+				local y = (composer_y - 10) - ((row + 1) * (chip_h + chip_gap))
 
-			table.insert(self.choice_btns, { bg = bg, btn = btn, idx = i, text = ch.text })
+                choice.bg:SetWndPos(vector2():set(shared_left_x, y))
+				choice.btn:SetWndPos(vector2():set(shared_left_x, y))
+            end
 		end
 
         self:RefreshChoiceButtons()
