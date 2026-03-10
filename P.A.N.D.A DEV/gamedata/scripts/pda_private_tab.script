@@ -284,6 +284,18 @@ function pda_private_tab:UpdateHoverButtonTints()
 end
 
 function pda_private_tab:Update()
+    if not self:IsShown() then
+        self.typing_text_wnd = nil
+        self.typing_entry_data = nil
+        self.choice_typewriter = nil
+
+        if set_pda_private_tab_open then
+            set_pda_private_tab_open(false)
+        end
+
+        return
+    end
+
     CUIScriptWnd.Update(self)
     self:UpdateHoverButtonTints()
 
@@ -799,6 +811,7 @@ function pda_private_tab:Reset(target_contact_id)
     self.typing_text_wnd = nil
     self.typing_entry_data = nil
     self.choice_typewriter = nil
+    self:ClearChoiceButtons()
     self:UpdateReplyTriggerVisual()
     self:HideStats()
     
@@ -855,6 +868,24 @@ function pda_private_tab:Reset(target_contact_id)
         self.empty_state:SetText("SELECT A CONTACT")
         self.empty_state:Show(true)
     end
+end
+
+function pda_private_tab:ClearChoiceButtons()
+    for i = 1, #self.choice_btns do
+        local choice = self.choice_btns[i]
+        if choice and choice.btn then
+            choice.btn:Show(false)
+            choice.btn:SetAutoDelete(true)
+        end
+        if choice and choice.bg then
+            choice.bg:Show(false)
+            choice.bg:SetAutoDelete(true)
+        end
+    end
+
+    self.choice_btns = {}
+    self.selected_choice_idx = nil
+    self.pending_choice_idx = nil
 end
 
 function pda_private_tab:HideStats()
@@ -948,21 +979,7 @@ function pda_private_tab:OnSelectNPC()
     self.choice_typewriter = nil
     self:HideQuickMenuButtons()
 
-    for i = 1, #self.choice_btns do
-        local choice = self.choice_btns[i]
-        if choice and choice.btn then
-            choice.btn:Show(false)
-            choice.btn:SetAutoDelete(true)
-        end
-        if choice and choice.bg then
-            choice.bg:Show(false)
-            choice.bg:SetAutoDelete(true)
-        end
-    end
-
-    self.choice_btns = {}
-    self.selected_choice_idx = nil
-    self.pending_choice_idx = nil
+    self:ClearChoiceButtons()
 
     if not self:HasDialogueChoices() then self.choice_buttons_visible = false end
     
