@@ -1312,11 +1312,7 @@ function pda_private_tab:OnSelectNPC()
             local is_player_lane = is_player_sender(entry)
             local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
             local lane_root = CUIStatic()
-            -- Prefer the actual scroll view width, otherwise fall back to composer width.
-            -- This keeps right-aligned bubbles inside the visible chat viewport.
-            local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth())
-                or (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth())
-                or 700
+            local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
             lane_root:SetWndSize(vector2():set(chat_panel_width, 50))
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
@@ -1329,13 +1325,10 @@ function pda_private_tab:OnSelectNPC()
 <<<<<<< HEAD
 =======
 			local width_probe_text = string.format("%s [%s]\\n%s", header_sender, tostring(relative_time or "Unknown"), body_text_for_width)
-			-- Keep bubbles compact and always within the visible lane.
-			local lane_inner_padding = 8
-			local right_scrollbar_gutter = 20
-			local usable_lane_w = math.max(220, chat_panel_width - (lane_inner_padding * 2) - right_scrollbar_gutter)
-			local lane_max_w = math.min(is_player_lane and 320 or 360, usable_lane_w)
-			local lane_min_w = math.min(180, lane_max_w)
-			local bubble_w = estimate_bubble_width(width_probe_text, lane_min_w, lane_max_w, 34)
+			-- Narrower max widths produce compact WhatsApp-style bubbles.
+			-- Player bubbles are capped shorter so they fit comfortably on the right.
+			local lane_max_w = is_player_lane and 320 or 360
+			local bubble_w = estimate_bubble_width(width_probe_text, 180, lane_max_w, 34)
 			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
 >>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
 
@@ -1377,6 +1370,7 @@ function pda_private_tab:OnSelectNPC()
 				local bubble_x  = math.max(8, panel_w - bubble_w - right_pad)
 =======
             if is_player_lane then
+<<<<<<< HEAD
 				local panel_w = lane_root:GetWidth()
 				local left_padding = 8
 				local right_padding = 20
@@ -1385,6 +1379,13 @@ function pda_private_tab:OnSelectNPC()
 				local bubble_x = panel_w - bubble_w - right_padding
 				bubble_x = math.max(left_padding, bubble_x)
 >>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
+=======
+				local chat_panel_width = lane_root:GetWidth()
+				-- 48px keeps bubbles clear of the scrollbar (~16px) and pane edge
+				local right_padding = 48
+				local bubble_x = chat_panel_width - bubble_w - right_padding
+				bubble_x = math.max(8, bubble_x)
+>>>>>>> parent of c3163ac (Fix private chat bubble alignment and right-edge clamping)
 
 				lane_bg:SetWndPos(vector2():set(bubble_x, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
@@ -1398,13 +1399,15 @@ function pda_private_tab:OnSelectNPC()
 					status_wnd._bubble_w = bubble_w
 				end
 			else
-				lane_bg:SetWndPos(vector2():set(8, 0))
 				lane_bg:SetWndSize(vector2():set(bubble_w, lane_bg:GetHeight()))
+<<<<<<< HEAD
 <<<<<<< HEAD
 				text_wnd:SetWndPos(vector2():set(20, 6))
 				text_wnd:SetWndSize(vector2():set(math.max(80, bubble_w - 28), text_wnd:GetHeight()))
 =======
 				text_wnd:SetWndPos(vector2():set(22, 6))
+=======
+>>>>>>> parent of c3163ac (Fix private chat bubble alignment and right-edge clamping)
 				text_wnd:SetWndSize(vector2():set(math.max(100, bubble_w - 28), text_wnd:GetHeight()))
 >>>>>>> a80bb3e0427fa0596120315388b3ac73997de1a8
 			end
