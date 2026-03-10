@@ -142,8 +142,8 @@
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
-                            <h r="255" g="255" b="255" a="255"/>
-                            <t r="255" g="255" b="255" a="255"/>
+                            <h r="255" g="50" b="50" a="255"/>
+                            <t r="255" g="50" b="50" a="255"/>
                         </text_color>
                     </composer_quick_1_btn>
 
@@ -155,8 +155,8 @@
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
-                            <h r="255" g="255" b="255" a="255"/>
-                            <t r="255" g="255" b="255" a="255"/>
+                            <h r="50" g="140" b="255" a="255"/>
+                            <t r="50" g="140" b="255" a="255"/>
                         </text_color>
                     </composer_quick_2_btn>
 
@@ -175,8 +175,8 @@
                         <text font="letterica18" align="c" vert_align="c" x="0" y="0">&gt;</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
-                            <h r="255" g="255" b="255" a="255"/>
-                            <t r="255" g="255" b="255" a="255"/>
+                            <h r="50" g="140" b="255" a="255"/>
+                            <t r="50" g="140" b="255" a="255"/>
                         </text_color>
                     </composer_send_btn>
                 </composer_container>
@@ -211,8 +211,8 @@
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>
-                        <h r="255" g="255" b="255" a="255"/>
-                        <t r="255" g="255" b="255" a="255"/>
+                        <h r="50" g="140" b="255" a="255"/>
+                        <t r="50" g="140" b="255" a="255"/>
                     </text_color>
                 </choice_chip_btn>
             </description>

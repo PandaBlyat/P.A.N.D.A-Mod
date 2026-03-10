@@ -201,11 +201,11 @@ end
 
 function pda_private_tab:UpdateHoverButtonTints()
     local neutral_small = GetARGB(255, 180, 180, 180)
-    local hover_red_small = GetARGB(255, 200, 60, 60)
-    local hover_blue_small = GetARGB(255, 70, 130, 180)
+    local hover_red_small = GetARGB(255, 255, 40, 40)
+    local hover_blue_small = GetARGB(255, 30, 120, 255)
 
     local neutral_chip = GetARGB(220, 60, 65, 70)
-    local hover_blue_chip = GetARGB(220, 70, 130, 180)
+    local hover_blue_chip = GetARGB(255, 20, 90, 220)
 
     if self.composer_quick_1_btn and self.composer_quick_1_bg then
         self.composer_quick_1_bg:SetTextureColor(is_button_hovered(self.composer_quick_1_btn) and hover_red_small or neutral_small)
