@@ -140,6 +140,38 @@ local function estimate_chip_width(text, min_w, max_w, padding_x)
     return math.max(min_w, math.min(max_w, desired))
 end
 
+local function wrap_plain_text(text, max_chars)
+    local source = tostring(text or "")
+    local line_limit = math.max(16, tonumber(max_chars) or 48)
+    local wrapped_lines = {}
+
+    for raw_line in (source:gsub("\\n", "\n") .. "\n"):gmatch("(.-)\n") do
+        if raw_line == "" then
+            table.insert(wrapped_lines, "")
+        else
+            local current_line = ""
+            for word in raw_line:gmatch("%S+") do
+                local candidate = (current_line == "") and word or (current_line .. " " .. word)
+                if #candidate > line_limit and current_line ~= "" then
+                    table.insert(wrapped_lines, current_line)
+                    current_line = word
+                else
+                    current_line = candidate
+                end
+            end
+            if current_line ~= "" then
+                table.insert(wrapped_lines, current_line)
+            end
+        end
+    end
+
+    if #wrapped_lines == 0 then
+        return ""
+    end
+
+    return table.concat(wrapped_lines, "\n")
+end
+
 function get_ui()
     SINGLETON = SINGLETON or pda_private_tab()
     SINGLETON:Reset()
@@ -279,7 +311,7 @@ function pda_private_tab:UpdateHoverButtonTints()
     local hover_blue_small = GetARGB(255, 30, 120, 255)
     local flash_small = GetARGB(255, 255, 255, 255)
 
-    local neutral_chip = GetARGB(220, 60, 65, 70)
+    local neutral_chip = GetARGB(235, 18, 42, 95)
     local hover_blue_chip = GetARGB(255, 20, 90, 220)
     local flash_blue_chip = GetARGB(255, 85, 165, 255)
 
@@ -853,8 +885,8 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         self:Register(btn, btn_name)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
-        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(220, 60, 65, 70)) end
-        apply_button_hitbox_style(btn)
+        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(235, 18, 42, 95)) end
+        apply_button_quad_style(btn)
         bg:Show(false)
         btn:Show(false)
 
@@ -1238,7 +1270,7 @@ function pda_private_tab:OnSelectNPC()
 		local raw_text = tostring(text or "")
 		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
 		local split_text = compact:gsub("\\n", "\n")
-		local max_w = 0
+		local widest_line = 0
 		for line in split_text:gmatch("[^\n]+") do
 			line = line:match("^%s*(.-)%s*$") or line
 			local width = 0
@@ -1253,13 +1285,13 @@ function pda_private_tab:OnSelectNPC()
 				elseif char == "[" or char == "]" then width = width + 4.0
 				else width = width + 6.0 end
 			end
-			if width > max_w then max_w = width end
+			if width > widest_line then widest_line = width end
 		end
-		if max_w == 0 then max_w = tonumber(min_w) or 80 end
+		if widest_line == 0 then widest_line = tonumber(min_w) or 80 end
 		local local_pad = tonumber(padding_x) or 28
 		local local_min = tonumber(min_w) or 80
 		local local_max = tonumber(max_w) or 460
-		local estimated = local_pad + max_w
+		local estimated = local_pad + widest_line
 		return math.floor(math.max(local_min, math.min(local_max, estimated)))
 	end
 
@@ -1277,10 +1309,16 @@ function pda_private_tab:OnSelectNPC()
             local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
 
+			local body_text_for_width = tostring(entry.text or "")
+			if entry.is_typing then body_text_for_width = "Typing..." end
+			local bubble_w = estimate_bubble_width(body_text_for_width, 130, 460, 30)
+			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 6))
+
             local display_text = ""
             if is_player_lane then
+                local wrapped_body = wrap_plain_text(entry.text or "", wrap_chars)
                 display_text = string.format("%%c[255,150,255,150]You %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    tostring(relative_time or "Unknown"), tostring(entry.text or ""))
+                    tostring(relative_time or "Unknown"), wrapped_body)
             else
                 local npc_body = entry.text or ""
                 if entry.is_typing then
@@ -1290,17 +1328,15 @@ function pda_private_tab:OnSelectNPC()
                     self.typing_text_wnd = text_wnd
                     self.typing_entry_data = { sender = entry.sender, timestamp = entry.timestamp }
                 end
+                local wrapped_body = wrap_plain_text(npc_body, wrap_chars)
                 display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
-                    tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), tostring(npc_body or ""))
+                    tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), wrapped_body)
             end
-            
+
             text_wnd:SetText(display_text)
-			local body_text_for_width = tostring(entry.text or "")
-			if entry.is_typing then body_text_for_width = "Typing..." end
-			local bubble_w = estimate_bubble_width(body_text_for_width, 130, 460, 30)
 
             if is_player_lane then
-				local chat_panel_width = 695
+				local chat_panel_width = lane_root:GetWidth()
 				local right_padding = 10
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
@@ -1351,7 +1387,7 @@ function pda_private_tab:OnSelectNPC()
         local chip_h = 28
         local chip_gap = 4
         local chip_min_w = 64
-        local chip_max_w = 520
+        local chip_max_w = 420
         local chip_pad = 16
 
         if self.choice_buttons_visible then
