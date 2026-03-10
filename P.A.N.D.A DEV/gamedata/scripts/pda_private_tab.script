@@ -153,6 +153,10 @@ function pda_private_tab:__init()
 	self.typing_text_wnd = nil
     self.typing_entry_data = nil
     self.choice_typewriter = nil
+    self.contact_presence_until = {}
+    self.current_presence_contact = nil
+    self.presence_offline_delay_min_ms = 2500
+    self.presence_offline_delay_max_ms = 6500
 end
 
 function pda_private_tab:InitControls()
@@ -265,8 +269,8 @@ function pda_private_tab:UpdateHoverButtonTints()
     local block_hovered = self.quick_btn_block_contact and is_button_hovered(self.quick_btn_block_contact)
     if self.quick_btn_block_contact and self.quick_btn_block_bg then
         local block_color = block_hovered and hover_red_chip or neutral_chip
-        self.quick_btn_block_contact:SetTextureColor(block_color)
-        self.quick_btn_block_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_block_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_block_bg:SetTextureColor(block_color)
         local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
         if block_text and block_text.SetTextColor then
             block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
@@ -276,20 +280,52 @@ function pda_private_tab:UpdateHoverButtonTints()
     local unblock_hovered = self.quick_btn_unblock_contact and is_button_hovered(self.quick_btn_unblock_contact)
     if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
         local unblock_color = unblock_hovered and hover_blue_chip or neutral_chip
-        self.quick_btn_unblock_contact:SetTextureColor(unblock_color)
-        self.quick_btn_unblock_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_unblock_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_unblock_bg:SetTextureColor(unblock_color)
     end
 
     local ignore_hovered = self.quick_btn_ignore_conv and is_button_hovered(self.quick_btn_ignore_conv)
     if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
         local ignore_color = ignore_hovered and hover_orange_chip or neutral_chip
-        self.quick_btn_ignore_conv:SetTextureColor(ignore_color)
-        self.quick_btn_ignore_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_ignore_conv:SetTextureColor(GetARGB(0, 0, 0, 0))
+        self.quick_btn_ignore_bg:SetTextureColor(ignore_color)
         local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
         if ignore_text and ignore_text.SetTextColor then
             ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
         end
     end
+end
+
+function pda_private_tab:UpdateConversationPresenceState()
+    local now_ms = time_global() or 0
+    local active_contact = nil
+    if pda_interactive_conv and pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name then
+        active_contact = pda_interactive_conv.CONV.npc_name
+    end
+
+    local previous_contact = self.current_presence_contact
+    if active_contact then
+        self.contact_presence_until[active_contact] = now_ms
+    elseif previous_contact and previous_contact ~= active_contact then
+        local min_delay = self.presence_offline_delay_min_ms or 2500
+        local max_delay = self.presence_offline_delay_max_ms or 6500
+        local delay_ms = math.random(min_delay, max_delay)
+        self.contact_presence_until[previous_contact] = now_ms + delay_ms
+    end
+
+    self.current_presence_contact = active_contact
+end
+
+function pda_private_tab:IsContactConversationOnline(contact_name)
+    if not contact_name or contact_name == "" then return false end
+
+    if pda_interactive_conv and pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name == contact_name then
+        return true
+    end
+
+    local now_ms = time_global() or 0
+    local until_ms = self.contact_presence_until and self.contact_presence_until[contact_name] or nil
+    return until_ms ~= nil and now_ms <= until_ms
 end
 
 function pda_private_tab:Update()
@@ -306,6 +342,7 @@ function pda_private_tab:Update()
     end
 
     CUIScriptWnd.Update(self)
+    self:UpdateConversationPresenceState()
     self:UpdateHoverButtonTints()
 
     if self.choice_typewriter then
@@ -939,8 +976,8 @@ function pda_private_tab:HideStats()
     apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
     if self.faction_patch_icon then self.faction_patch_icon:Show(false) end
     self.last_seen:SetText("")
-    self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
-    self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
+    self.status_indicator:InitTexture("ui_panda_off_icon")
+    self.status_indicator:SetTextureColor(GetARGB(180, 255, 255, 255))
 end
 
 function pda_private_tab:ShowStats(contact_name)
@@ -952,13 +989,9 @@ function pda_private_tab:ShowStats(contact_name)
     
     if not npc_data then self:HideStats(); return end
     
-    if npc_data.is_alive then
-        self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
-        self.status_indicator:SetTextureColor(GetARGB(255, 100, 200, 100))
-    else
-        self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
-        self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
-    end
+    local is_online = npc_data.is_alive and self:IsContactConversationOnline(contact_name)
+    self.status_indicator:InitTexture(is_online and "ui_panda_on_icon" or "ui_panda_off_icon")
+    self.status_indicator:SetTextureColor(GetARGB(255, 255, 255, 255))
     
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
