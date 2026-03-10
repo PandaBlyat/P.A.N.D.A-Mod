@@ -169,7 +169,9 @@ local function wrap_plain_text(text, max_chars)
         return ""
     end
 
-    return table.concat(wrapped_lines, "\n")
+    -- Anomaly's SetText treats the two-character sequence \n (backslash + n)
+    -- as a line break, NOT the actual newline/LF character.
+    return table.concat(wrapped_lines, "\\n")
 end
 
 function get_ui()
@@ -311,9 +313,9 @@ function pda_private_tab:UpdateHoverButtonTints()
     local hover_blue_small = GetARGB(255, 30, 120, 255)
     local flash_small = GetARGB(255, 255, 255, 255)
 
-    local neutral_chip = GetARGB(220, 36, 42, 50)
-    local hover_blue_chip = GetARGB(245, 42, 110, 235)
-    local flash_blue_chip = GetARGB(255, 85, 165, 255)
+    local neutral_chip = GetARGB(235, 18, 30, 85)      -- dark blue
+    local hover_blue_chip = GetARGB(255, 40, 110, 255)  -- bright blue
+    local flash_blue_chip = GetARGB(255, 90, 170, 255)  -- flash bright blue
 
     -- Composer quick buttons (keep existing logic)
     if self.composer_quick_1_btn and self.composer_quick_1_bg then
@@ -885,11 +887,10 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         self:Register(btn, btn_name)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
-        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(235, 18, 42, 95)) end
-        -- Keep choice buttons as interaction hitboxes only.
-        -- The visible frame/tint is rendered by the paired bg static so
-        -- hover/pressed states don't draw an extra stretched texture layer.
-        apply_button_hitbox_style(btn)
+        if bg.SetTextureColor then bg:SetTextureColor(GetARGB(235, 18, 30, 85)) end
+        -- Override the 3t-button's texture with our custom atlas at alpha=0 so
+        -- the vanilla button frame art is never drawn over our bg static.
+        apply_button_quad_style(btn)
         bg:Show(false)
         btn:Show(false)
 
@@ -1320,8 +1321,10 @@ function pda_private_tab:OnSelectNPC()
 			if entry.is_typing then body_text_for_width = "Typing..." end
 			local header_sender = is_player_lane and "You" or tostring(entry.sender or "Unknown")
 			local width_probe_text = string.format("%s [%s]\\n%s", header_sender, tostring(relative_time or "Unknown"), body_text_for_width)
-			local lane_max_w = is_player_lane and 430 or 470
-			local bubble_w = estimate_bubble_width(width_probe_text, 220, lane_max_w, 34)
+			-- Narrower max widths produce compact WhatsApp-style bubbles.
+			-- Player bubbles are capped shorter so they fit comfortably on the right.
+			local lane_max_w = is_player_lane and 320 or 360
+			local bubble_w = estimate_bubble_width(width_probe_text, 180, lane_max_w, 34)
 			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
 
             local display_text = ""
@@ -1347,7 +1350,8 @@ function pda_private_tab:OnSelectNPC()
 
             if is_player_lane then
 				local chat_panel_width = lane_root:GetWidth()
-				local right_padding = 32
+				-- 48px keeps bubbles clear of the scrollbar (~16px) and pane edge
+				local right_padding = 48
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
