@@ -1386,7 +1386,7 @@ function pda_private_tab:OnSelectNPC()
             style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
 
             local lane_h = text_h + status_h + 16
-            lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
+            lane_bg:SetWndSize(vector2():set(bubble_w, lane_h))
             lane_root:SetWndSize(vector2():set(chat_panel_width, lane_h)) 
 
             lane_root:SetAutoDelete(false)
@@ -1400,7 +1400,16 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 6
-        local chip_w = 420
+
+        local chip_w = 180
+        local usable_choices_pre = math.min(4, active_conv.num_choices)
+        for i = 1, usable_choices_pre do
+            local ch = active_conv.choices and active_conv.choices[i] or nil
+            if ch and ch.text then
+                local w = estimate_chip_width(ch.text, 180, 380, 28)
+                if w > chip_w then chip_w = w end
+            end
+        end
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
