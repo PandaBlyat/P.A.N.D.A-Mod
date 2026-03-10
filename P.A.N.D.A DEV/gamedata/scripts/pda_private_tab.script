@@ -59,6 +59,20 @@ local function apply_colored_text(text_wnd, raw_text, fallback_color)
     end
 end
 
+local function apply_button_quad_style(btn)
+    if not btn then return end
+
+    if btn.InitTexture then
+        btn:InitTexture("ui_panda_box")
+    end
+    if btn.SetStretchTexture then
+        btn:SetStretchTexture(true)
+    end
+    if btn.SetTextureColor then
+        btn:SetTextureColor(GetARGB(0, 0, 0, 0))
+    end
+end
+
 local function is_button_hovered(btn)
     if not btn then
         return false
@@ -641,7 +655,6 @@ function pda_private_tab:EnsureQuickMenuButtons()
 
     -- Colors
     local neutral_chip = GetARGB(220, 60, 65, 70)   -- default button colour
-    local transparent = GetARGB(0, 0, 0, 0)
 
     -- Block Contact
     local block_label = "Block Contact"
@@ -654,7 +667,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
-    self.quick_btn_block_contact:SetTextureColor(transparent)
+    apply_button_quad_style(self.quick_btn_block_contact)
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
     if block_text then block_text:SetText(block_label) end
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
@@ -670,7 +683,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:block_chip_btn", self.desc_box)
     self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_unblock_contact:SetWndSize(vector2():set(unblock_w, 26))
-    self.quick_btn_unblock_contact:SetTextureColor(transparent)
+    apply_button_quad_style(self.quick_btn_unblock_contact)
     local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
     if unblock_text then unblock_text:SetText(unblock_label) end
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
@@ -686,7 +699,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:ignore_chip_btn", self.desc_box)
     self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
     self.quick_btn_ignore_conv:SetWndSize(vector2():set(ignore_w, 26))
-    self.quick_btn_ignore_conv:SetTextureColor(transparent)
+    apply_button_quad_style(self.quick_btn_ignore_conv)
     local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
     if ignore_text then ignore_text:SetText(ignore_label) end
     self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
@@ -840,7 +853,7 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
         if bg.SetTextureColor then bg:SetTextureColor(GetARGB(220, 60, 65, 70)) end
-        if btn.SetTextureColor then btn:SetTextureColor(GetARGB(0, 0, 0, 0)) end
+        apply_button_quad_style(btn)
         bg:Show(false)
         btn:Show(false)
 
