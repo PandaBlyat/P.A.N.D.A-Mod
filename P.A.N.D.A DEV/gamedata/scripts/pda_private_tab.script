@@ -1143,7 +1143,7 @@ function pda_private_tab:OnSelectNPC()
 
             if is_player_lane then
 				local chat_panel_width = 695
-				local right_padding = 25
+				local right_padding = 180
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
