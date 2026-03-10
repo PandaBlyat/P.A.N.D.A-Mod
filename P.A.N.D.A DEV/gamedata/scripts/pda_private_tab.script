@@ -886,7 +886,10 @@ function pda_private_tab:EnsureChoiceButtonPool(required_count, chip_h)
         bg:SetWndSize(vector2():set(120, button_h))
         btn:SetWndSize(vector2():set(120, button_h))
         if bg.SetTextureColor then bg:SetTextureColor(GetARGB(235, 18, 42, 95)) end
-        apply_button_quad_style(btn)
+        -- Keep choice buttons as interaction hitboxes only.
+        -- The visible frame/tint is rendered by the paired bg static so
+        -- hover/pressed states don't draw an extra stretched texture layer.
+        apply_button_hitbox_style(btn)
         bg:Show(false)
         btn:Show(false)
 
@@ -1306,7 +1309,8 @@ function pda_private_tab:OnSelectNPC()
             local is_player_lane = is_player_sender(entry)
             local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
             local lane_root = CUIStatic()
-            lane_root:SetWndSize(vector2():set(720, 50))
+            local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth()) or 720
+            lane_root:SetWndSize(vector2():set(chat_panel_width, 50))
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
             local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
@@ -1314,8 +1318,9 @@ function pda_private_tab:OnSelectNPC()
 
 			local body_text_for_width = tostring(entry.text or "")
 			if entry.is_typing then body_text_for_width = "Typing..." end
-			local bubble_w = estimate_bubble_width(body_text_for_width, 160, 500, 34)
-			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 6))
+			local lane_max_w = is_player_lane and 430 or 470
+			local bubble_w = estimate_bubble_width(body_text_for_width, 170, lane_max_w, 34)
+			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
 
             local display_text = ""
             if is_player_lane then
@@ -1340,7 +1345,7 @@ function pda_private_tab:OnSelectNPC()
 
             if is_player_lane then
 				local chat_panel_width = lane_root:GetWidth()
-				local right_padding = 24
+				local right_padding = 32
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
@@ -1376,7 +1381,7 @@ function pda_private_tab:OnSelectNPC()
 
             local lane_h = text_h + status_h + 16
             lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
-            lane_root:SetWndSize(vector2():set(720, lane_h)) 
+            lane_root:SetWndSize(vector2():set(chat_panel_width, lane_h)) 
 
             lane_root:SetAutoDelete(false)
             self.scrollbar:AddWindow(lane_root, false)
@@ -1413,7 +1418,8 @@ function pda_private_tab:OnSelectNPC()
         local composer_center_x = 360
 		local centered_x = math.floor(composer_center_x - max_chip_w / 2)
 		local min_x = 16
-		local max_x = 720 - max_chip_w - 16
+		local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth()) or 720
+		local max_x = chat_panel_width - max_chip_w - 16
 		local shared_left_x = math.max(min_x, math.min(max_x, centered_x))
 
         self:EnsureChoiceButtonPool(usable_choices, chip_h)
