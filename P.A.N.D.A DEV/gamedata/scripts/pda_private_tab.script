@@ -148,6 +148,7 @@ function pda_private_tab:InitControls()
     self.status_indicator = self.xml:InitStatic("private_pda:info:description:status_indicator", self.desc_box)
     
     self.header_name = self.xml:InitTextWnd("private_pda:info:description:chat_header_name", self.desc_box)
+    self.faction_patch_icon = self.xml:InitStatic("private_pda:info:description:faction_patch_icon", self.desc_box)
     self.faction_badge = self.xml:InitTextWnd("private_pda:info:description:faction_badge", self.desc_box)
     self.message_count = self.xml:InitTextWnd("private_pda:info:description:message_count", self.desc_box)
     self.last_seen = self.xml:InitTextWnd("private_pda:info:description:last_seen", self.desc_box)
@@ -228,14 +229,17 @@ function pda_private_tab:UpdateHoverButtonTints()
         end
     end
 
+    local hover_red_chip = GetARGB(255, 200, 30, 30)
+    local hover_orange_chip = GetARGB(255, 230, 140, 20)
+
     if self.quick_btn_block_contact and self.quick_btn_block_bg then
-        self.quick_btn_block_bg:SetTextureColor(is_button_hovered(self.quick_btn_block_contact) and hover_blue_chip or neutral_chip)
+        self.quick_btn_block_bg:SetTextureColor(is_button_hovered(self.quick_btn_block_contact) and hover_red_chip or neutral_chip)
     end
     if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
         self.quick_btn_unblock_bg:SetTextureColor(is_button_hovered(self.quick_btn_unblock_contact) and hover_blue_chip or neutral_chip)
     end
     if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
-        self.quick_btn_ignore_bg:SetTextureColor(is_button_hovered(self.quick_btn_ignore_conv) and hover_blue_chip or neutral_chip)
+        self.quick_btn_ignore_bg:SetTextureColor(is_button_hovered(self.quick_btn_ignore_conv) and hover_orange_chip or neutral_chip)
     end
 end
 
@@ -390,32 +394,48 @@ function pda_private_tab:EnsureQuickMenuButtons()
 
     local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
     local menu_y = composer_y - 62
+    local qchar_w = 7   -- approximate width per character for letterica16
+    local qpad = 30      -- horizontal padding
+    local qmin_w = 120
+    local qmax_w = 400
 
+    local block_label = "Block Contact"
+    local block_w = math.max(qmin_w, math.min(qmax_w, string.len(block_label) * qchar_w + qpad))
     self.quick_btn_block_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
     self.quick_btn_block_bg:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_block_bg:SetWndSize(vector2():set(block_w, 26))
 
     self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
-    if block_text then block_text:SetText("Block Contact") end
+    if block_text then block_text:SetText(block_label) end
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
 
+    local unblock_label = "Unblock Contact"
+    local unblock_w = math.max(qmin_w, math.min(qmax_w, string.len(unblock_label) * qchar_w + qpad))
     self.quick_btn_unblock_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
     self.quick_btn_unblock_bg:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_unblock_bg:SetWndSize(vector2():set(unblock_w, 26))
 
     self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
+    self.quick_btn_unblock_contact:SetWndSize(vector2():set(unblock_w, 26))
     local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
-    if unblock_text then unblock_text:SetText("Unblock Contact") end
+    if unblock_text then unblock_text:SetText(unblock_label) end
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
 
+    local ignore_label = "Ignore Conversation"
+    local ignore_w = math.max(qmin_w, math.min(qmax_w, string.len(ignore_label) * qchar_w + qpad))
     self.quick_btn_ignore_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
     self.quick_btn_ignore_bg:SetWndPos(vector2():set(16, menu_y + 30))
+    self.quick_btn_ignore_bg:SetWndSize(vector2():set(ignore_w, 26))
 
     self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
+    self.quick_btn_ignore_conv:SetWndSize(vector2():set(ignore_w, 26))
     local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
-    if ignore_text then ignore_text:SetText("Ignore Conversation") end
+    if ignore_text then ignore_text:SetText(ignore_label) end
     self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
 
     self.quick_btn_block_bg:SetAutoDelete(true)
@@ -639,6 +659,24 @@ function get_community_name(community)
     return community_names[community] or community
 end
 
+function get_faction_patch_texture(community)
+    local patch_map = {
+        stalker  = "patch_loners",
+        dolg     = "patch_duty",
+        freedom  = "patch_freedom",
+        csky     = "patch_clear_sky",
+        ecolog   = "patch_ecologists",
+        killer   = "patch_mercenaries",
+        army     = "patch_military",
+        bandit   = "patch_bandits",
+        monolith = "patch_monolith",
+        greh     = "patch_sin",
+        renegade = "patch_renegades",
+        isg      = "patch_isg",
+    }
+    return patch_map[community] or nil
+end
+
 function pda_private_tab:Reset(target_contact_id)
     self.npc_list:RemoveAll()
     self.scrollbar:Clear()
@@ -712,6 +750,7 @@ function pda_private_tab:HideStats()
     self.stat_goodwill_value:SetText("")
     self.stat_rank_value:SetText("")
     apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
+    if self.faction_patch_icon then self.faction_patch_icon:Show(false) end
     self.last_seen:SetText("")
     self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
     self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
@@ -737,6 +776,17 @@ function pda_private_tab:ShowStats(contact_name)
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
     apply_colored_text(self.faction_badge, faction_text, GetARGB(255, 150, 150, 150))
+
+    if self.faction_patch_icon then
+        local patch_tex = get_faction_patch_texture(npc_data.community)
+        if patch_tex then
+            self.faction_patch_icon:InitTexture(patch_tex)
+            self.faction_patch_icon:SetStretchTexture(true)
+            self.faction_patch_icon:Show(true)
+        else
+            self.faction_patch_icon:Show(false)
+        end
+    end
     
     local relation_text
     if npc_data.relation > 1000 then relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
@@ -969,8 +1019,11 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 4
-        local chip_w = 560
-        local left_x = math.floor((720 - chip_w) / 2) 
+        local chip_min_w = 120
+        local chip_max_w = 660
+        local chip_pad = 30  -- horizontal padding (left text offset + right margin)
+        local char_w = 7     -- approximate width per character for letterica16 font
+        local right_margin = 16
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
@@ -981,18 +1034,22 @@ function pda_private_tab:OnSelectNPC()
 
 		for i = 1, active_conv.num_choices do
 			local ch = active_conv.choices[i]
-			
+
             local bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
 			local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
 			local btn_name = "choice_btn_" .. i
 			self:Register(btn, btn_name)
 
+            local text_len = ch.text and string.len(ch.text) or 10
+            local chip_w = math.max(chip_min_w, math.min(chip_max_w, text_len * char_w + chip_pad))
+            local left_x = 720 - chip_w - right_margin
+
             bg:SetWndSize(vector2():set(chip_w, chip_h))
 			btn:SetWndSize(vector2():set(chip_w, chip_h))
-			
+
 			local row = active_conv.num_choices - i
 			local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
-			
+
             bg:SetWndPos(vector2():set(left_x, y))
 			btn:SetWndPos(vector2():set(left_x, y))
 

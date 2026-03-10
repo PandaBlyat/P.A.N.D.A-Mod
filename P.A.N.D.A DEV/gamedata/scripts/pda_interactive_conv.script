@@ -1393,21 +1393,30 @@ function on_player_choice(idx)
     -- Mark reply chain as active so UI doesn't prematurely clear typing
     pda_reply_pending = true
 
-    -- Stage 2: After a short delay, mark as "delivered"
+    -- Estimate typing duration based on reply length (roughly 1s per 20 chars, min 2s, max 8s)
+    local reply_text = ch.reply or ""
+    local reply_len = string.len(reply_text)
+    local typing_duration = math.max(2, math.min(8, math.floor(reply_len / 20) + 1))
+
+    -- Stage 2: After a short delay, mark as "delivered" (message reaches NPC's PDA)
     local delivered_delay = math.random(1, 2)
     CreateTimeEvent("pda_ic", "delivery_ack", delivered_delay, function()
         set_last_player_message_state(c.npc_name, "delivered")
 
-        -- Stage 3: After another delay, NPC starts typing
-        local typing_delay = math.random(1, 3)
-        CreateTimeEvent("pda_ic", "npc_typing_start", typing_delay, function()
-            upsert_npc_typing_message(c.npc_name, c.npc_name, c.npc_icon)
+        -- Stage 3: NPC reads the message - brief pause proportional to player message length
+        local player_msg_len = string.len(ch.text or "")
+        local read_delay = math.max(1, math.min(4, math.floor(player_msg_len / 30) + 1))
+        CreateTimeEvent("pda_ic", "npc_read", read_delay, function()
+            set_last_player_message_state(c.npc_name, "read")
 
-            -- Stage 4: After MCM reply delay, NPC sends reply
-            local reply_delay_min = PANDA.get_config("npc_reply_delay_min") or 2
-            local reply_delay_max = PANDA.get_config("npc_reply_delay_max") or 4
-            CreateTimeEvent("pda_ic", "npc_reply", math.random(reply_delay_min, reply_delay_max), function()
-                clear_npc_typing_message(c.npc_name)
+            -- Stage 4: NPC thinks before typing - a short deliberation pause
+            local think_delay = math.random(1, 3)
+            CreateTimeEvent("pda_ic", "npc_thinking", think_delay, function()
+
+                -- Stage 5: NPC starts typing - duration scales with reply message length
+                upsert_npc_typing_message(c.npc_name, c.npc_name, c.npc_icon)
+                CreateTimeEvent("pda_ic", "npc_reply", typing_duration, function()
+                    clear_npc_typing_message(c.npc_name)
 
                 if ch.reply and ch.reply ~= "" then
                     if is_private_tab_visible and is_private_tab_visible() then
@@ -1446,6 +1455,8 @@ function on_player_choice(idx)
                 return true
             end)
             return true
+        end)
+        return true
         end)
         return true
     end)

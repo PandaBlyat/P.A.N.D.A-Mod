@@ -80,8 +80,13 @@
                     <text font="letterica25" r="255" g="200" b="50" a="255" align="l" vert_align="c"/>
                 </chat_header_name>
                 
+                <!-- Faction patch icon -->
+                <faction_patch_icon x="75" y="30" width="22" height="22" stretch="1">
+                    <texture>ui_inGame2_Neutral_1</texture>
+                </faction_patch_icon>
+
                 <!-- Faction badge -->
-                <faction_badge x="75" y="32" width="300" height="18">
+                <faction_badge x="100" y="32" width="275" height="18">
                     <text font="letterica16" r="200" g="200" b="200" a="255" align="l" vert_align="c"/>
                 </faction_badge>
                 
