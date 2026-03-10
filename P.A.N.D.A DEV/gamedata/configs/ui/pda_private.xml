@@ -133,10 +133,12 @@
                         <texture r="32" g="36" b="40" a="220">ui_inGame2_hint_wnd_main_window</texture>
                     </composer_bg>
 
+                    <!-- Backgrounds support dynamic tinting, Buttons handle pure text/interactions -->
+                    <composer_quick_1_bg x="2" y="2" width="30" height="30" stretch="1">
+                        <texture>ui_white</texture>
+                    </composer_quick_1_bg>
                     <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="200" g="60" b="60" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="170" g="50" b="50" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <texture>ui\ui_null</texture>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">+</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -145,10 +147,11 @@
                         </text_color>
                     </composer_quick_1_btn>
 
+                    <composer_quick_2_bg x="36" y="2" width="30" height="30" stretch="1">
+                        <texture>ui_white</texture>
+                    </composer_quick_2_bg>
                     <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
-                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h r="70" g="130" b="180" a="255">ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t r="60" g="110" b="155" a="255">ui_inGame2_pda_smallbutton</texture_t>
+                        <texture>ui\ui_null</texture>
                         <text font="letterica16" align="c" vert_align="c" x="0" y="0">...</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -164,10 +167,11 @@
                         <text font="letterica16" r="120" g="132" b="145" a="255" align="l" vert_align="c">Choose a reply...</text>
                     </composer_input_field>
 
+                    <composer_send_bg x="662" y="2" width="36" height="30" stretch="1">
+                        <texture>ui_white</texture>
+                    </composer_send_bg>
                     <composer_send_btn x="662" y="2" width="36" height="30" can_focus="1" stretch="1">
-                        <texture_e>ui_inGame2_pda_smallbutton</texture_e>
-                        <texture_h>ui_inGame2_pda_smallbutton</texture_h>
-                        <texture_t>ui_inGame2_pda_smallbutton</texture_t>
+                        <texture>ui\ui_null</texture>
                         <text font="letterica18" align="c" vert_align="c" x="0" y="0">&gt;</text>
                         <text_color>
                             <e r="210" g="220" b="230" a="255"/>
@@ -177,7 +181,6 @@
                     </composer_send_btn>
                 </composer_container>
                 
-                    <!-- Message rows: reusable lanes -->
                 <message_lane_npc x="0" y="0" width="720" height="50" stretch="1">
                     <bubble_bg x="8" y="0" width="470" height="50" stretch="1">
                         <texture r="52" g="52" b="52" a="190">ui_inGame2_hint_wnd_main_window</texture>
@@ -188,7 +191,6 @@
                 </message_lane_npc>
 
                 <message_lane_player x="0" y="0" width="720" height="50" stretch="1">
-                    <!-- Player bubble - positioned by Lua for right alignment -->
                     <bubble_bg x="250" y="0" width="460" height="50" stretch="1">
                         <texture r="45" g="70" b="45" a="180">ui_inGame2_hint_wnd_main_window</texture>
                     </bubble_bg>
@@ -200,11 +202,12 @@
                     </delivery_status>
                 </message_lane_player>
                 
-                <!-- Compact choice chip template (instantiated from script) -->
-                <choice_chip_btn x="0" y="0" width="220" height="26" stretch="1" can_focus="1">
-                    <texture_e>ui_inGame2_hint_wnd_main_window</texture_e>
-                    <texture_h r="70" g="130" b="180" a="220">ui_inGame2_hint_wnd_main_window</texture_h>
-                    <texture_t r="60" g="110" b="155" a="220">ui_inGame2_hint_wnd_main_window</texture_t>
+                <!-- Background supports dynamic tinting, Button handles pure text/interactions -->
+                <choice_chip_bg x="0" y="0" width="220" height="26" stretch="1">
+                    <texture>ui_white</texture>
+                </choice_chip_bg>
+                <choice_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
+                    <texture>ui\ui_null</texture>
                     <text font="letterica16" align="l" vert_align="c" x="10" y="0" complex_mode="1" />
                     <text_color>
                         <e r="225" g="232" b="238" a="255"/>

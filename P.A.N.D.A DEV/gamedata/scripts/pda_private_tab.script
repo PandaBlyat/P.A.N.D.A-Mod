@@ -59,75 +59,34 @@ local function apply_colored_text(text_wnd, raw_text, fallback_color)
     end
 end
 
-local function set_button_texture_tint(btn, color)
-    if not btn then
-        return
-    end
-
-    if btn.SetTextureColor then
-        btn:SetTextureColor(color)
-    elseif btn.SetColor then
-        btn:SetColor(color)
-    end
-
-    if btn.GetStatic then
-        local bg = btn:GetStatic()
-        if bg and bg.SetTextureColor then
-            bg:SetTextureColor(color)
-        elseif bg and bg.SetColor then
-            bg:SetColor(color)
-        end
-    end
-end
-
 local function is_button_hovered(btn)
     if not btn then
         return false
     end
 
-    if btn.CursorOverWindow then
-        local ok, hovered = pcall(function()
-            return btn:CursorOverWindow()
-        end)
-        if ok then
-            return hovered and true or false
-        end
+    if btn.IsCursorOverWindow then
+        local ok, hovered = pcall(function() return btn:IsCursorOverWindow() end)
+        if ok then return hovered and true or false end
     end
 
-    if btn.IsCursorOverWindow then
-        local ok, hovered = pcall(function()
-            return btn:IsCursorOverWindow()
-        end)
-        if ok then
-            return hovered and true or false
-        end
+    if btn.CursorOverWindow then
+        local ok, hovered = pcall(function() return btn:CursorOverWindow() end)
+        if ok then return hovered and true or false end
     end
 
     if btn.cursor_over_window then
-        local ok, hovered = pcall(function()
-            return btn:cursor_over_window()
-        end)
-        if ok then
-            return hovered and true or false
-        end
+        local ok, hovered = pcall(function() return btn:cursor_over_window() end)
+        if ok then return hovered and true or false end
     end
 
     if btn.GetButtonState then
-        local ok, state = pcall(function()
-            return btn:GetButtonState()
-        end)
-        if ok then
-            return state == 1 or state == 2
-        end
+        local ok, state = pcall(function() return btn:GetButtonState() end)
+        if ok then return state == 1 or state == 2 end
     end
 
     if btn.GetCheck then
-        local ok, checked = pcall(function()
-            return btn:GetCheck()
-        end)
-        if ok and checked then
-            return true
-        end
+        local ok, checked = pcall(function() return btn:GetCheck() end)
+        if ok and checked then return true end
     end
 
     return false
@@ -207,8 +166,15 @@ function pda_private_tab:InitControls()
     self.xml:InitStatic("private_pda:info:description:composer_container:composer_bg", self.composer_container)
     self.xml:InitStatic("private_pda:info:description:composer_container:composer_input_shell", self.composer_container)
     self.composer_input_field = self.xml:InitTextWnd("private_pda:info:description:composer_container:composer_input_field", self.composer_container)
+    
+    -- Composer background objects separately managed now
+    self.composer_quick_1_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_quick_1_bg", self.composer_container)
     self.composer_quick_1_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_1_btn", self.composer_container)
+    
+    self.composer_quick_2_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_quick_2_bg", self.composer_container)
     self.composer_quick_2_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_quick_2_btn", self.composer_container)
+    
+    self.composer_send_bg = self.xml:InitStatic("private_pda:info:description:composer_container:composer_send_bg", self.composer_container)
     self.composer_send_btn = self.xml:Init3tButton("private_pda:info:description:composer_container:composer_send_btn", self.composer_container)
 
     self.reply_trigger_btn_hint_until = 0
@@ -234,28 +200,42 @@ function pda_private_tab:InitCallBacks()
 end
 
 function pda_private_tab:UpdateHoverButtonTints()
-    local neutral = GetARGB(255, 255, 255, 255)
-    local hover_blue = GetARGB(255, 70, 130, 180)
-    local hover_red = GetARGB(255, 200, 60, 60)
+    local neutral_small = GetARGB(255, 180, 180, 180)
+    local hover_red_small = GetARGB(255, 200, 60, 60)
+    local hover_blue_small = GetARGB(255, 70, 130, 180)
 
-    if self.composer_quick_1_btn then
-        set_button_texture_tint(self.composer_quick_1_btn, is_button_hovered(self.composer_quick_1_btn) and hover_red or neutral)
+    local neutral_chip = GetARGB(220, 60, 65, 70)
+    local hover_blue_chip = GetARGB(220, 70, 130, 180)
+
+    if self.composer_quick_1_btn and self.composer_quick_1_bg then
+        self.composer_quick_1_bg:SetTextureColor(is_button_hovered(self.composer_quick_1_btn) and hover_red_small or neutral_small)
     end
 
-    if self.composer_quick_2_btn then
-        set_button_texture_tint(self.composer_quick_2_btn, is_button_hovered(self.composer_quick_2_btn) and hover_blue or neutral)
+    if self.composer_quick_2_btn and self.composer_quick_2_bg then
+        self.composer_quick_2_bg:SetTextureColor(is_button_hovered(self.composer_quick_2_btn) and hover_blue_small or neutral_small)
     end
 
-    if self.composer_send_btn then
-        set_button_texture_tint(self.composer_send_btn, is_button_hovered(self.composer_send_btn) and hover_blue or neutral)
+    if self.composer_send_btn and self.composer_send_bg then
+        self.composer_send_bg:SetTextureColor(is_button_hovered(self.composer_send_btn) and hover_blue_small or neutral_small)
     end
 
     for i = 1, #self.choice_btns do
         local btn_data = self.choice_btns[i]
         local btn = btn_data and btn_data.btn or nil
-        if btn then
-            set_button_texture_tint(btn, is_button_hovered(btn) and hover_blue or neutral)
+        local bg = btn_data and btn_data.bg or nil
+        if btn and bg then
+            bg:SetTextureColor(is_button_hovered(btn) and hover_blue_chip or neutral_chip)
         end
+    end
+
+    if self.quick_btn_block_contact and self.quick_btn_block_bg then
+        self.quick_btn_block_bg:SetTextureColor(is_button_hovered(self.quick_btn_block_contact) and hover_blue_chip or neutral_chip)
+    end
+    if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
+        self.quick_btn_unblock_bg:SetTextureColor(is_button_hovered(self.quick_btn_unblock_contact) and hover_blue_chip or neutral_chip)
+    end
+    if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
+        self.quick_btn_ignore_bg:SetTextureColor(is_button_hovered(self.quick_btn_ignore_conv) and hover_blue_chip or neutral_chip)
     end
 end
 
@@ -277,7 +257,6 @@ function pda_private_tab:Update()
     local has_conv = pda_interactive_conv.CONV ~= nil
     local conv_turn = has_conv and pda_interactive_conv.CONV.turn or 0
 
-    -- Also track delivery_state and typing so those in-place mutations trigger a rebuild
     local last_delivery_state = ""
     local has_typing = false
     for i = 1, log_size do
@@ -313,7 +292,6 @@ function pda_private_tab:Update()
         self:Reset(current_contact)
     end
 
-    -- Smooth typing animation without list rebuilding
     if self.typing_text_wnd and self.typing_entry_data then
         local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
         local phase = math.floor((current_time / 350) % 4)
@@ -331,7 +309,6 @@ function pda_private_tab:Update()
         self.typing_anim_phase = -1
     end
 
-    -- Safety cleanup: if no active conversation and no pending reply chain, clear stale typing
     if not pda_interactive_conv.CONV and not pda_interactive_conv.pda_reply_pending then
         local log = pda_interactive_conv.pda_private_log or {}
         for i = 1, #log do
@@ -394,14 +371,15 @@ end
 function pda_private_tab:HideQuickMenuButtons()
     if self.quick_btn_block_contact then
         self.quick_btn_block_contact:Show(false)
+        if self.quick_btn_block_bg then self.quick_btn_block_bg:Show(false) end
     end
-
     if self.quick_btn_unblock_contact then
         self.quick_btn_unblock_contact:Show(false)
+        if self.quick_btn_unblock_bg then self.quick_btn_unblock_bg:Show(false) end
     end
-
     if self.quick_btn_ignore_conv then
         self.quick_btn_ignore_conv:Show(false)
+        if self.quick_btn_ignore_bg then self.quick_btn_ignore_bg:Show(false) end
     end
 end
 
@@ -410,35 +388,41 @@ function pda_private_tab:EnsureQuickMenuButtons()
         return
     end
 
-    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
     local menu_y = composer_y - 62
 
+    self.quick_btn_block_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_block_bg:SetWndPos(vector2():set(16, menu_y))
+
+    self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
-    if block_text then
-        block_text:SetText("Block Contact")
-    end
+    if block_text then block_text:SetText("Block Contact") end
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
+
+    self.quick_btn_unblock_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_unblock_bg:SetWndPos(vector2():set(16, menu_y))
 
     self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
     local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
-    if unblock_text then
-        unblock_text:SetText("Unblock Contact")
-    end
+    if unblock_text then unblock_text:SetText("Unblock Contact") end
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
+
+    self.quick_btn_ignore_bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
+    self.quick_btn_ignore_bg:SetWndPos(vector2():set(16, menu_y + 30))
 
     self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
     local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
-    if ignore_text then
-        ignore_text:SetText("Ignore Conversation")
-    end
+    if ignore_text then ignore_text:SetText("Ignore Conversation") end
     self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
 
+    self.quick_btn_block_bg:SetAutoDelete(true)
     self.quick_btn_block_contact:SetAutoDelete(true)
+    self.quick_btn_unblock_bg:SetAutoDelete(true)
     self.quick_btn_unblock_contact:SetAutoDelete(true)
+    self.quick_btn_ignore_bg:SetAutoDelete(true)
     self.quick_btn_ignore_conv:SetAutoDelete(true)
 
     self:HideQuickMenuButtons()
@@ -446,10 +430,7 @@ end
 
 function pda_private_tab:GetSelectedContactName()
     local item = self.npc_list and self.npc_list:GetSelectedItem() or nil
-    if not item or item.contact_id == "System" then
-        return nil
-    end
-
+    if not item or item.contact_id == "System" then return nil end
     return item.contact_id
 end
 
@@ -470,8 +451,13 @@ function pda_private_tab:ToggleQuickMenu()
     local has_active_conv = pda_interactive_conv.CONV and pda_interactive_conv.CONV.npc_name == contact_name and self:HasDialogueChoices()
 
     self.quick_btn_block_contact:Show(self.quick_menu_open and not is_blocked)
+    if self.quick_btn_block_bg then self.quick_btn_block_bg:Show(self.quick_menu_open and not is_blocked) end
+
     self.quick_btn_unblock_contact:Show(self.quick_menu_open and is_blocked)
+    if self.quick_btn_unblock_bg then self.quick_btn_unblock_bg:Show(self.quick_menu_open and is_blocked) end
+
     self.quick_btn_ignore_conv:Show(self.quick_menu_open and has_active_conv)
+    if self.quick_btn_ignore_bg then self.quick_btn_ignore_bg:Show(self.quick_menu_open and has_active_conv) end
 
     if self.quick_menu_open then
         self.choice_buttons_visible = false
@@ -481,16 +467,13 @@ end
 
 function pda_private_tab:OnQuickIgnoreConversationClicked()
     local contact_name = self:GetSelectedContactName()
-    if not contact_name then
-        return
-    end
+    if not contact_name then return end
 
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == contact_name then
         pda_interactive_conv.CONV = nil
     end
 
-    -- Clear any pending typing indicator and cancel all pending timers
     pda_interactive_conv.pda_reply_pending = false
     if pda_interactive_conv.clear_npc_typing_message then
         pda_interactive_conv.clear_npc_typing_message(contact_name)
@@ -514,13 +497,8 @@ end
 
 function pda_private_tab:OnQuickBlockContactClicked()
     local contact_name = self:GetSelectedContactName()
-    if not contact_name then
-        return
-    end
-
-    if pda_interactive_conv.block_contact then
-        pda_interactive_conv.block_contact(contact_name)
-    end
+    if not contact_name then return end
+    if pda_interactive_conv.block_contact then pda_interactive_conv.block_contact(contact_name) end
 
     self.quick_menu_open = false
     self:HideQuickMenuButtons()
@@ -529,13 +507,8 @@ end
 
 function pda_private_tab:OnQuickUnblockContactClicked()
     local contact_name = self:GetSelectedContactName()
-    if not contact_name then
-        return
-    end
-
-    if pda_interactive_conv.unblock_contact then
-        pda_interactive_conv.unblock_contact(contact_name)
-    end
+    if not contact_name then return end
+    if pda_interactive_conv.unblock_contact then pda_interactive_conv.unblock_contact(contact_name) end
 
     self.quick_menu_open = false
     self:HideQuickMenuButtons()
@@ -549,7 +522,6 @@ function pda_private_tab:UpdateReplyTriggerVisual()
         self.composer_input_field:SetText("No reply options now")
         return
     end
-
     self.composer_input_field:SetText("Choose a reply...")
 end
 
@@ -566,11 +538,7 @@ function pda_private_tab:OnReplyTriggerClicked()
         self.reply_trigger_btn_hint_until = 0
         self.choice_buttons_visible = true
         self:RefreshChoiceButtons()
-
-        if self.scrollbar.ScrollToEnd then
-            self.scrollbar:ScrollToEnd()
-        end
-
+        if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
         return
     end
 
@@ -582,52 +550,39 @@ function pda_private_tab:RefreshChoiceButtons()
     local has_choices = self:HasDialogueChoices() and #self.choice_btns > 0
     local should_show_choices = has_choices and self.choice_buttons_visible == true
 
-    -- We intentionally leave self.composer_container alone here 
-    -- so that the bottom text input stays fully visible.
-
     for i = 1, #self.choice_btns do
         local choice = self.choice_btns[i]
         if choice and choice.btn then
             local label = choice.text or ""
-            if choice.idx == self.selected_choice_idx then
-                label = "[Selected] " .. label
-            end
+            if choice.idx == self.selected_choice_idx then label = "[Selected] " .. label end
 
             local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
-            if text_ctrl then
-                text_ctrl:SetText(label)
-            end
+            if text_ctrl then text_ctrl:SetText(label) end
 
             choice.btn:Enable(true)
             choice.btn:Show(should_show_choices)
+            if choice.bg then choice.bg:Show(should_show_choices) end
         end
     end
 end
 
 function get_relative_time(timestamp_str, current_game_time)
-    if not timestamp_str then
-        return "Unknown"
-    end
-
+    if not timestamp_str then return "Unknown" end
     timestamp_str = tostring(timestamp_str)
     local d, m, y, h, min = timestamp_str:match("(%d+)/(%d+)/(%d+)%s+(%d+):(%d+)")
     if not d then return timestamp_str end
     
     d, m, y, h, min = tonumber(d), tonumber(m), tonumber(y), tonumber(h), tonumber(min)
-    
     local cY, cM, cD, ch, cmin, cs, cms = 0, 0, 0, 0, 0, 0, 0
     cY, cM, cD, ch, cmin, cs, cms = current_game_time:get(cY, cM, cD, ch, cmin, cs, cms)
     
     local msg_minutes = (d * 24 * 60) + (h * 60) + min
     local cur_minutes = (cD * 24 * 60) + (ch * 60) + cmin
     local diff_minutes = cur_minutes - msg_minutes
-    
     if diff_minutes < 0 then diff_minutes = 0 end
     
-    if diff_minutes < 1 then
-        return "Just now"
-    elseif diff_minutes < 60 then
-        return string.format("%d minute%s ago", diff_minutes, diff_minutes == 1 and "" or "s")
+    if diff_minutes < 1 then return "Just now"
+    elseif diff_minutes < 60 then return string.format("%d minute%s ago", diff_minutes, diff_minutes == 1 and "" or "s")
     elseif diff_minutes < 1440 then
         local hours = math.floor(diff_minutes / 60)
         return string.format("%d hour%s ago", hours, hours == 1 and "" or "s")
@@ -642,96 +597,45 @@ function get_npc_data(contact_name)
         local se_obj = alife_object(i)
         if se_obj then
             local obj = level.object_by_id(se_obj.id)
-            
             if obj and IsStalker(obj) then
                 local npc_name = obj:character_name()
                 if npc_name == contact_name then
                     local community = obj:character_community() or "stalker"
                     local rank = obj:character_rank() or 0
                     local rank_name = ranks.get_obj_rank_name(obj) or "Unknown"
-                    
-                    local goodwill = 0
-                    if obj.general_goodwill then
-                        goodwill = obj:general_goodwill(db.actor)
-                    end
+                    local goodwill = obj.general_goodwill and obj:general_goodwill(db.actor) or 0
                     
                     local relation = 0
                     if relation_registry and relation_registry.community_relation then
                         local player_comm = character_community(db.actor)
                         relation = relation_registry.community_relation(community, player_comm) or 0
                     end
-                    
                     local icon = obj:character_icon() or "ui_inGame2_Neutral_1"
-                    
-                    return {
-                        name = contact_name,
-                        community = community,
-                        relation = relation,
-                        goodwill = goodwill,
-                        rank = rank_name,
-                        icon = icon,
-                        obj = obj,
-                        is_alive = true
-                    }
+                    return { name = contact_name, community = community, relation = relation, goodwill = goodwill, rank = rank_name, icon = icon, obj = obj, is_alive = true }
                 end
             end
         end
     end
-    
     return nil
 end
 
 function get_faction_color(community)
     local faction_colors = {
-        -- Loners: golden
-        stalker = {r=255, g=215, b=0},      -- gold (#FFD700)
-        -- Duty: red
-        dolg = {r=255, g=0, b=0},           -- bright red
-        -- Freedom: green
-        freedom = {r=0, g=200, b=0},        -- medium green
-        -- Clear Sky: light blue
-        csky = {r=135, g=206, b=235},       -- sky blue
-        -- Ecologists: yellow
-        ecolog = {r=255, g=255, b=0},       -- pure yellow
-        -- Mercenaries: dark blue
-        killer = {r=0, g=0, b=128},         -- navy blue
-        -- Military: dark green
-        army = {r=0, g=100, b=0},            -- dark green
-        -- Bandits: grey
-        bandit = {r=128, g=128, b=128},      -- medium grey
-        -- Monolith: white
-        monolith = {r=255, g=255, b=255},    -- white
-        -- Zombified (unchanged)
-        zombied = {r=100, g=100, b=100},
-        -- Renegades (same as bandits: grey)
-        renegade = {r=128, g=128, b=128},
-        -- ISG 
-        isg = {r=100, g=150, b=200},
-        -- GREH 
-        greh = {r=200, g=150, b=100}
+        stalker = {r=255, g=215, b=0}, dolg = {r=255, g=0, b=0}, freedom = {r=0, g=200, b=0},
+        csky = {r=135, g=206, b=235}, ecolog = {r=255, g=255, b=0}, killer = {r=0, g=0, b=128},
+        army = {r=0, g=100, b=0}, bandit = {r=128, g=128, b=128}, monolith = {r=255, g=255, b=255},
+        zombied = {r=100, g=100, b=100}, renegade = {r=128, g=128, b=128}, isg = {r=100, g=150, b=200}, greh = {r=200, g=150, b=100}
     }
-    
     local color = faction_colors[community] or {r=200, g=200, b=200}
     return color.r, color.g, color.b
 end
 
 function get_community_name(community)
     local community_names = {
-        stalker = "Loners",
-        dolg = "Duty",
-        freedom = "Freedom",
-        csky = "Clear Sky",
-        ecolog = "Ecologists",
-        killer = "Mercenaries",
-        army = "Military",
-        bandit = "Bandits",
-        monolith = "Monolith",
-        zombied = "Zombified",
-        renegade = "Renegades",
-        isg = "ISG",
-        greh = "Sin"
+        stalker = "Loners", dolg = "Duty", freedom = "Freedom", csky = "Clear Sky",
+        ecolog = "Ecologists", killer = "Mercenaries", army = "Military", bandit = "Bandits",
+        monolith = "Monolith", zombied = "Zombified", renegade = "Renegades", isg = "ISG", greh = "Sin"
     }
-    
     return community_names[community] or community
 end
 
@@ -746,11 +650,9 @@ function pda_private_tab:Reset(target_contact_id)
     self.typing_text_wnd = nil
     self.typing_entry_data = nil
     self:UpdateReplyTriggerVisual()
-
     self:HideStats()
     
     local log = pda_interactive_conv.pda_private_log or {}
-    
     if #log == 0 then
         local item = pvt_contact_entry("System", "Your inbox is empty.", "", "ui_inGame2_No_Data", 0)
         self.npc_list:AddExistingItem(item)
@@ -768,20 +670,12 @@ function pda_private_tab:Reset(target_contact_id)
         local contact_id = entry.contact_name or "Unknown"
         
         if not contacts[contact_id] then
-            contacts[contact_id] = {
-                latest_text = entry.text,
-                timestamp = entry.timestamp,
-                icon = (not entry.is_player) and entry.sender_icon or nil,
-                message_count = 1
-            }
+            contacts[contact_id] = { latest_text = entry.text, timestamp = entry.timestamp, icon = (not entry.is_player) and entry.sender_icon or nil, message_count = 1 }
             table.insert(contact_order, contact_id)
         else
             contacts[contact_id].message_count = contacts[contact_id].message_count + 1
         end
-        
-        if entry.sender_icon and not entry.is_player then
-            contacts[contact_id].icon = entry.sender_icon
-        end
+        if entry.sender_icon and not entry.is_player then contacts[contact_id].icon = entry.sender_icon end
     end
 
     for _, contact_id in ipairs(contact_order) do
@@ -789,13 +683,7 @@ function pda_private_tab:Reset(target_contact_id)
         local clean_text = string.gsub(data.latest_text, "%%c%[%d+,%d+,%d+,%d+%]", "")
         local relative_time = get_relative_time(data.timestamp, current_game_time)
         
-        local item = pvt_contact_entry(
-            contact_id, 
-            clean_text, 
-            relative_time, 
-            data.icon or "ui_inGame2_Neutral_1",
-            data.message_count
-        )
+        local item = pvt_contact_entry(contact_id, clean_text, relative_time, data.icon or "ui_inGame2_Neutral_1", data.message_count)
         self.npc_list:AddExistingItem(item)
     end
     
@@ -825,25 +713,18 @@ function pda_private_tab:HideStats()
     self.stat_rank_value:SetText("")
     apply_colored_text(self.faction_badge, "", GetARGB(255, 150, 150, 150))
     self.last_seen:SetText("")
-    
     self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
     self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
 end
 
 function pda_private_tab:ShowStats(contact_name)
     local npc_data = self.cached_npc_data[contact_name]
-    
     if not npc_data then
         npc_data = get_npc_data(contact_name)
-        if npc_data then
-            self.cached_npc_data[contact_name] = npc_data
-        end
+        if npc_data then self.cached_npc_data[contact_name] = npc_data end
     end
     
-    if not npc_data then
-        self:HideStats()
-        return
-    end
+    if not npc_data then self:HideStats(); return end
     
     if npc_data.is_alive then
         self.status_indicator:InitTexture("ui_inGame2_hint_wnd_main_window")
@@ -853,20 +734,14 @@ function pda_private_tab:ShowStats(contact_name)
         self.status_indicator:SetTextureColor(GetARGB(200, 100, 100, 100))
     end
     
-    -- Faction badge with colour
     local r, g, b = get_faction_color(npc_data.community)
     local faction_text = string.format("%%c[255,%d,%d,%d]%s", r, g, b, get_community_name(npc_data.community))
     apply_colored_text(self.faction_badge, faction_text, GetARGB(255, 150, 150, 150))
     
-    -- Relation text with colour
     local relation_text
-    if npc_data.relation > 1000 then
-        relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
-    elseif npc_data.relation < -1000 then
-        relation_text = string.format("%%c[255,200,100,100]%d (Hostile)", npc_data.relation)
-    else
-        relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation)
-    end
+    if npc_data.relation > 1000 then relation_text = string.format("%%c[255,100,200,100]%d (Friendly)", npc_data.relation)
+    elseif npc_data.relation < -1000 then relation_text = string.format("%%c[255,200,100,100]%d (Hostile)", npc_data.relation)
+    else relation_text = string.format("%%c[255,200,200,150]%d (Neutral)", npc_data.relation) end
     apply_colored_text(self.stat_relation_value, relation_text, GetARGB(255, 255, 255, 255))
     
     self.stat_goodwill_value:SetText(tostring(npc_data.goodwill))
@@ -909,12 +784,15 @@ function pda_private_tab:OnSelectNPC()
     self.typing_entry_data = nil
     self:HideQuickMenuButtons()
 
-    -- Correctly clear previous buttons (Removed the bad container logic)
     for i = 1, #self.choice_btns do
         local choice = self.choice_btns[i]
         if choice and choice.btn then
             choice.btn:Show(false)
             choice.btn:SetAutoDelete(true)
+        end
+        if choice and choice.bg then
+            choice.bg:Show(false)
+            choice.bg:SetAutoDelete(true)
         end
     end
 
@@ -922,9 +800,7 @@ function pda_private_tab:OnSelectNPC()
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
 
-    if not self:HasDialogueChoices() then
-        self.choice_buttons_visible = false
-    end
+    if not self:HasDialogueChoices() then self.choice_buttons_visible = false end
     
     self.reply_trigger_btn_hint_until = 0
     self.quick_menu_open = false
@@ -932,16 +808,11 @@ function pda_private_tab:OnSelectNPC()
 
     self.header_name:SetText(item.contact_id)
     
-    local function valid_texture_name(tex)
-        return type(tex) == "string" and tex ~= ""
-    end
-
+    local function valid_texture_name(tex) return type(tex) == "string" and tex ~= "" end
     local portrait_icon = nil
 
-    if valid_texture_name(item.contact_icon) then
-        portrait_icon = item.contact_icon
-    elseif self.cached_npc_data[item.contact_id] and valid_texture_name(self.cached_npc_data[item.contact_id].icon) then
-        portrait_icon = self.cached_npc_data[item.contact_id].icon
+    if valid_texture_name(item.contact_icon) then portrait_icon = item.contact_icon
+    elseif self.cached_npc_data[item.contact_id] and valid_texture_name(self.cached_npc_data[item.contact_id].icon) then portrait_icon = self.cached_npc_data[item.contact_id].icon
     else
         local log = pda_interactive_conv.pda_private_log or {}
         for i = #log, 1, -1 do
@@ -954,9 +825,7 @@ function pda_private_tab:OnSelectNPC()
     end
 
     portrait_icon = portrait_icon or "ui_inGame2_Neutral_1"
-    if not valid_texture_name(portrait_icon) then
-        portrait_icon = "ui_inGame2_Neutral_1"
-    end
+    if not valid_texture_name(portrait_icon) then portrait_icon = "ui_inGame2_Neutral_1" end
 
     self.image:InitTexture(portrait_icon)
     self.image:SetStretchTexture(true) 
@@ -965,9 +834,7 @@ function pda_private_tab:OnSelectNPC()
     local log = pda_interactive_conv.pda_private_log or {}
     local msg_count = 0
     for i = 1, #log do
-        if (log[i].contact_name or "Unknown") == item.contact_id then
-            msg_count = msg_count + 1
-        end
+        if (log[i].contact_name or "Unknown") == item.contact_id then msg_count = msg_count + 1 end
     end
     self.message_count:SetText(string.format("%d message%s", msg_count, msg_count == 1 and "" or "s"))
     
@@ -975,68 +842,45 @@ function pda_private_tab:OnSelectNPC()
     
     local function is_player_sender(entry)
         if entry.is_player then return true end
-        if db and db.actor and entry.sender then
-            return entry.sender == db.actor:character_name()
-        end
+        if db and db.actor and entry.sender then return entry.sender == db.actor:character_name() end
         return false
     end
 
     local function style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
         local odd_row = (row_idx % 2 == 1)
         local lane_color
-        if is_player_lane then
-            lane_color = odd_row and GetARGB(190, 50, 78, 50) or GetARGB(165, 42, 66, 42)
-        else
-            lane_color = odd_row and GetARGB(200, 58, 58, 58) or GetARGB(175, 48, 48, 48)
-        end
+        if is_player_lane then lane_color = odd_row and GetARGB(190, 50, 78, 50) or GetARGB(165, 42, 66, 42)
+        else lane_color = odd_row and GetARGB(200, 58, 58, 58) or GetARGB(175, 48, 48, 48) end
         lane_bg:SetTextureColor(lane_color)
     end
 
     local function get_delivery_indicator(entry)
         local state = entry and entry.delivery_state or "sent"
         if state ~= "delivered" and state ~= "read" then state = "sent" end
-
-        if state == "read" then
-            return "%c[255,100,220,255]Read", GetARGB(255, 100, 220, 255)
-        elseif state == "delivered" then
-            return "%c[255,190,190,190]Delivered", GetARGB(255, 190, 190, 190)
-        end
+        if state == "read" then return "%c[255,100,220,255]Read", GetARGB(255, 100, 220, 255)
+        elseif state == "delivered" then return "%c[255,190,190,190]Delivered", GetARGB(255, 190, 190, 190) end
         return "%c[255,150,150,150]Sent", GetARGB(255, 150, 150, 150)
     end
 
-		function estimate_bubble_width(text)
+	function estimate_bubble_width(text)
 		local raw_text = tostring(text or "")
-		-- Remove color tags
 		local compact = raw_text:gsub("%%c%[[^%]]+%]", "")
-		-- Handle explicit newlines
 		local split_text = compact:gsub("\\n", "\n")
-
 		local max_w = 0
 		for line in split_text:gmatch("[^\n]+") do
 			line = line:match("^%s*(.-)%s*$") or line
 			local width = 0
 			for i = 1, #line do
 				local char = line:sub(i, i)
-				if char:match("%u") then
-					width = width + 3.5      -- uppercase
-				elseif char:match("%l") then
-					width = width + 2.5      -- lowercase
-				elseif char:match("%d") then
-					width = width + 2.5      -- digits
-				elseif char == " " then
-					width = width + 1.0      -- space
-				else
-					width = width + 2.0      -- punctuation, symbols
-				end
+				if char:match("%u") then width = width + 3.5
+				elseif char:match("%l") then width = width + 2.5
+				elseif char:match("%d") then width = width + 2.5
+				elseif char == " " then width = width + 1.0
+				else width = width + 2.0 end
 			end
-			if width > max_w then
-				max_w = width
-			end
+			if width > max_w then max_w = width end
 		end
-
 		if max_w == 0 then max_w = 150 end
-
-		-- Padding: left 14, right 14 = total 28
 		local padding_x = 28
 		local estimated = padding_x + max_w
 		return math.floor(math.max(150, math.min(395, estimated)))
@@ -1047,14 +891,12 @@ function pda_private_tab:OnSelectNPC()
         local entry = log[i]
         if (entry.contact_name or "Unknown") == item.contact_id then
             row_idx = row_idx + 1
-
             local is_player_lane = is_player_sender(entry)
             local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
             local lane_root = self.xml:InitStatic(template, nil)
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
             local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
-
             local relative_time = get_relative_time(entry.timestamp, current_game_time)
 
             local display_text = ""
@@ -1067,14 +909,9 @@ function pda_private_tab:OnSelectNPC()
                     local current_time = type(time_real_ms) == "function" and time_real_ms() or (os.clock() * 1000)
                     local phase = math.floor((current_time / 350) % 4)
                     npc_body = "Typing" .. string.rep(".", phase)
-                    
                     self.typing_text_wnd = text_wnd
-                    self.typing_entry_data = {
-                        sender = entry.sender,
-                        timestamp = entry.timestamp
-                    }
+                    self.typing_entry_data = { sender = entry.sender, timestamp = entry.timestamp }
                 end
-
                 display_text = string.format("%%c[255,255,200,50]%s %%c[255,100,100,100][%s]\\n%%c[default]%s",
                     tostring(entry.sender or "Unknown"), tostring(relative_time or "Unknown"), tostring(npc_body or ""))
             end
@@ -1083,7 +920,6 @@ function pda_private_tab:OnSelectNPC()
             local bubble_w = estimate_bubble_width(display_text)
 
             if is_player_lane then
-				-- Account for scrollbar width and add safety margin
 				local chat_panel_width = 675
 				local right_padding = 150
 				local bubble_x = chat_panel_width - bubble_w - right_padding
@@ -1094,7 +930,6 @@ function pda_private_tab:OnSelectNPC()
 				text_wnd:SetWndPos(vector2():set(bubble_x + 14, 6))
 				text_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), text_wnd:GetHeight()))
 
-				-- Status positioning happens AFTER text_h is calculated below
 				if status_wnd then
 					status_wnd:SetWndPos(vector2():set(bubble_x + 14, 28))
 					status_wnd:SetWndSize(vector2():set(math.max(110, bubble_w - 28), status_wnd:GetHeight()))
@@ -1121,9 +956,7 @@ function pda_private_tab:OnSelectNPC()
             style_message_lane(lane_root, lane_bg, is_player_lane, row_idx)
 
             local lane_h = text_h + status_h + 16
-            
             lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
-            -- Force the root container to the full scrollbar width (110) so children don't get clipped
             lane_root:SetWndSize(vector2():set(720, lane_h)) 
 
             self.scrollbar:AddWindow(lane_root, true)
@@ -1133,16 +966,12 @@ function pda_private_tab:OnSelectNPC()
 
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
-        
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 4
-        local chip_w = 560 -- Width of the choice chip
-        
-        -- Center horizontally within the 720px wide desc_box
+        local chip_w = 560
         local left_x = math.floor((720 - chip_w) / 2) 
 
-        -- Add invisible padding to the scrollbar so bottom messages don't hide behind choices
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
             spacer:SetAutoDelete(true)
@@ -1153,20 +982,21 @@ function pda_private_tab:OnSelectNPC()
 		for i = 1, active_conv.num_choices do
 			local ch = active_conv.choices[i]
 			
-			-- Attach directly to desc_box to avoid X-Ray engine crash!
+            local bg = self.xml:InitStatic("private_pda:info:description:choice_chip_bg", self.desc_box)
 			local btn = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
 			local btn_name = "choice_btn_" .. i
 			self:Register(btn, btn_name)
 
+            bg:SetWndSize(vector2():set(chip_w, chip_h))
 			btn:SetWndSize(vector2():set(chip_w, chip_h))
 			
-			-- Stack perfectly above the input composer
 			local row = active_conv.num_choices - i
 			local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
 			
+            bg:SetWndPos(vector2():set(left_x, y))
 			btn:SetWndPos(vector2():set(left_x, y))
 
-			table.insert(self.choice_btns, { btn = btn, idx = i, text = ch.text })
+			table.insert(self.choice_btns, { bg = bg, btn = btn, idx = i, text = ch.text })
 		end
 
         self:RefreshChoiceButtons()
@@ -1175,10 +1005,7 @@ function pda_private_tab:OnSelectNPC()
         self:RefreshChoiceButtons()
     end
 
-    if self.scrollbar.ScrollToEnd then
-        self.scrollbar:ScrollToEnd()
-    end
-    
+    if self.scrollbar.ScrollToEnd then self.scrollbar:ScrollToEnd() end
     self:ShowStats(item.contact_id)
 end
 
