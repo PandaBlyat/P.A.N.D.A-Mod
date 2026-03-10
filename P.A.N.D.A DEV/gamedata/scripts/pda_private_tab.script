@@ -145,6 +145,7 @@ function pda_private_tab:__init()
     self.cached_has_typing = false
     self.cached_npc_data = {}
     self.choice_btns = {}
+    self.scroll_dynamic_windows = {}
     self.selected_choice_idx = nil
     self.pending_choice_idx = nil
     self.choice_buttons_visible = false
@@ -834,6 +835,7 @@ end
 
 function pda_private_tab:Reset(target_contact_id)
     self.npc_list:RemoveAll()
+    self.scroll_dynamic_windows = {}
     self.scrollbar:Clear()
     self.image_container:Show(false)
     self.header_name:SetText("")
@@ -1006,6 +1008,7 @@ function pda_private_tab:OnSelectNPC()
     end
 
     self.empty_state:Show(false)
+    self.scroll_dynamic_windows = {}
     self.scrollbar:Clear()
     self.quick_menu_open = false
     self.typing_text_wnd = nil
@@ -1178,8 +1181,9 @@ function pda_private_tab:OnSelectNPC()
             lane_bg:SetWndSize(vector2():set(lane_bg:GetWidth(), lane_h))
             lane_root:SetWndSize(vector2():set(720, lane_h)) 
 
-            self.scrollbar:AddWindow(lane_root, true)
-            lane_root:SetAutoDelete(true)
+            lane_root:SetAutoDelete(false)
+            self.scrollbar:AddWindow(lane_root, false)
+            table.insert(self.scroll_dynamic_windows, lane_root)
         end
     end
 
@@ -1194,9 +1198,10 @@ function pda_private_tab:OnSelectNPC()
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
-            spacer:SetAutoDelete(true)
+            spacer:SetAutoDelete(false)
             spacer:SetWndSize(vector2():set(10, (active_conv.num_choices * (chip_h + chip_gap)) + 10))
-            self.scrollbar:AddWindow(spacer, true)
+            self.scrollbar:AddWindow(spacer, false)
+            table.insert(self.scroll_dynamic_windows, spacer)
         end
 
         -- Pre-calculate widths and find the widest chip so all buttons share the same left_x
