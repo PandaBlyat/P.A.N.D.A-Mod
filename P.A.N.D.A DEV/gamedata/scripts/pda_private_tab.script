@@ -99,15 +99,7 @@ local function estimate_chip_width(text, min_w, max_w, padding_x)
 
     local widest = 0
     for line in (clean .. "\n"):gmatch("(.-)\n") do
-        local width = 0
-        for i = 1, #line do
-            local char = line:sub(i, i)
-            if char:match("%u") then width = width + 8
-            elseif char:match("%l") then width = width + 7
-            elseif char:match("%d") then width = width + 7
-            elseif char == " " then width = width + 4
-            else width = width + 6 end
-        end
+        local width = math.floor((#line * 6.2) + 0.5)
         if width > widest then widest = width end
     end
 
@@ -149,6 +141,7 @@ function pda_private_tab:__init()
     self.typing_anim_phase = -1
 	self.typing_text_wnd = nil
     self.typing_entry_data = nil
+    self.choice_typewriter = nil
 end
 
 function pda_private_tab:InitControls()
@@ -226,7 +219,7 @@ end
 
 function pda_private_tab:UpdateHoverButtonTints()
     local neutral_small = GetARGB(255, 180, 180, 180)
-    local hover_red_small = GetARGB(255, 255, 40, 40)
+    local hover_red_small = GetARGB(255, 255, 25, 25)
     local hover_blue_small = GetARGB(255, 30, 120, 255)
 
     local neutral_chip = GetARGB(220, 60, 65, 70)
@@ -283,6 +276,10 @@ end
 function pda_private_tab:Update()
     CUIScriptWnd.Update(self)
     self:UpdateHoverButtonTints()
+
+    if self.choice_typewriter then
+        self:UpdateChoiceTypewriter()
+    end
 
     if self.pending_choice_idx then
         local idx = self.pending_choice_idx
@@ -358,6 +355,7 @@ function pda_private_tab:Update()
                 pda_interactive_conv.clear_npc_typing_message(entry.contact_name)
                 self.typing_text_wnd = nil
                 self.typing_entry_data = nil
+                self.choice_typewriter = nil
                 break
             end
         end
@@ -377,6 +375,10 @@ function pda_private_tab:OnChoice4() self:OnChoiceClicked(4) end
 
 function pda_private_tab:OnChoiceClicked(idx)
     if not pda_interactive_conv.CONV then return end
+    if self.choice_typewriter then return end
+
+    local choice = pda_interactive_conv.CONV.choices and pda_interactive_conv.CONV.choices[idx] or nil
+    if not choice then return end
 
     self.selected_choice_idx = idx
     self.choice_buttons_visible = false
@@ -384,7 +386,64 @@ function pda_private_tab:OnChoiceClicked(idx)
     self.reply_trigger_btn_hint_until = 0
     self.quick_menu_open = false
     self:UpdateReplyTriggerVisual()
-    self.pending_choice_idx = idx
+    self:BeginChoiceTypewriter(idx, choice.text or "")
+end
+
+function pda_private_tab:GetRealtimeMs()
+    if type(time_real_ms) == "function" then
+        return time_real_ms()
+    end
+    return math.floor((os.clock() or 0) * 1000)
+end
+
+function pda_private_tab:BeginChoiceTypewriter(idx, text)
+    local now = self:GetRealtimeMs()
+    local clean = tostring(text or ""):gsub("%%c%[[^%]]+%]", "")
+    clean = clean:gsub("\\n", "\n")
+
+    self.choice_typewriter = {
+        idx = idx,
+        full_text = clean,
+        chars = 0,
+        next_tick = now,
+        done_at = nil,
+    }
+
+    if self.composer_input_field then
+        self.composer_input_field:SetText("")
+    end
+end
+
+function pda_private_tab:UpdateChoiceTypewriter()
+    local tw = self.choice_typewriter
+    if not tw then return end
+
+    local now = self:GetRealtimeMs()
+
+    if tw.done_at then
+        if now >= tw.done_at then
+            self.choice_typewriter = nil
+            self.pending_choice_idx = tw.idx
+            self:UpdateReplyTriggerVisual()
+        end
+        return
+    end
+
+    if now < tw.next_tick then return end
+
+    local full_len = string.len(tw.full_text)
+    tw.chars = math.min(full_len, tw.chars + 1)
+    local typed = string.sub(tw.full_text, 1, tw.chars)
+    if self.composer_input_field then
+        self.composer_input_field:SetText(typed)
+    end
+
+    if tw.chars >= full_len then
+        tw.done_at = now + 140
+        return
+    end
+
+    tw.next_tick = now + 26
 end
 
 function pda_private_tab:OnComposerQuick1Clicked()
@@ -445,6 +504,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_block_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_block_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_block_contact:SetWndSize(vector2():set(block_w, 26))
+    if self.quick_btn_block_contact.SetTextureColor then self.quick_btn_block_contact:SetTextureColor(GetARGB(0, 0, 0, 0)) end
     local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
     if block_text then block_text:SetText(block_label) end
     self:Register(self.quick_btn_block_contact, "quick_btn_block_contact")
@@ -458,6 +518,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_unblock_contact = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_unblock_contact:SetWndPos(vector2():set(16, menu_y))
     self.quick_btn_unblock_contact:SetWndSize(vector2():set(unblock_w, 26))
+    if self.quick_btn_unblock_contact.SetTextureColor then self.quick_btn_unblock_contact:SetTextureColor(GetARGB(0, 0, 0, 0)) end
     local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
     if unblock_text then unblock_text:SetText(unblock_label) end
     self:Register(self.quick_btn_unblock_contact, "quick_btn_unblock_contact")
@@ -471,6 +532,7 @@ function pda_private_tab:EnsureQuickMenuButtons()
     self.quick_btn_ignore_conv = self.xml:Init3tButton("private_pda:info:description:choice_chip_btn", self.desc_box)
     self.quick_btn_ignore_conv:SetWndPos(vector2():set(16, menu_y + 30))
     self.quick_btn_ignore_conv:SetWndSize(vector2():set(ignore_w, 26))
+    if self.quick_btn_ignore_conv.SetTextureColor then self.quick_btn_ignore_conv:SetTextureColor(GetARGB(0, 0, 0, 0)) end
     local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
     if ignore_text then ignore_text:SetText(ignore_label) end
     self:Register(self.quick_btn_ignore_conv, "quick_btn_ignore_conv")
@@ -542,6 +604,7 @@ function pda_private_tab:OnQuickIgnoreConversationClicked()
     end
     self.typing_text_wnd = nil
     self.typing_entry_data = nil
+    self.choice_typewriter = nil
 
     self.selected_choice_idx = nil
     self.choice_buttons_visible = false
@@ -573,6 +636,7 @@ end
 
 function pda_private_tab:UpdateReplyTriggerVisual()
     if not self.composer_input_field then return end
+    if self.choice_typewriter then return end
 
     local now = time_global()
     if self.reply_trigger_btn_hint_until > now then
@@ -724,6 +788,7 @@ function pda_private_tab:Reset(target_contact_id)
     self.quick_menu_open = false
     self.typing_text_wnd = nil
     self.typing_entry_data = nil
+    self.choice_typewriter = nil
     self:UpdateReplyTriggerVisual()
     self:HideStats()
     
@@ -861,6 +926,7 @@ function pda_private_tab:OnSelectNPC()
         self:HideStats()
         self.typing_text_wnd = nil
         self.typing_entry_data = nil
+        self.choice_typewriter = nil
         return 
     end
 
@@ -869,6 +935,7 @@ function pda_private_tab:OnSelectNPC()
     self.quick_menu_open = false
     self.typing_text_wnd = nil
     self.typing_entry_data = nil
+    self.choice_typewriter = nil
     self:HideQuickMenuButtons()
 
     for i = 1, #self.choice_btns do
@@ -1056,9 +1123,9 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 4
-        local chip_min_w = 120
-        local chip_max_w = 660
-        local chip_pad = 34
+        local chip_min_w = 96
+        local chip_max_w = 520
+        local chip_pad = 24
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
@@ -1077,13 +1144,7 @@ function pda_private_tab:OnSelectNPC()
 
             local chip_w = estimate_chip_width(ch.text, chip_min_w, chip_max_w, chip_pad)
 
-            local composer_center_x = 360
-            if self.composer_container and self.composer_input_field then
-                local container_x = self.composer_container:GetWndPos().x
-                local input_pos = self.composer_input_field:GetWndPos()
-                local input_w = self.composer_input_field:GetWidth()
-                composer_center_x = container_x + input_pos.x + (input_w / 2)
-            end
+            local composer_center_x = self.desc_box and (self.desc_box:GetWidth() / 2) or 360
 
             local left_x = math.floor(composer_center_x - (chip_w / 2))
             left_x = math.max(8, math.min(720 - chip_w - 8, left_x))
@@ -1093,7 +1154,7 @@ function pda_private_tab:OnSelectNPC()
             if btn.SetTextureColor then btn:SetTextureColor(GetARGB(0, 0, 0, 0)) end
 
 			local row = active_conv.num_choices - i
-			local y = composer_y - ((row + 1) * (chip_h + chip_gap)) - 4
+			local y = (composer_y - 10) - ((row + 1) * (chip_h + chip_gap))
 
             bg:SetWndPos(vector2():set(left_x, y))
 			btn:SetWndPos(vector2():set(left_x, y))
