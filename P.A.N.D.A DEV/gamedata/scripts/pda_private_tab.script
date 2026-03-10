@@ -323,7 +323,7 @@ function pda_private_tab:UpdateHoverButtonTints()
 		self.quick_btn_block_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
 		if block_text and block_text.SetTextColor then
-			block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
+			block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 255, 120, 120))
 		end
 	end
 
@@ -335,7 +335,7 @@ function pda_private_tab:UpdateHoverButtonTints()
 		self.quick_btn_unblock_contact:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local unblock_text = self.quick_btn_unblock_contact.TextControl and self.quick_btn_unblock_contact:TextControl() or nil
 		if unblock_text and unblock_text.SetTextColor then
-			unblock_text:SetTextColor(unblock_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
+			unblock_text:SetTextColor(unblock_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 150, 205, 255))
 		end
 	end
 
@@ -347,7 +347,7 @@ function pda_private_tab:UpdateHoverButtonTints()
 		self.quick_btn_ignore_conv:SetTextureColor(GetARGB(0, 0, 0, 0))
 		local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
 		if ignore_text and ignore_text.SetTextColor then
-			ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
+			ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 255, 190, 90))
 		end
 	end
 
