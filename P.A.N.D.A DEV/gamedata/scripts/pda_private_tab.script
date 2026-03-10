@@ -229,8 +229,8 @@ function pda_private_tab:UpdateHoverButtonTints()
         end
     end
 
-    local hover_red_chip = GetARGB(255, 200, 30, 30)
-    local hover_orange_chip = GetARGB(255, 230, 140, 20)
+    local hover_red_chip = GetARGB(255, 255, 25, 25)
+    local hover_orange_chip = GetARGB(255, 255, 165, 0)
 
     if self.quick_btn_block_contact and self.quick_btn_block_bg then
         self.quick_btn_block_bg:SetTextureColor(is_button_hovered(self.quick_btn_block_contact) and hover_red_chip or neutral_chip)
@@ -394,9 +394,9 @@ function pda_private_tab:EnsureQuickMenuButtons()
 
     local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
     local menu_y = composer_y - 62
-    local qchar_w = 7   -- approximate width per character for letterica16
-    local qpad = 30      -- horizontal padding
-    local qmin_w = 120
+    local qchar_w = 6   -- approximate width per character for letterica16
+    local qpad = 20     -- horizontal padding
+    local qmin_w = 90
     local qmax_w = 400
 
     local block_label = "Block Contact"
@@ -1019,11 +1019,10 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 4
-        local chip_min_w = 120
+        local chip_min_w = 96
         local chip_max_w = 660
-        local chip_pad = 30  -- horizontal padding (left text offset + right margin)
-        local char_w = 7     -- approximate width per character for letterica16 font
-        local right_margin = 16
+        local chip_pad = 24  -- horizontal padding (left text offset + right margin)
+        local char_w = 6     -- approximate width per character for letterica16 font
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
@@ -1042,7 +1041,13 @@ function pda_private_tab:OnSelectNPC()
 
             local text_len = ch.text and string.len(ch.text) or 10
             local chip_w = math.max(chip_min_w, math.min(chip_max_w, text_len * char_w + chip_pad))
-            local left_x = 720 - chip_w - right_margin
+            local composer_center_x = 360
+            if self.composer_input_field then
+                local input_pos = self.composer_input_field:GetWndPos()
+                local input_w = self.composer_input_field:GetWidth()
+                composer_center_x = input_pos.x + (input_w / 2)
+            end
+            local left_x = math.max(8, math.floor(composer_center_x - (chip_w / 2)))
 
             bg:SetWndSize(vector2():set(chip_w, chip_h))
 			btn:SetWndSize(vector2():set(chip_w, chip_h))
