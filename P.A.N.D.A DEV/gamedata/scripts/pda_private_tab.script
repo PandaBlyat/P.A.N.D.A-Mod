@@ -1060,7 +1060,8 @@ function pda_private_tab:OnSelectNPC()
             row_idx = row_idx + 1
             local is_player_lane = is_player_sender(entry)
             local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
-            local lane_root = self.xml:InitStatic(template, nil)
+            local lane_root = CUIStatic()
+            lane_root:SetWndSize(vector2():set(720, 50))
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
             local status_wnd = is_player_lane and self.xml:InitTextWnd(template .. ":delivery_status", lane_root) or nil
@@ -1147,6 +1148,17 @@ function pda_private_tab:OnSelectNPC()
             self.scrollbar:AddWindow(spacer, true)
         end
 
+        -- Pre-calculate widths and find the widest chip so all buttons share the same left_x
+        local chip_widths = {}
+        local max_chip_w = chip_min_w
+        for i = 1, active_conv.num_choices do
+            local w = estimate_chip_width(active_conv.choices[i].text, chip_min_w, chip_max_w, chip_pad)
+            chip_widths[i] = w
+            if w > max_chip_w then max_chip_w = w end
+        end
+        local composer_center_x = 360  -- desc_box is 720px wide
+        local shared_left_x = math.max(8, math.min(720 - max_chip_w - 8, math.floor(composer_center_x - max_chip_w / 2)))
+
 		for i = 1, active_conv.num_choices do
 			local ch = active_conv.choices[i]
 
@@ -1155,12 +1167,7 @@ function pda_private_tab:OnSelectNPC()
 			local btn_name = "choice_btn_" .. i
 			self:Register(btn, btn_name)
 
-            local chip_w = estimate_chip_width(ch.text, chip_min_w, chip_max_w, chip_pad)
-
-            local composer_center_x = self.desc_box and (self.desc_box:GetWidth() / 2) or 360
-
-            local left_x = math.floor(composer_center_x - (chip_w / 2))
-            left_x = math.max(8, math.min(720 - chip_w - 8, left_x))
+            local chip_w = chip_widths[i]
 
             bg:SetWndSize(vector2():set(chip_w, chip_h))
 			btn:SetWndSize(vector2():set(chip_w, chip_h))
@@ -1169,8 +1176,8 @@ function pda_private_tab:OnSelectNPC()
 			local row = active_conv.num_choices - i
 			local y = (composer_y - 10) - ((row + 1) * (chip_h + chip_gap))
 
-            bg:SetWndPos(vector2():set(left_x, y))
-			btn:SetWndPos(vector2():set(left_x, y))
+            bg:SetWndPos(vector2():set(shared_left_x, y))
+			btn:SetWndPos(vector2():set(shared_left_x, y))
 
 			table.insert(self.choice_btns, { bg = bg, btn = btn, idx = i, text = ch.text })
 		end
