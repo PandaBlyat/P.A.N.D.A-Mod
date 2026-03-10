@@ -140,7 +140,7 @@
 
                     <!-- Backgrounds support dynamic tinting, Buttons handle pure text/interactions -->
                     <composer_quick_1_bg x="2" y="2" width="30" height="30" stretch="1">
-                        <texture>ui_white</texture>
+                        <texture>ui_panda_box</texture>
                     </composer_quick_1_bg>
                     <composer_quick_1_btn x="2" y="2" width="30" height="30" can_focus="1" stretch="1">
                         <texture>ui\ui_null</texture>
@@ -153,7 +153,7 @@
                     </composer_quick_1_btn>
 
                     <composer_quick_2_bg x="36" y="2" width="30" height="30" stretch="1">
-                        <texture>ui_white</texture>
+                        <texture>ui_panda_box</texture>
                     </composer_quick_2_bg>
                     <composer_quick_2_btn x="36" y="2" width="30" height="30" can_focus="1" stretch="1">
                         <texture>ui\ui_null</texture>
@@ -173,7 +173,7 @@
                     </composer_input_field>
 
                     <composer_send_bg x="662" y="2" width="36" height="30" stretch="1">
-                        <texture>ui_white</texture>
+                        <texture>ui_panda_box</texture>
                     </composer_send_bg>
                     <composer_send_btn x="662" y="2" width="36" height="30" can_focus="1" stretch="1">
                         <texture>ui\ui_null</texture>
@@ -209,7 +209,7 @@
                 
                 <!-- Background supports dynamic tinting, Button handles pure text/interactions -->
                 <choice_chip_bg x="0" y="0" width="220" height="26" stretch="1">
-                    <texture>ui_white</texture>
+                    <texture>ui_panda_box</texture>
                 </choice_chip_bg>
                 <choice_chip_btn x="0" y="0" width="220" height="26" can_focus="1" stretch="1">
                     <texture>ui\ui_null</texture>
