@@ -916,7 +916,10 @@ function pda_private_tab:RefreshChoiceButtons()
             if is_active and choice.idx == self.selected_choice_idx then label = "[Selected] " .. label end
 
             local text_ctrl = choice.btn.TextControl and choice.btn:TextControl() or nil
-            if text_ctrl then text_ctrl:SetText(label) end
+            if text_ctrl then
+                text_ctrl:SetText(wrap_plain_text(label, 54))
+                if text_ctrl.AdjustHeightToText then text_ctrl:AdjustHeightToText() end
+            end
 
             choice.btn:Enable(is_active)
             choice.btn:Show(should_show_choices and is_active)
@@ -1311,7 +1314,7 @@ function pda_private_tab:OnSelectNPC()
 
 			local body_text_for_width = tostring(entry.text or "")
 			if entry.is_typing then body_text_for_width = "Typing..." end
-			local bubble_w = estimate_bubble_width(body_text_for_width, 130, 460, 30)
+			local bubble_w = estimate_bubble_width(body_text_for_width, 160, 500, 34)
 			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 6))
 
             local display_text = ""
@@ -1337,7 +1340,7 @@ function pda_private_tab:OnSelectNPC()
 
             if is_player_lane then
 				local chat_panel_width = lane_root:GetWidth()
-				local right_padding = 10
+				local right_padding = 24
 				local bubble_x = chat_panel_width - bubble_w - right_padding
 				bubble_x = math.max(8, bubble_x)
 
@@ -1384,11 +1387,11 @@ function pda_private_tab:OnSelectNPC()
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
-        local chip_h = 28
-        local chip_gap = 4
-        local chip_min_w = 64
-        local chip_max_w = 420
-        local chip_pad = 16
+        local chip_h = 34
+        local chip_gap = 6
+        local chip_min_w = 420
+        local chip_max_w = 620
+        local chip_pad = 40
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
@@ -1409,9 +1412,9 @@ function pda_private_tab:OnSelectNPC()
         end
         local composer_center_x = 360
 		local centered_x = math.floor(composer_center_x - max_chip_w / 2)
-		local min_x = 8
-		local max_x = 720 - max_chip_w - 8
-		local shared_left_x = math.max(min_x, math.min(max_x, centered_x - 150))
+		local min_x = 16
+		local max_x = 720 - max_chip_w - 16
+		local shared_left_x = math.max(min_x, math.min(max_x, centered_x))
 
         self:EnsureChoiceButtonPool(usable_choices, chip_h)
 
