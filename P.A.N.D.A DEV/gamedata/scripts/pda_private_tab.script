@@ -102,13 +102,13 @@ local function estimate_chip_width(text, min_w, max_w, padding_x)
         local width = 0
         for i = 1, #line do
             local char = line:sub(i, i)
-            if char:match("%u") then width = width + 8.0
-            elseif char == "m" or char == "w" then width = width + 8.5
-            elseif char == "i" or char == "l" or char == "t" then width = width + 4.5
-            elseif char:match("%l") then width = width + 6.5
-            elseif char:match("%d") then width = width + 6.5
-            elseif char == " " then width = width + 3.5
-            else width = width + 6.0 end
+            if char:match("%u") then width = width + 6.0
+            elseif char == "m" or char == "w" then width = width + 7.0
+            elseif char == "i" or char == "l" or char == "t" then width = width + 3.5
+            elseif char:match("%l") then width = width + 5.3
+            elseif char:match("%d") then width = width + 5.3
+            elseif char == " " then width = width + 3.0
+            else width = width + 5.0 end
         end
         if width > widest then widest = width end
     end
@@ -253,7 +253,9 @@ function pda_private_tab:UpdateHoverButtonTints()
         local btn = btn_data and btn_data.btn or nil
         local bg = btn_data and btn_data.bg or nil
         if btn and bg then
-            bg:SetTextureColor(is_button_hovered(btn) and hover_blue_chip or neutral_chip)
+            local chip_color = is_button_hovered(btn) and hover_blue_chip or neutral_chip
+            btn:SetTextureColor(chip_color)
+            bg:SetTextureColor(GetARGB(0, 0, 0, 0))
         end
     end
 
@@ -262,7 +264,9 @@ function pda_private_tab:UpdateHoverButtonTints()
 
     local block_hovered = self.quick_btn_block_contact and is_button_hovered(self.quick_btn_block_contact)
     if self.quick_btn_block_contact and self.quick_btn_block_bg then
-        self.quick_btn_block_bg:SetTextureColor(block_hovered and hover_red_chip or neutral_chip)
+        local block_color = block_hovered and hover_red_chip or neutral_chip
+        self.quick_btn_block_contact:SetTextureColor(block_color)
+        self.quick_btn_block_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
         local block_text = self.quick_btn_block_contact.TextControl and self.quick_btn_block_contact:TextControl() or nil
         if block_text and block_text.SetTextColor then
             block_text:SetTextColor(block_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
@@ -271,12 +275,16 @@ function pda_private_tab:UpdateHoverButtonTints()
 
     local unblock_hovered = self.quick_btn_unblock_contact and is_button_hovered(self.quick_btn_unblock_contact)
     if self.quick_btn_unblock_contact and self.quick_btn_unblock_bg then
-        self.quick_btn_unblock_bg:SetTextureColor(unblock_hovered and hover_blue_chip or neutral_chip)
+        local unblock_color = unblock_hovered and hover_blue_chip or neutral_chip
+        self.quick_btn_unblock_contact:SetTextureColor(unblock_color)
+        self.quick_btn_unblock_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
     end
 
     local ignore_hovered = self.quick_btn_ignore_conv and is_button_hovered(self.quick_btn_ignore_conv)
     if self.quick_btn_ignore_conv and self.quick_btn_ignore_bg then
-        self.quick_btn_ignore_bg:SetTextureColor(ignore_hovered and hover_orange_chip or neutral_chip)
+        local ignore_color = ignore_hovered and hover_orange_chip or neutral_chip
+        self.quick_btn_ignore_conv:SetTextureColor(ignore_color)
+        self.quick_btn_ignore_bg:SetTextureColor(GetARGB(0, 0, 0, 0))
         local ignore_text = self.quick_btn_ignore_conv.TextControl and self.quick_btn_ignore_conv:TextControl() or nil
         if ignore_text and ignore_text.SetTextColor then
             ignore_text:SetTextColor(ignore_hovered and GetARGB(255, 255, 255, 255) or GetARGB(255, 225, 232, 238))
@@ -737,7 +745,7 @@ function pda_private_tab:RefreshChoiceButtons()
 
             choice.btn:Enable(is_active)
             choice.btn:Show(should_show_choices and is_active)
-            choice.bg:Show(should_show_choices and is_active)
+            choice.bg:Show(false)
         end
     end
 end
@@ -1192,9 +1200,9 @@ function pda_private_tab:OnSelectNPC()
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
         local chip_h = 28
         local chip_gap = 4
-        local chip_min_w = 96
+        local chip_min_w = 64
         local chip_max_w = 520
-        local chip_pad = 24
+        local chip_pad = 16
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
