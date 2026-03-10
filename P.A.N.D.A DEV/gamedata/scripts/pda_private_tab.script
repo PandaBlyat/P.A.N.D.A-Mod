@@ -311,8 +311,8 @@ function pda_private_tab:UpdateHoverButtonTints()
     local hover_blue_small = GetARGB(255, 30, 120, 255)
     local flash_small = GetARGB(255, 255, 255, 255)
 
-    local neutral_chip = GetARGB(235, 18, 42, 95)
-    local hover_blue_chip = GetARGB(255, 20, 90, 220)
+    local neutral_chip = GetARGB(220, 36, 42, 50)
+    local hover_blue_chip = GetARGB(245, 42, 110, 235)
     local flash_blue_chip = GetARGB(255, 85, 165, 255)
 
     -- Composer quick buttons (keep existing logic)
@@ -1309,7 +1309,7 @@ function pda_private_tab:OnSelectNPC()
             local is_player_lane = is_player_sender(entry)
             local template = is_player_lane and "private_pda:info:description:message_lane_player" or "private_pda:info:description:message_lane_npc"
             local lane_root = CUIStatic()
-            local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth()) or 720
+            local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
             lane_root:SetWndSize(vector2():set(chat_panel_width, 50))
             local lane_bg = self.xml:InitStatic(template .. ":bubble_bg", lane_root)
             local text_wnd = self.xml:InitTextWnd(template .. ":text_box", lane_root)
@@ -1318,8 +1318,10 @@ function pda_private_tab:OnSelectNPC()
 
 			local body_text_for_width = tostring(entry.text or "")
 			if entry.is_typing then body_text_for_width = "Typing..." end
+			local header_sender = is_player_lane and "You" or tostring(entry.sender or "Unknown")
+			local width_probe_text = string.format("%s [%s]\\n%s", header_sender, tostring(relative_time or "Unknown"), body_text_for_width)
 			local lane_max_w = is_player_lane and 430 or 470
-			local bubble_w = estimate_bubble_width(body_text_for_width, 170, lane_max_w, 34)
+			local bubble_w = estimate_bubble_width(width_probe_text, 220, lane_max_w, 34)
 			local wrap_chars = math.max(20, math.floor((bubble_w - 30) / 7))
 
             local display_text = ""
@@ -1392,11 +1394,9 @@ function pda_private_tab:OnSelectNPC()
     local active_conv = pda_interactive_conv.CONV
     if active_conv and active_conv.npc_name == item.contact_id then
         local composer_y = self.composer_container and self.composer_container:GetWndPos().y or 564
-        local chip_h = 34
+        local chip_h = 28
         local chip_gap = 6
-        local chip_min_w = 420
-        local chip_max_w = 620
-        local chip_pad = 40
+        local chip_w = 420
 
         if self.choice_buttons_visible then
             local spacer = CUIStatic()
@@ -1406,20 +1406,13 @@ function pda_private_tab:OnSelectNPC()
             table.insert(self.scroll_dynamic_windows, spacer)
         end
 
-        -- Pre-calculate widths and find the widest chip so all buttons share the same left_x
-        local chip_widths = {}
-        local max_chip_w = chip_min_w
         local usable_choices = math.min(4, active_conv.num_choices)
-        for i = 1, usable_choices do
-            local w = estimate_chip_width(active_conv.choices[i].text, chip_min_w, chip_max_w, chip_pad)
-            chip_widths[i] = w
-            if w > max_chip_w then max_chip_w = w end
-        end
-        local composer_center_x = 360
-		local centered_x = math.floor(composer_center_x - max_chip_w / 2)
+
+        local composer_center_x = 350
+		local centered_x = math.floor(composer_center_x - chip_w / 2)
 		local min_x = 16
-		local chat_panel_width = (self.scrollbar and self.scrollbar.GetWidth and self.scrollbar:GetWidth()) or 720
-		local max_x = chat_panel_width - max_chip_w - 16
+		local chat_panel_width = (self.composer_container and self.composer_container.GetWidth and self.composer_container:GetWidth()) or 700
+		local max_x = chat_panel_width - chip_w - 16
 		local shared_left_x = math.max(min_x, math.min(max_x, centered_x))
 
         self:EnsureChoiceButtonPool(usable_choices, chip_h)
@@ -1427,8 +1420,6 @@ function pda_private_tab:OnSelectNPC()
 		for i = 1, usable_choices do
 			local ch = active_conv.choices[i]
             local choice = self.choice_btns[i]
-            local chip_w = chip_widths[i]
-
             if choice and choice.bg and choice.btn then
                 choice.idx = i
                 choice.text = ch.text
